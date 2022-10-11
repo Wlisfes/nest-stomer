@@ -73,32 +73,37 @@ export const useManager = defineStore({
         async setRouter() {
             const routes = [
                 {
+                    path: '/manager',
+                    name: 'Manager',
+                    component: 'Layout',
+                    redirect: '/manager/master',
+                    children: [
+                        {
+                            path: '/manager/master',
+                            name: 'MHome',
+                            meta: { title: '主控台' }
+                        }
+                    ]
+                },
+                {
                     path: '/manager/system',
-                    name: 'Layout1',
+                    name: 'System',
                     component: 'Layout',
                     redirect: '/manager/system/user',
                     children: [
                         {
                             path: '/manager/system/user',
                             name: 'MUser',
-                            meta: { title: '用户' },
-                            component: '/manager/user'
+                            meta: { title: '用户' }
                         },
                         {
                             path: '/manager/system/role',
                             name: 'MRole',
-                            meta: { title: '角色' },
-                            component: '/manager/role'
+                            meta: { title: '角色' }
                         }
                     ]
                 }
             ]
-
-            // router.addRoute({
-            //     path: '/:catch(.*)',
-            //     name: '404',
-            //     component: () => import('@/views/manager/Home.vue')
-            // })
 
             routes.forEach(route => {
                 if (route.component === 'Layout') {
