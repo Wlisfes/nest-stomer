@@ -1,0 +1,35 @@
+{
+    "name": "nest-stomer",
+    "private": true,
+    "version": "0.0.0",
+    "type": "module",
+    "scripts": {
+        "dev": "vite",
+        "build": "vue-tsc --noEmit && vite build",
+        "preview": "vite preview"
+    },
+    "dependencies": {
+        "axios": "^1.1.2",
+        "cropperjs": "^1.5.12",
+        "naive-ui": "^2.33.4",
+        "normalize.css": "^8.0.1",
+        "pinia": "^2.0.23",
+        "pinia-plugin-persist": "^1.0.0",
+        "vue": "^3.2.37",
+        "vue-router": "^4.1.5"
+    },
+    "devDependencies": {
+        "@types/ali-oss": "^6.16.5",
+        "@types/dplayer": "^1.25.2",
+        "@types/js-cookie": "^3.0.2",
+        "@types/node": "^18.8.3",
+        "@vitejs/plugin-vue": "^3.1.0",
+        "@vitejs/plugin-vue-jsx": "^2.0.1",
+        "sass": "^1.55.0",
+        "typescript": "^4.6.4",
+        "unplugin-auto-import": "^0.11.2",
+        "unplugin-vue-components": "^0.22.8",
+        "vite": "^3.1.0",
+        "vue-tsc": "^0.40.4"
+    }
+}
