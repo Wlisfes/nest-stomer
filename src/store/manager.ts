@@ -1,6 +1,8 @@
 import { defineStore } from 'pinia'
 import router from '@/router'
 import Layout from '@/layout/manager/Layout.vue'
+import { RouteRecordRaw } from 'vue-router'
+import { shallowRef } from 'vue'
 
 export interface RState {
     device: string
@@ -71,20 +73,8 @@ export const useManager = defineStore({
         async setRouter() {
             const routes = [
                 {
-                    path: '/manager',
-                    component: 'Layout',
-                    redirect: '/manager/master',
-                    children: [
-                        {
-                            path: '/manager/master',
-                            name: 'MMaster',
-                            meta: { title: '主控台' },
-                            component: '/manager/Home'
-                        }
-                    ]
-                },
-                {
                     path: '/manager/system',
+                    name: 'Layout1',
                     component: 'Layout',
                     redirect: '/manager/system/user',
                     children: [
@@ -104,26 +94,33 @@ export const useManager = defineStore({
                 }
             ]
 
-            router.addRoute({
-                path: '/manager',
-                component: Layout
+            // router.addRoute({
+            //     path: '/:catch(.*)',
+            //     name: '404',
+            //     component: () => import('@/views/manager/Home.vue')
+            // })
+
+            routes.forEach(route => {
+                if (route.component === 'Layout') {
+                    router.addRoute({
+                        name: route.name,
+                        path: route.path,
+                        redirect: route.redirect,
+                        component: Layout
+                    } as RouteRecordRaw)
+                    route.children.forEach(x => {
+                        if (!router.hasRoute(x.name)) {
+                            router.addRoute(route.name, {
+                                path: x.path,
+                                name: x.name,
+                                meta: x.meta,
+                                component: () => import('@/views/manager/Home.vue')
+                            })
+                        }
+                    })
+                }
             })
 
-            // router.addRoute({
-            //     path: '/manager',
-            //     component: Layout
-            // redirect: '/manager/master',
-            // children: [
-            //     {
-            //         path: '/manager/master',
-            //         name: 'MMaster',
-            //         meta: { title: '主控台' },
-            //         component: () => import('@/views/manager/Home.vue')
-            //     }
-            // ]
-            // })
-            // router.addRoute({ path: '/:manager*', name: '404', redirect: '' })
-            // console.log(router.getRoutes())
             return (this.router = routes)
         }
     }

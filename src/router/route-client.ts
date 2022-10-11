@@ -5,9 +5,10 @@ export const routeClient: Array<RouteRecordRaw> = [
     {
         path: '/',
         component: Layout,
+        redirect: '/home',
         children: [
             {
-                path: '/',
+                path: '/home',
                 name: 'CHome',
                 meta: { title: '主控台' },
                 component: () => import('@/views/client/Home.vue')
