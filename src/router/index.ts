@@ -18,7 +18,6 @@ export function setupGuardRouter(router: Router) {
         if (!manager.router.length) {
             manager.setRouter().then(() => {
                 next({
-                    ...to,
                     path: `/refresh`,
                     query: Object.assign(to.query, { target: to.path, refresh: true }),
                     replace: true

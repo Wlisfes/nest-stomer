@@ -4,18 +4,13 @@ import { useRoute } from 'vue-router'
 
 export default defineComponent({
     name: 'Refresh',
-    beforeRouteEnter(to, from, next) {
-        next(vm => {
-            vm.$router.replace(to.query.target as string)
-        })
+    beforeRouteEnter(to: any, from, next) {
+        next(vm => vm.$router.replace(to.query.target))
     },
     setup() {
         const route = useRoute()
         return () => {
-            if (route.query.refresh) {
-                return null
-            }
-            return <div>404</div>
+            return route.query.refresh ? null : <div>404</div>
         }
     }
 })
