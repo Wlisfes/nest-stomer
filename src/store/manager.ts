@@ -1,4 +1,6 @@
 import { defineStore } from 'pinia'
+import router from '@/router'
+import Layout from '@/layout/manager/Layout.vue'
 
 export interface RState {
     device: string
@@ -12,6 +14,7 @@ export interface RState {
     reload: boolean
     breadcr: boolean
     better: boolean
+    router: Array<any>
 }
 
 export const useManager = defineStore({
@@ -27,7 +30,8 @@ export const useManager = defineStore({
         primaryColor: '#18a058',
         reload: true,
         breadcr: true,
-        better: true
+        better: true,
+        router: []
     }),
     actions: {
         setDevice(device: string): void {
@@ -63,6 +67,64 @@ export const useManager = defineStore({
         },
         setBetter(better: boolean) {
             this.better = better
+        },
+        async setRouter() {
+            const routes = [
+                {
+                    path: '/manager',
+                    component: 'Layout',
+                    redirect: '/manager/master',
+                    children: [
+                        {
+                            path: '/manager/master',
+                            name: 'MMaster',
+                            meta: { title: '主控台' },
+                            component: '/manager/Home'
+                        }
+                    ]
+                },
+                {
+                    path: '/manager/system',
+                    component: 'Layout',
+                    redirect: '/manager/system/user',
+                    children: [
+                        {
+                            path: '/manager/system/user',
+                            name: 'MUser',
+                            meta: { title: '用户' },
+                            component: '/manager/user'
+                        },
+                        {
+                            path: '/manager/system/role',
+                            name: 'MRole',
+                            meta: { title: '角色' },
+                            component: '/manager/role'
+                        }
+                    ]
+                }
+            ]
+
+            router.addRoute({
+                path: '/manager',
+                component: Layout
+            })
+
+            // router.addRoute({
+            //     path: '/manager',
+            //     component: Layout
+            // redirect: '/manager/master',
+            // children: [
+            //     {
+            //         path: '/manager/master',
+            //         name: 'MMaster',
+            //         meta: { title: '主控台' },
+            //         component: () => import('@/views/manager/Home.vue')
+            //     }
+            // ]
+            // })
+            // router.addRoute({ path: '/:manager*', name: '404', redirect: '' })
+            // console.log(router.getRoutes())
+            return (this.router = routes)
         }
     }
 })
