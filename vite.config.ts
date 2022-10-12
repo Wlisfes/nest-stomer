@@ -36,12 +36,12 @@ export default defineConfig(({ command, mode }: ConfigEnv): UserConfig => {
             }
         },
         server: {
-            port: 8888,
+            port: Number(env.VITE_PORT),
             open: true,
             host: '0.0.0.0',
             proxy: {
                 [env.VITE_API_BASE]: {
-                    target: env.VITE_API_TARGET,
+                    target: env.VITE_API_BASE_TARGET,
                     ws: true,
                     changeOrigin: true,
                     rewrite: path => path.replace(new RegExp(`^${env.VITE_API_BASE}`), '')
