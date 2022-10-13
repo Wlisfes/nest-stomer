@@ -2,6 +2,7 @@
 import { defineComponent } from 'vue'
 import { useRxicon } from '@/hooks/hook-icon'
 import { useCompute } from '@/hooks/hook-compute'
+import { httpMobile } from '@/api/fetch-core'
 import { router } from '@/router'
 import { useEnter } from '@/utils/utils-event'
 
@@ -9,16 +10,17 @@ export default defineComponent({
     name: 'Register',
     setup() {
         const { compute } = useRxicon()
-        const { formRef, rules, state, isEmail, setState, startDuration } = useCompute()
+        const { formRef, rules, state, setState, startDuration } = useCompute()
 
-        const fetchEmail = () => {
-            setState({ sending: true }).then(async () => {
-                // try {
-                //     await httpSendEmail({ email: state.email })
-                //     setState({ sending: false }).then(() => startDuration(60))
-                // } catch (e) {
-                //     setState({ sending: false })
-                // }
+        /**发送手机验证码**/
+        const fetchMobile = () => {
+            setState({ fetch: true }).then(async e => {
+                try {
+                    await httpMobile({ mobile: e.mobile })
+                    setState({ fetch: false }).then(() => startDuration(60))
+                } catch (e) {
+                    setState({ fetch: false })
+                }
             })
         }
 
@@ -68,39 +70,39 @@ export default defineComponent({
                                 {{ prefix: () => <n-icon component={compute('LockOutlined')}></n-icon> }}
                             </n-input>
                         </n-form-item>
-                        <n-form-item path="email">
+                        <n-form-item path="mobile">
                             <n-input
-                                v-model:value={state.email}
+                                v-model:value={state.mobile}
                                 size="medium"
-                                placeholder="邮箱"
+                                maxlength={11}
+                                placeholder="手机号"
                                 input-props={{ autocomplete: 'off' }}
                                 onKeydown={(e: KeyboardEvent) => useEnter(e, 'Enter', onSubmit)}
                             >
-                                {{ prefix: () => <n-icon component={compute('MailOutlined')}></n-icon> }}
-                            </n-input>
-                        </n-form-item>
-                        <n-form-item path="code">
-                            <n-input
-                                v-model:value={state.code}
-                                size="medium"
-                                maxlength={6}
-                                placeholder="验证码"
-                                input-props={{ autocomplete: 'off' }}
-                                onKeydown={(e: KeyboardEvent) => useEnter(e, 'Enter', onSubmit)}
-                            >
-                                {{ prefix: () => <n-icon component={compute('VerifiedOutlined')}></n-icon> }}
+                                {{ prefix: () => <n-icon component={compute('PhoneOutlined')}></n-icon> }}
                             </n-input>
                             <n-button
                                 size="medium"
                                 class="naive-customize"
                                 ghost
                                 style={{ marginLeft: '10px' }}
-                                disabled={!isEmail.value || state.duration > 0}
-                                loading={state.sending}
-                                onClick={fetchEmail}
+                                disabled={state.duration > 0}
+                                loading={state.fetch}
+                                onClick={fetchMobile}
                             >
                                 {{ default: () => (state.duration > 0 ? `${state.duration}秒后重试` : '发送验证码') }}
                             </n-button>
+                        </n-form-item>
+                        <n-form-item path="code">
+                            <n-input
+                                v-model:value={state.code}
+                                size="medium"
+                                placeholder="验证码"
+                                input-props={{ autocomplete: 'off' }}
+                                onKeydown={(e: KeyboardEvent) => useEnter(e, 'Enter', onSubmit)}
+                            >
+                                {{ prefix: () => <n-icon component={compute('VerifiedOutlined')}></n-icon> }}
+                            </n-input>
                         </n-form-item>
                         <n-form-item show-feedback={false}>
                             <n-button

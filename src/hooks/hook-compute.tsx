@@ -1,66 +1,49 @@
-import { reactive, ref, toRefs, nextTick, computed, onMounted } from 'vue'
+import { ref, toRefs } from 'vue'
 import { FormInst, FormRules } from 'naive-ui'
-import { initMounte } from '@/utils/utils-tool'
+import { useState } from '@/hooks/hook-state'
 
-type ICompute = {
-    account?: string
+export interface ICompute {
+    mobile?: string
     password?: string
     code?: string
     nickname?: string
-    email?: string
     loading?: boolean
     duration?: number
-    sending?: boolean
+    fetch?: boolean
 }
 
 export function useCompute(props?: ICompute) {
-    const state = reactive<Required<ICompute>>({
-        account: props?.account ?? '',
+    const { state, setState } = useState<Required<ICompute>>({
+        mobile: props?.mobile ?? '',
         password: props?.password ?? '',
         code: props?.code ?? '',
         nickname: props?.nickname ?? '',
-        email: props?.email ?? '',
         loading: props?.loading ?? false,
         duration: props?.duration ?? 0,
-        sending: props?.sending ?? false
+        fetch: props?.fetch ?? false
     })
 
-    const codeURL = ref<string>('')
+    const codeURL = ref<string>(`${import.meta.env.VITE_API_BASE}/api/core/fetch-captcha?t=${Date.now()}`)
     const formRef = ref<FormInst>()
     const rules = ref<FormRules>({
-        account: [{ required: true, message: '请输入账号', trigger: 'change' }],
-        password: [
-            { required: true, message: '请输入密码', trigger: 'change' },
-            { min: 6, max: 20, message: '密码长度必须6~20位', trigger: 'change' }
-        ],
-        code: [{ required: true, message: '请输入验证码', trigger: 'change' }],
-        nickname: [{ required: true, message: '请输入用户昵称', trigger: 'change' }],
-        email: [
-            { required: true, message: '请输入邮箱', trigger: 'change' },
-            { type: 'email', message: '邮箱格式错误', trigger: 'change' }
-        ]
-    })
-
-    const isEmail = computed<boolean>(() => {
-        return /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/.test(
-            state.email
-        )
-    })
-
-    const setState = (parameter: ICompute, handler?: (e: typeof state) => void) => {
-        return new Promise(resolve => {
-            for (const key in parameter) {
-                state[key as keyof ICompute] = parameter[key as keyof ICompute] as never
+        mobile: [
+            { required: true, message: '请输入手机号', trigger: 'blur' },
+            {
+                message: '手机号错误',
+                trigger: 'blur',
+                validator: (rule, value) => value && /^(?:(?:\+|00)86)?1\d{10}$/.test(value)
             }
-            nextTick(() => {
-                handler?.(state)
-                resolve(state)
-            })
-        })
-    }
+        ],
+        password: [
+            { required: true, message: '请输入密码', trigger: 'blur' },
+            { min: 6, max: 18, message: '密码长度必须6~18位', trigger: 'blur' }
+        ],
+        code: [{ required: true, message: '请输入验证码', trigger: 'blur' }],
+        nickname: [{ required: true, message: '请输入用户昵称', trigger: 'blur' }]
+    })
 
     const onRefresh = () => {
-        codeURL.value = `${import.meta.env.VITE_API_BASE}/api/user/code?t=${Date.now()}`
+        codeURL.value = `${import.meta.env.VITE_API_BASE}/api/core/fetch-captcha?t=${Date.now()}`
     }
 
     const startDuration = (value: number) => {
@@ -77,17 +60,12 @@ export function useCompute(props?: ICompute) {
         }
     }
 
-    onMounted(() => {
-        setTimeout(onRefresh, 500)
-    })
-
     return {
         ...toRefs(state),
         codeURL,
         formRef,
         rules,
         state,
-        isEmail,
         setState,
         onRefresh,
         startDuration
