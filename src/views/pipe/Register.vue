@@ -5,40 +5,43 @@ import { useCompute } from '@/hooks/hook-compute'
 import { httpMobile } from '@/api/fetch-core'
 import { router } from '@/router'
 import { useEnter } from '@/utils/utils-event'
+import { httpRegister } from '@/api/fetch-user'
 
 export default defineComponent({
     name: 'Register',
     setup() {
         const { compute } = useRxicon()
-        const { formRef, rules, state, setState, startDuration } = useCompute()
+        const { formRef, rules, state, setState, isRule, setTime } = useCompute()
 
         /**发送手机验证码**/
         const fetchMobile = () => {
-            setState({ fetch: true }).then(async e => {
-                try {
-                    await httpMobile({ mobile: e.mobile })
-                    setState({ fetch: false }).then(() => startDuration(60))
-                } catch (e) {
-                    setState({ fetch: false })
-                }
-            })
+            //prettier-ignore
+            formRef.value?.validate(
+                error => {
+                    if (error) return false
+                    setState({ fetch: true }).then(async e => {
+                        await httpMobile({ mobile: e.mobile })
+                        setState({ fetch: false }).then(() => setTime(60))
+                    })
+                },
+                rule => isRule(rule, ['mobile'])
+            ).catch(e => setState({ fetch: false }))
         }
 
-        const onSubmit = async () => {
-            try {
-                await formRef.value?.validate()
-                await setState({ loading: true })
-                // await register({
-                //     nickname: state.nickname,
-                //     password: state.password,
-                //     email: state.email,
-                //     code: state.code
-                // }).then(() => {
-                //     router.replace('/')
-                // })
-            } catch (e) {
-                setState({ loading: false })
-            }
+        /**注册**/
+        const onSubmit = () => {
+            //prettier-ignore
+            formRef.value?.validate(error => {
+                if (error) return false
+                setState({ loading: true }).then(e => {
+                    httpRegister({
+                        nickname: e.nickname,
+                        password: window.btoa(e.password),
+                        mobile: e.mobile,
+                        code: e.code
+                    }).then(() => router.replace('/compute/login'))
+                })
+            }).catch(e => setState({ loading: false }))
         }
 
         return () => {

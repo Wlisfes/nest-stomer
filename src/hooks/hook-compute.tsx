@@ -1,5 +1,5 @@
 import { ref, toRefs } from 'vue'
-import { FormInst, FormRules } from 'naive-ui'
+import { FormInst, FormRules, FormItemRule } from 'naive-ui'
 import { useState } from '@/hooks/hook-state'
 
 export interface ICompute {
@@ -27,26 +27,31 @@ export function useCompute(props?: ICompute) {
     const formRef = ref<FormInst>()
     const rules = ref<FormRules>({
         mobile: [
-            { required: true, message: '请输入手机号', trigger: 'blur' },
+            { key: 'mobile', required: true, message: '请输入手机号', trigger: 'blur' },
             {
+                key: 'mobile',
                 message: '手机号错误',
                 trigger: 'blur',
                 validator: (rule, value) => value && /^(?:(?:\+|00)86)?1\d{10}$/.test(value)
             }
         ],
         password: [
-            { required: true, message: '请输入密码', trigger: 'blur' },
-            { min: 6, max: 18, message: '密码长度必须6~18位', trigger: 'blur' }
+            { key: 'password', required: true, message: '请输入密码', trigger: 'blur' },
+            { key: 'password', min: 6, max: 18, message: '密码长度必须6~18位', trigger: 'blur' }
         ],
-        code: [{ required: true, message: '请输入验证码', trigger: 'blur' }],
-        nickname: [{ required: true, message: '请输入用户昵称', trigger: 'blur' }]
+        code: [{ key: 'code', required: true, message: '请输入验证码', trigger: 'blur' }],
+        nickname: [{ key: 'nickname', required: true, message: '请输入用户昵称', trigger: 'blur' }]
     })
+
+    const isRule = (rule: FormItemRule, keys: string[]) => {
+        return keys.includes(rule?.key ?? '')
+    }
 
     const onRefresh = () => {
         codeURL.value = `${import.meta.env.VITE_API_BASE}/api/core/fetch-captcha?t=${Date.now()}`
     }
 
-    const startDuration = (value: number) => {
+    const setTime = (value: number) => {
         if (state.duration === 0) {
             setState({ duration: value }).then(() => {
                 const interval = setInterval(() => {
@@ -67,7 +72,8 @@ export function useCompute(props?: ICompute) {
         rules,
         state,
         setState,
+        isRule,
         onRefresh,
-        startDuration
+        setTime
     }
 }
