@@ -15,34 +15,35 @@ export default defineComponent({
         const { formRef, rules, state, setState, isRule, setTime } = useCompute()
 
         /**发送手机验证码**/
-        const fetchMobile = () => {
-            //prettier-ignore
-            formRef.value?.validate(
-                error => {
-                    if (error) return false
-                    setState({ fetch: true }).then(async e => {
-                        await httpMobile({ mobile: e.mobile })
-                        setState({ fetch: false }).then(() => setTime(60))
-                    })
-                },
-                rule => isRule(rule, ['mobile'])
-            ).catch(e => setState({ fetch: false }))
+        async function fetchMobile() {
+            try {
+                await formRef.value?.validate(
+                    error => error,
+                    rule => isRule(rule, ['mobile'])
+                )
+                await setState({ fetch: true })
+                await httpMobile({ mobile: state.mobile })
+                await setState({ fetch: false }).then(() => setTime(60))
+            } catch (e) {
+                setState({ fetch: false })
+            }
         }
 
         /**注册**/
-        const onSubmit = () => {
-            //prettier-ignore
-            formRef.value?.validate(error => {
-                if (error) return false
-                setState({ loading: true }).then(e => {
-                    httpRegister({
-                        nickname: e.nickname,
-                        password: window.btoa(e.password),
-                        mobile: e.mobile,
-                        code: e.code
-                    }).then(() => router.replace('/compute/login'))
+        async function onSubmit() {
+            try {
+                await formRef.value?.validate()
+                await setState({ loading: true })
+                await httpRegister({
+                    nickname: state.nickname,
+                    password: window.btoa(state.password),
+                    mobile: state.mobile,
+                    code: state.code
                 })
-            }).catch(e => setState({ loading: false }))
+                await setState({ loading: false }).then(() => router.replace('/compute/login'))
+            } catch (e) {
+                setState({ loading: false })
+            }
         }
 
         return () => {
@@ -122,12 +123,12 @@ export default defineComponent({
                         </n-form-item>
                         <n-form-item show-feedback={false}>
                             <n-space justify="space-between" style={{ width: '100%' }}>
-                                <n-checkbox v-model:checked={state.checked}>记住密码</n-checkbox>
+                                <n-text></n-text>
                                 <RouterLink replace to="/compute/login">
                                     {{
                                         default: ({ navigate, href }: { navigate: Function; href: string }) => (
                                             <n-a href={href} onClick={navigate}>
-                                                登录
+                                                返回登录
                                             </n-a>
                                         )
                                     }}

@@ -18,15 +18,13 @@ export default defineComponent({
         async function onSubmit() {
             try {
                 await formRef.value?.validate()
-                setState({ loading: true })
-                    .then(e => {
-                        httpLogin({
-                            mobile: e.mobile,
-                            password: window.btoa(e.password),
-                            code: e.code
-                        }).then(() => router.replace('/manager/master'))
-                    })
-                    .catch(e => console.log(111111111111))
+                await setState({ loading: true })
+                await httpLogin({
+                    mobile: state.mobile,
+                    password: window.btoa(state.password),
+                    code: state.code
+                })
+                await setState({ loading: false }).then(() => router.replace('/manager/master'))
             } catch (e) {
                 setState({ loading: false })
             }
@@ -111,7 +109,7 @@ export default defineComponent({
                                     {{
                                         default: ({ navigate, href }: { navigate: Function; href: string }) => (
                                             <n-a href={href} onClick={navigate}>
-                                                注册
+                                                立即注册
                                             </n-a>
                                         )
                                     }}
