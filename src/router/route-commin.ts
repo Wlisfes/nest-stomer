@@ -13,13 +13,13 @@ export const routeCommin: Array<RouteRecordRaw> = [
                 path: '/compute/login',
                 name: 'Login',
                 meta: { title: '登录' },
-                components: { default: Login, login: Login }
+                component: Login
             },
             {
                 path: '/compute/register',
                 name: 'Register',
                 meta: { title: '注册' },
-                components: { default: Register, register: Register }
+                component: Register
             }
         ]
     },
