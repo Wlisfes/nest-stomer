@@ -1,36 +1,41 @@
 <script lang="tsx">
 import { defineComponent } from 'vue'
-import { router } from '@/router'
+import { useRouter, RouterLink } from 'vue-router'
 import { useRxicon } from '@/hooks/hook-icon'
 import { useCompute } from '@/hooks/hook-compute'
 import { useEnter } from '@/utils/utils-event'
 import { httpLogin } from '@/api/fetch-user'
+import { loadFile } from '@/utils/utils-tool'
 
 export default defineComponent({
     name: 'Login',
     setup() {
+        const router = useRouter()
         const { compute } = useRxicon()
         const { codeURL, formRef, rules, state, setState, onRefresh } = useCompute()
 
         /**登录**/
-        const onSubmit = async () => {
-            //prettier-ignore
-            formRef.value?.validate(error => {
-                if (error) return false
-                setState({ loading: true }).then(e => {
-                    httpLogin({
-                        mobile: e.mobile,
-                        password: window.btoa(e.password),
-                        code: e.code
-                    }).then(() => router.replace('/'))
-                })
-            }).catch(e => setState({ loading: false }))
+        async function onSubmit() {
+            try {
+                await formRef.value?.validate()
+                setState({ loading: true })
+                    .then(e => {
+                        httpLogin({
+                            mobile: e.mobile,
+                            password: window.btoa(e.password),
+                            code: e.code
+                        }).then(() => router.replace('/manager/master'))
+                    })
+                    .catch(e => console.log(111111111111))
+            } catch (e) {
+                setState({ loading: false })
+            }
         }
 
         return () => {
             return (
                 <div>
-                    <h2>登 录</h2>
+                    <h1>登 录</h1>
                     <n-form ref={formRef} model={state} rules={rules.value} label-placement="left">
                         <n-form-item path="mobile">
                             <n-input
@@ -40,7 +45,7 @@ export default defineComponent({
                                 input-props={{ autocomplete: 'off' }}
                                 onKeydown={(e: KeyboardEvent) => useEnter(e, 'Enter', onSubmit)}
                             >
-                                {{ prefix: () => <n-icon component={compute('UserOutlined')}></n-icon> }}
+                                {{ prefix: () => <n-icon size={24} component={compute('UserOutlined')} /> }}
                             </n-input>
                         </n-form-item>
                         <n-form-item path="password">
@@ -54,7 +59,7 @@ export default defineComponent({
                                 placeholder="密码"
                                 onKeydown={(e: KeyboardEvent) => useEnter(e, 'Enter', onSubmit)}
                             >
-                                {{ prefix: () => <n-icon component={compute('LockOutlined')}></n-icon> }}
+                                {{ prefix: () => <n-icon size={24} component={compute('LockOutlined')} /> }}
                             </n-input>
                         </n-form-item>
                         <n-form-item path="code">
@@ -62,31 +67,68 @@ export default defineComponent({
                                 v-model:value={state.code}
                                 size="medium"
                                 maxlength={4}
-                                placeholder="验证码"
+                                placeholder="图形验证码"
                                 input-props={{ autocomplete: 'off' }}
                                 onKeydown={(e: KeyboardEvent) => useEnter(e, 'Enter', onSubmit)}
                             >
-                                {{ prefix: () => <n-icon component={compute('VerifiedOutlined')}></n-icon> }}
+                                {{ prefix: () => <n-icon size={24} component={compute('VerifiedOutlined')} /> }}
                             </n-input>
-                            <u-scale max-width={100} scale={100 / 34} style={{ marginLeft: '10px', cursor: 'pointer' }}>
-                                {codeURL.value ? (
-                                    <n-image preview-disabled src={codeURL.value} onClick={onRefresh}></n-image>
-                                ) : (
-                                    <n-skeleton width="100%" height="100%" />
-                                )}
+                            <u-scale max-width={120} scale={120 / 50} style={{ marginLeft: '10px', cursor: 'pointer' }}>
+                                <n-image
+                                    preview-disabled
+                                    src={codeURL.value}
+                                    onClick={onRefresh}
+                                    style={{ borderRadius: '4px' }}
+                                >
+                                    {{
+                                        placeholder: () => (
+                                            <n-skeleton
+                                                width="100%"
+                                                height="100%"
+                                                style={{ borderRadius: '4px', backgroundColor: '#E8F0FE' }}
+                                            />
+                                        )
+                                    }}
+                                </n-image>
                             </u-scale>
                         </n-form-item>
-                        <n-form-item show-feedback={false}>
+                        <n-form-item>
                             <n-button
                                 class="antd-submit"
                                 type="info"
                                 size="medium"
-                                round
                                 loading={state.loading}
                                 onClick={onSubmit}
                             >
                                 提 交
                             </n-button>
+                        </n-form-item>
+                        <n-form-item>
+                            <n-space justify="space-between" style={{ width: '100%' }}>
+                                <n-checkbox v-model:checked={state.checked}>记住密码</n-checkbox>
+                                <RouterLink replace to="/compute/register">
+                                    {{
+                                        default: ({ navigate, href }: { navigate: Function; href: string }) => (
+                                            <n-a href={href} onClick={navigate}>
+                                                注册
+                                            </n-a>
+                                        )
+                                    }}
+                                </RouterLink>
+                            </n-space>
+                        </n-form-item>
+                        <n-form-item show-feedback={false}>
+                            <n-space
+                                justify="center"
+                                align="center"
+                                size={25}
+                                style={{ width: '100%', height: '50px' }}
+                            >
+                                <n-image width="44" src={loadFile('resource/github-stomer.png')} preview-disabled />
+                                <n-image width="44" src={loadFile('resource/wechat-stomer.png')} preview-disabled />
+                                <n-image width="44" src={loadFile('resource/google-stomer.png')} preview-disabled />
+                                <n-image width="44" src={loadFile('resource/youtube-stomer.png')} preview-disabled />
+                            </n-space>
                         </n-form-item>
                     </n-form>
                 </div>

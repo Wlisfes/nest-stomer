@@ -10,6 +10,8 @@ export interface ICompute {
     loading?: boolean
     duration?: number
     fetch?: boolean
+    checked?: boolean
+    base?: string
 }
 
 export function useCompute(props?: ICompute) {
@@ -20,10 +22,12 @@ export function useCompute(props?: ICompute) {
         nickname: props?.nickname ?? '',
         loading: props?.loading ?? false,
         duration: props?.duration ?? 0,
-        fetch: props?.fetch ?? false
+        fetch: props?.fetch ?? false,
+        checked: props?.checked ?? false,
+        base: props?.base ?? import.meta.env.VITE_API_BASE
     })
 
-    const codeURL = ref<string>(`${import.meta.env.VITE_API_BASE}/api/core/fetch-captcha?t=${Date.now()}`)
+    const codeURL = ref<string>(`${state.base}/api/core/fetch-captcha?width=120&height=50&fontSize=50&t=${Date.now()}`)
     const formRef = ref<FormInst>()
     const rules = ref<FormRules>({
         mobile: [
@@ -48,7 +52,7 @@ export function useCompute(props?: ICompute) {
     }
 
     const onRefresh = () => {
-        codeURL.value = `${import.meta.env.VITE_API_BASE}/api/core/fetch-captcha?t=${Date.now()}`
+        codeURL.value = `${state.base}/api/core/fetch-captcha?width=120&height=50&fontSize=50&t=${Date.now()}`
     }
 
     const setTime = (value: number) => {

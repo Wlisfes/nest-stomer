@@ -1,15 +1,16 @@
 <script lang="tsx">
 import { defineComponent } from 'vue'
+import { useRouter, RouterLink } from 'vue-router'
 import { useRxicon } from '@/hooks/hook-icon'
 import { useCompute } from '@/hooks/hook-compute'
 import { httpMobile } from '@/api/fetch-core'
-import { router } from '@/router'
 import { useEnter } from '@/utils/utils-event'
 import { httpRegister } from '@/api/fetch-user'
 
 export default defineComponent({
     name: 'Register',
     setup() {
+        const router = useRouter()
         const { compute } = useRxicon()
         const { formRef, rules, state, setState, isRule, setTime } = useCompute()
 
@@ -47,7 +48,7 @@ export default defineComponent({
         return () => {
             return (
                 <div>
-                    <h2>注 册</h2>
+                    <h1>注 册</h1>
                     <n-form ref={formRef} model={state} rules={rules.value} label-placement="left">
                         <n-form-item path="nickname">
                             <n-input
@@ -57,7 +58,7 @@ export default defineComponent({
                                 input-props={{ autocomplete: 'off' }}
                                 onKeydown={(e: KeyboardEvent) => useEnter(e, 'Enter', onSubmit)}
                             >
-                                {{ prefix: () => <n-icon component={compute('UserOutlined')}></n-icon> }}
+                                {{ prefix: () => <n-icon size={24} component={compute('UserOutlined')} /> }}
                             </n-input>
                         </n-form-item>
                         <n-form-item path="password">
@@ -70,7 +71,7 @@ export default defineComponent({
                                 input-props={{ autocomplete: 'new-password' }}
                                 onKeydown={(e: KeyboardEvent) => useEnter(e, 'Enter', onSubmit)}
                             >
-                                {{ prefix: () => <n-icon component={compute('LockOutlined')}></n-icon> }}
+                                {{ prefix: () => <n-icon size={24} component={compute('LockOutlined')} /> }}
                             </n-input>
                         </n-form-item>
                         <n-form-item path="mobile">
@@ -82,13 +83,13 @@ export default defineComponent({
                                 input-props={{ autocomplete: 'off' }}
                                 onKeydown={(e: KeyboardEvent) => useEnter(e, 'Enter', onSubmit)}
                             >
-                                {{ prefix: () => <n-icon component={compute('PhoneOutlined')}></n-icon> }}
+                                {{ prefix: () => <n-icon size={24} component={compute('PhoneOutlined')} /> }}
                             </n-input>
                             <n-button
                                 size="medium"
                                 class="naive-customize"
                                 ghost
-                                style={{ marginLeft: '10px' }}
+                                style={{ minWidth: '120px', height: '50px', marginLeft: '10px' }}
                                 disabled={state.duration > 0}
                                 loading={state.fetch}
                                 onClick={fetchMobile}
@@ -104,10 +105,10 @@ export default defineComponent({
                                 input-props={{ autocomplete: 'off' }}
                                 onKeydown={(e: KeyboardEvent) => useEnter(e, 'Enter', onSubmit)}
                             >
-                                {{ prefix: () => <n-icon component={compute('VerifiedOutlined')}></n-icon> }}
+                                {{ prefix: () => <n-icon size={24} component={compute('VerifiedOutlined')} /> }}
                             </n-input>
                         </n-form-item>
-                        <n-form-item show-feedback={false}>
+                        <n-form-item>
                             <n-button
                                 class="antd-submit"
                                 type="info"
@@ -118,6 +119,20 @@ export default defineComponent({
                             >
                                 提 交
                             </n-button>
+                        </n-form-item>
+                        <n-form-item show-feedback={false}>
+                            <n-space justify="space-between" style={{ width: '100%' }}>
+                                <n-checkbox v-model:checked={state.checked}>记住密码</n-checkbox>
+                                <RouterLink replace to="/compute/login">
+                                    {{
+                                        default: ({ navigate, href }: { navigate: Function; href: string }) => (
+                                            <n-a href={href} onClick={navigate}>
+                                                登录
+                                            </n-a>
+                                        )
+                                    }}
+                                </RouterLink>
+                            </n-space>
                         </n-form-item>
                     </n-form>
                 </div>
