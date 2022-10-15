@@ -1,33 +1,20 @@
 import Cookie from 'js-cookie'
 
-/**
- * token存储唯一key
- */
-export const APP_AUTH_TOKEN = 'APP_AUTH_TOKEN'
+/**登录临时会话**/
+export const APP_AUTH_SESSION = 'APP_AUTH_SESSION'
 
-/**
- * 读取token
- * @returns string | null
- */
-export function getToken() {
-    return Cookie.get(APP_AUTH_TOKEN) || null
+export function getSession(key: string, defaultValue?: any) {
+    return Cookie.get(APP_AUTH_SESSION) ?? defaultValue ?? undefined
 }
 
-/**
- *写入token
- * @param token string
- * @returns string
- */
-export async function setToken(token: string) {
-    return Cookie.set(APP_AUTH_TOKEN, token, { expires: 1 })
+export async function setSession(session: string, expires: number) {
+    return Cookie.set(APP_AUTH_SESSION, session, {
+        expires: new Date(new Date().getTime() + expires * 1000)
+    })
 }
 
-/**
- *清除token
- * @returns void
- */
-export async function delToken() {
-    return Cookie.remove(APP_AUTH_TOKEN)
+export async function delSession() {
+    return Cookie.remove(APP_AUTH_SESSION)
 }
 
 /**
@@ -35,9 +22,9 @@ export async function delToken() {
  * @param key string
  * @returns any
  */
-export function getCookie(key: string) {
+export function getCookie(key: string, defaultValue?: any) {
     const data = Cookie.get(key)
-    return data ? JSON.parse(data) : null
+    return data ? JSON.parse(data) : defaultValue ?? undefined
 }
 
 /**

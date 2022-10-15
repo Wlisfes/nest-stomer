@@ -6,6 +6,7 @@ import { useCompute } from '@/hooks/hook-compute'
 import { useEnter } from '@/utils/utils-event'
 import { httpLogin } from '@/api/fetch-user'
 import { loadFile } from '@/utils/utils-tool'
+import { setSession } from '@/utils/utils-cookie'
 
 export default defineComponent({
     name: 'Login',
@@ -19,14 +20,18 @@ export default defineComponent({
             try {
                 await formRef.value?.validate()
                 await setState({ loading: true })
-                await httpLogin({
+                const { data } = await httpLogin({
                     mobile: state.mobile,
                     password: window.btoa(state.password),
                     code: state.code
                 })
-                await setState({ loading: false }).then(() => router.replace('/manager/master'))
+                setState({ loading: false }).then(() => {
+                    setSession(data.session, data.seconds).then(() => {
+                        router.replace('/manager/master')
+                    })
+                })
             } catch (e) {
-                setState({ loading: false })
+                setState({ loading: false }).finally(() => onRefresh())
             }
         }
 

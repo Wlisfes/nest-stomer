@@ -1,8 +1,8 @@
 import { defineStore } from 'pinia'
+import { RouteRecordRaw } from 'vue-router'
 import router from '@/router'
 import Layout from '@/layout/manager/Layout.vue'
-import { RouteRecordRaw } from 'vue-router'
-import { shallowRef } from 'vue'
+import { formatter, useViewpath } from '@/utils/utils-route'
 
 export interface RState {
     device: string
@@ -81,7 +81,8 @@ export const useManager = defineStore({
                         {
                             path: '/manager/master',
                             name: 'MHome',
-                            meta: { title: '主控台' }
+                            meta: { title: '主控台' },
+                            component: '/src/views/manager/Home.vue'
                         }
                     ]
                 },
@@ -94,12 +95,20 @@ export const useManager = defineStore({
                         {
                             path: '/manager/system/user',
                             name: 'MUser',
-                            meta: { title: '用户' }
+                            meta: { title: '用户' },
+                            component: '/src/views/manager/Home.vue'
                         },
                         {
                             path: '/manager/system/role',
                             name: 'MRole',
-                            meta: { title: '角色' }
+                            meta: { title: '角色' },
+                            component: '/src/views/manager/Home.vue'
+                        },
+                        {
+                            path: '/manager/system/router',
+                            name: 'MRouter',
+                            meta: { title: '路由' },
+                            component: '/src/views/manager/system/Router.vue'
                         }
                     ]
                 }
@@ -113,17 +122,25 @@ export const useManager = defineStore({
                         redirect: route.redirect,
                         component: Layout
                     } as RouteRecordRaw)
-                    route.children.forEach(x => {
-                        if (!router.hasRoute(x.name)) {
-                            router.addRoute(route.name, {
-                                path: x.path,
-                                name: x.name,
-                                meta: x.meta,
-                                component: () => import('@/views/manager/Home.vue')
-                            })
-                        }
-                    })
+                } else {
+                    router.addRoute({
+                        name: route.name,
+                        path: route.path,
+                        redirect: route.redirect,
+                        component: import.meta.glob('@/views/manager/**/*.vue')[route.component]
+                    } as RouteRecordRaw)
                 }
+
+                route.children?.forEach(x => {
+                    if (!router.hasRoute(x.name)) {
+                        router.addRoute(route.name, {
+                            path: x.path,
+                            name: x.name,
+                            meta: x.meta,
+                            component: import.meta.glob('@/views/manager/**/*.vue')[x.component]
+                        })
+                    }
+                })
             })
 
             return (this.router = routes)

@@ -1,5 +1,4 @@
 import axios, { AxiosInstance, AxiosRequestConfig, AxiosResponse, AxiosError } from 'axios'
-import { getToken } from '@/utils/utils-cookie'
 
 export const request: AxiosInstance = axios.create({
     baseURL: import.meta.env.VITE_API_BASE,
@@ -31,10 +30,6 @@ const interNotice = (error: AxiosError<any, any>) => {
 
 request.interceptors.request.use(
     (config: AxiosRequestConfig) => {
-        const token = getToken()
-        if (token && config.headers) {
-            config.headers['app-token'] = token
-        }
         return config
     },
     (error: AxiosError) => interNotice(error)
