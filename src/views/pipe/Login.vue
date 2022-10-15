@@ -40,6 +40,7 @@ export default defineComponent({
                         <n-form-item path="mobile">
                             <n-input
                                 v-model:value={state.mobile}
+                                maxlength={11}
                                 size="medium"
                                 placeholder="手机号"
                                 input-props={{ autocomplete: 'off' }}
