@@ -3,7 +3,7 @@ import Cookie from 'js-cookie'
 /**登录临时会话**/
 export const APP_AUTH_SESSION = 'APP_AUTH_SESSION'
 
-export function getSession(key: string, defaultValue?: any) {
+export function getSession(defaultValue?: any) {
     return Cookie.get(APP_AUTH_SESSION) ?? defaultValue ?? undefined
 }
 
