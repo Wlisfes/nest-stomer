@@ -1,7 +1,7 @@
 import Cookie from 'js-cookie'
 
 /**登录临时会话**/
-export const APP_AUTH_SESSION = 'APP_AUTH_SESSION'
+export const APP_AUTH_SESSION = 'APP-AUTH-SESSION'
 
 export function getSession(defaultValue?: any) {
     return Cookie.get(APP_AUTH_SESSION) ?? defaultValue ?? undefined
