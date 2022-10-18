@@ -12,13 +12,13 @@ export const routeCommin: Array<RouteRecordRaw> = [
             {
                 path: '/compute/login',
                 name: 'Login',
-                meta: { title: '登录' },
+                meta: { cannot: true },
                 component: Login
             },
             {
                 path: '/compute/register',
                 name: 'Register',
-                meta: { title: '注册' },
+                meta: { cannot: true },
                 component: Register
             }
         ]
@@ -26,12 +26,13 @@ export const routeCommin: Array<RouteRecordRaw> = [
     {
         path: '/refresh/',
         name: 'Refresh',
-        component: Refresh
-    },
-    {
-        path: '/:catch(.*)',
-        name: '404',
-        props: true,
+        meta: { white: true },
         component: Refresh
     }
+    // {
+    //     path: '/:catch(.*)',
+    //     name: '404',
+    //     meta: { white: true },
+    //     component: Refresh
+    // }
 ]
