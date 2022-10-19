@@ -4,7 +4,7 @@ import { routeClient } from '@/router/route-client'
 import { routeManager } from '@/router/route-manager'
 import { routeCommin } from '@/router/route-commin'
 import { useManager } from '@/store/manager'
-import { getSession } from '@/utils/utils-cookie'
+import { getSession, delSession } from '@/utils/utils-cookie'
 
 const routes: Array<RouteRecordRaw> = [...routeClient, ...routeManager, ...routeCommin]
 
@@ -13,25 +13,25 @@ export const router = createRouter({
     routes
 })
 
-async function registerRouter(data: Array<RouteRecordRaw>) {
-    const addRoute = (parentName: RouteRecordName | null, list: Array<RouteRecordRaw>) => {
+async function mountRouter(data: Array<RouteRecordRaw>) {
+    const transfer = (parentName: RouteRecordName | null, list: Array<RouteRecordRaw>) => {
         if (parentName) {
             list.forEach(route => {
                 router.addRoute(parentName, route)
                 if (route.children?.length) {
-                    addRoute(route.name ?? null, route.children)
+                    transfer(route.name ?? null, route.children)
                 }
             })
         } else {
             list.forEach(route => {
                 router.addRoute(route)
                 if (route.children?.length) {
-                    addRoute(route.name ?? null, route.children)
+                    transfer(route.name ?? null, route.children)
                 }
             })
         }
     }
-    return addRoute(null, data)
+    return transfer(null, data)
 }
 
 export function setupGuardRouter(router: Router) {
@@ -42,8 +42,12 @@ export function setupGuardRouter(router: Router) {
         if (AUTH) {
             const refresh = manager.router.length === 0
             if (refresh) {
-                const data = await manager.setRouter()
-                await registerRouter(data)
+                try {
+                    const data = await manager.setRouter()
+                    await mountRouter(data)
+                } catch (e) {
+                    return await delSession().then(() => next({ path: '/', replace: true }))
+                }
             }
             if (to.meta?.cannot) {
                 return next({ path: '/', replace: true })

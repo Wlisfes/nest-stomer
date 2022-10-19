@@ -1,7 +1,5 @@
 import { defineStore } from 'pinia'
 import { RouteRecordRaw } from 'vue-router'
-import router from '@/router'
-import Layout from '@/layout/manager/Layout.vue'
 import { formatter, formaterTree } from '@/utils/utils-route'
 import { httpColumnDynamic } from '@/api/fetch-router'
 
@@ -42,7 +40,6 @@ export const useManager = defineStore({
         },
         setWidth(width: number) {
             this.width = width
-            return width
         },
         setCurrent(current: string) {
             this.current = current
@@ -72,14 +69,9 @@ export const useManager = defineStore({
             this.better = better
         },
         setRouter(): Promise<Array<RouteRecordRaw>> {
-            return new Promise(async resolve => {
-                try {
-                    const { data } = await httpColumnDynamic()
-                    this.router = formatter(formaterTree(data.list))
-                    resolve(this.router)
-                } catch (e) {
-                    resolve(this.router)
-                }
+            return httpColumnDynamic().then(({ data }) => {
+                this.router = formatter(formaterTree(data.list))
+                return this.router
             })
         }
     }
