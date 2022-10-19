@@ -46,7 +46,8 @@ export function setupGuardRouter(router: Router) {
                     const data = await manager.setRouter()
                     await mountRouter(data)
                 } catch (e) {
-                    return await delSession().then(() => next({ path: '/', replace: true }))
+                    await delSession()
+                    return next({ path: '/', replace: true })
                 }
             }
             if (to.meta?.cannot) {
@@ -54,7 +55,7 @@ export function setupGuardRouter(router: Router) {
             } else if (refresh) {
                 return next({
                     path: `/refresh`,
-                    query: Object.assign(to.query, { target: to.path, refresh: true }),
+                    query: { target: to.path },
                     replace: true
                 })
             } else {

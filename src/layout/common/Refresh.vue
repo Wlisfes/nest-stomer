@@ -9,8 +9,22 @@ export default defineComponent({
     },
     setup() {
         const route = useRoute()
+
         return () => {
-            return route.query.refresh ? null : <div>404</div>
+            return route.name === '404' ? (
+                <div>404</div>
+            ) : (
+                <div id="loading-mask">
+                    <div class="loading-wrapper">
+                        <span class="loading-dot loading-dot-spin">
+                            <i></i>
+                            <i></i>
+                            <i></i>
+                            <i></i>
+                        </span>
+                    </div>
+                </div>
+            )
         }
     }
 })
