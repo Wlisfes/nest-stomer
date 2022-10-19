@@ -16,7 +16,9 @@ export function formaterTree<T extends IRouter>(data: Array<T>) {
     for (i = 0; i < data?.length; i += 1) {
         node = data[i]
         if (node.parent) {
-            if (map[node.parent].children) map[node.parent].children.push(node)
+            if (map[node.parent].children) {
+                map[node.parent].children.push(node)
+            }
         } else {
             tree.push(node)
         }

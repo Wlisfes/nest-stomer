@@ -28,11 +28,11 @@ export const routeCommin: Array<RouteRecordRaw> = [
         name: 'Refresh',
         meta: { white: true },
         component: Refresh
+    },
+    {
+        path: '/:catch(.*)',
+        name: '404',
+        meta: { white: true },
+        component: Refresh
     }
-    // {
-    //     path: '/:catch(.*)',
-    //     name: '404',
-    //     meta: { white: true },
-    //     component: Refresh
-    // }
 ]

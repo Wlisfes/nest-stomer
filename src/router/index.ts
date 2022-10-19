@@ -37,17 +37,13 @@ async function registerRouter(data: Array<RouteRecordRaw>) {
 export function setupGuardRouter(router: Router) {
     const manager = useManager()
     router.beforeEach(async (to, form, next) => {
+        window.$loading.start()
         const AUTH = getSession()
         if (AUTH) {
             const refresh = manager.router.length === 0
             if (refresh) {
                 const data = await manager.setRouter()
                 await registerRouter(data)
-                return next({
-                    path: `/refresh`,
-                    query: Object.assign(to.query, { target: to.path, refresh: true }),
-                    replace: true
-                })
             }
             if (to.meta?.cannot) {
                 return next({ path: '/', replace: true })
@@ -67,6 +63,10 @@ export function setupGuardRouter(router: Router) {
                 return next({ path: '/compute', replace: true })
             }
         }
+    })
+
+    router.afterEach((to, form) => {
+        window.$loading.finish()
     })
 }
 
