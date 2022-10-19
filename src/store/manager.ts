@@ -2,7 +2,8 @@ import { defineStore } from 'pinia'
 import { RouteRecordRaw } from 'vue-router'
 import router from '@/router'
 import Layout from '@/layout/manager/Layout.vue'
-import { formatter, useViewpath } from '@/utils/utils-route'
+import { formatter, formaterTree } from '@/utils/utils-route'
+import { httpColumnDynamic } from '@/api/fetch-router'
 
 export interface RState {
     device: string
@@ -70,80 +71,16 @@ export const useManager = defineStore({
         setBetter(better: boolean) {
             this.better = better
         },
-        async setRouter() {
-            const routes = [
-                {
-                    path: '/manager',
-                    name: 'Manager',
-                    component: 'Layout',
-                    redirect: '/manager/master',
-                    children: [
-                        {
-                            path: '/manager/master',
-                            name: 'MHome',
-                            meta: { title: '主控台' },
-                            component: '/src/views/manager/Home.vue'
-                        }
-                    ]
-                },
-                {
-                    path: '/manager/system',
-                    name: 'System',
-                    component: 'Layout',
-                    redirect: '/manager/system/user',
-                    children: [
-                        {
-                            path: '/manager/system/user',
-                            name: 'MUser',
-                            meta: { title: '用户' },
-                            component: '/src/views/manager/Home.vue'
-                        },
-                        {
-                            path: '/manager/system/role',
-                            name: 'MRole',
-                            meta: { title: '角色' },
-                            component: '/src/views/manager/Home.vue'
-                        },
-                        {
-                            path: '/manager/system/router',
-                            name: 'MRouter',
-                            meta: { title: '路由' },
-                            component: '/src/views/manager/system/Router.vue'
-                        }
-                    ]
+        setRouter(): Promise<Array<RouteRecordRaw>> {
+            return new Promise(async resolve => {
+                try {
+                    const { data } = await httpColumnDynamic()
+                    this.router = formatter(formaterTree(data.list))
+                    resolve(this.router)
+                } catch (e) {
+                    resolve(this.router)
                 }
-            ]
-
-            routes.forEach(route => {
-                if (route.component === 'Layout') {
-                    router.addRoute({
-                        name: route.name,
-                        path: route.path,
-                        redirect: route.redirect,
-                        component: Layout
-                    } as RouteRecordRaw)
-                } else {
-                    router.addRoute({
-                        name: route.name,
-                        path: route.path,
-                        redirect: route.redirect,
-                        component: import.meta.glob('@/views/manager/**/*.vue')[route.component]
-                    } as RouteRecordRaw)
-                }
-
-                route.children?.forEach(x => {
-                    if (!router.hasRoute(x.name)) {
-                        router.addRoute(route.name, {
-                            path: x.path,
-                            name: x.name,
-                            meta: x.meta,
-                            component: import.meta.glob('@/views/manager/**/*.vue')[x.component]
-                        })
-                    }
-                })
             })
-
-            return (this.router = routes)
         }
     }
 })

@@ -27,7 +27,7 @@ export default defineComponent({
                 })
                 setState({ loading: false }).then(() => {
                     setSession(data.session, data.seconds).then(() => {
-                        router.replace('/manager/master')
+                        router.replace('/manager/system')
                     })
                 })
             } catch (e) {

@@ -1,5 +1,5 @@
 import type { App } from 'vue'
-import { createRouter, createWebHistory, RouteRecordRaw, Router } from 'vue-router'
+import { createRouter, createWebHistory, RouteRecordRaw, RouteRecordName, Router } from 'vue-router'
 import { routeClient } from '@/router/route-client'
 import { routeManager } from '@/router/route-manager'
 import { routeCommin } from '@/router/route-commin'
@@ -13,6 +13,27 @@ export const router = createRouter({
     routes
 })
 
+async function registerRouter(data: Array<RouteRecordRaw>) {
+    const addRoute = (parentName: RouteRecordName | null, list: Array<RouteRecordRaw>) => {
+        if (parentName) {
+            list.forEach(route => {
+                router.addRoute(parentName, route)
+                if (route.children?.length) {
+                    addRoute(route.name ?? null, route.children)
+                }
+            })
+        } else {
+            list.forEach(route => {
+                router.addRoute(route)
+                if (route.children?.length) {
+                    addRoute(route.name ?? null, route.children)
+                }
+            })
+        }
+    }
+    return addRoute(null, data)
+}
+
 export function setupGuardRouter(router: Router) {
     const manager = useManager()
     router.beforeEach(async (to, form, next) => {
@@ -20,7 +41,13 @@ export function setupGuardRouter(router: Router) {
         if (AUTH) {
             const refresh = manager.router.length === 0
             if (refresh) {
-                await manager.setRouter()
+                const data = await manager.setRouter()
+                await registerRouter(data)
+                return next({
+                    path: `/refresh`,
+                    query: Object.assign(to.query, { target: to.path, refresh: true }),
+                    replace: true
+                })
             }
             if (to.meta?.cannot) {
                 return next({ path: '/', replace: true })
