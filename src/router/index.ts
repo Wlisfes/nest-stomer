@@ -39,6 +39,7 @@ export function setupGuardRouter(router: Router) {
     router.beforeEach(async (to, form, next) => {
         window.$loading.start()
         const AUTH = getSession()
+
         if (AUTH) {
             const refresh = manager.router.length === 0
             if (refresh) {
@@ -62,16 +63,17 @@ export function setupGuardRouter(router: Router) {
                 return next()
             }
         } else {
-            if (to.meta?.white || to.meta?.cannot) {
-                return next()
-            } else {
+            if (to.name === '404' && !(to.meta?.white || to.meta?.cannot)) {
                 return next({ path: '/compute', replace: true })
+            } else {
+                return next()
             }
         }
     })
 
     router.afterEach((to, form) => {
         window.$loading.finish()
+        manager.setCurrent(to.path)
     })
 }
 

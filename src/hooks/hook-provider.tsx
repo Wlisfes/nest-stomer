@@ -76,11 +76,11 @@ export function useProvider() {
 
     const inverted = computed(() => {
         if (store.theme === 'dark' || store.inverted === 'nav-dark') {
-            return { aside: true, header: true }
+            return { sider: true, header: true }
         } else if (store.inverted === 'dark') {
-            return { aside: true, header: false }
+            return { sider: true, header: false }
         } else {
-            return { aside: false, header: false }
+            return { sider: false, header: false }
         }
     })
 

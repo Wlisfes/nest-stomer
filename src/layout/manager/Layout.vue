@@ -1,36 +1,49 @@
 <script lang="tsx">
-import { defineComponent, Transition, VNode, createVNode, computed, CSSProperties } from 'vue'
+import { defineComponent, computed, CSSProperties } from 'vue'
 import { RouterView } from 'vue-router'
 import { useManager } from '@/store/manager'
 import { useProvider } from '@/hooks/hook-provider'
+import { formatterSider } from '@/utils/utils-route'
 
 export default defineComponent({
     name: 'ALayout',
     setup() {
         const { vars, inverted } = useProvider()
 
-        const store = useManager()
-        const mobile = computed(() => store.device === 'MOBILE')
+        const manager = useManager()
+        const mobile = computed(() => manager.device === 'MOBILE')
         const native = computed<CSSProperties>(() => {
             return {
-                top: store.better ? '106px' : '60px',
+                top: manager.better ? '106px' : '60px',
                 backgroundColor: vars.value.backColor
             }
         })
+        const options = computed(() => formatterSider(manager.router))
 
         return () => (
             <n-layout class="app-manager" has-sider>
                 <n-layout-sider
                     bordered
-                    collapsed={store.collapse}
+                    collapsed={manager.collapse}
+                    inverted={inverted.value.sider}
                     width={220}
                     collapsed-width={mobile.value ? 0 : 64}
                     native-scrollbar={false}
                     show-trigger={mobile.value ? false : 'bar'}
                     collapse-mode="width"
                     expanded-keys={[]}
-                    onUpdateCollapsed={() => store.setCollapse(!store.collapse)}
-                ></n-layout-sider>
+                    onUpdateCollapsed={() => manager.setCollapse(!manager.collapse)}
+                >
+                    <n-menu
+                        accordion
+                        inverted={inverted.value.sider}
+                        root-indent={18}
+                        value={manager.current}
+                        collapsed={manager.collapse}
+                        collapsed-width={64}
+                        options={options.value}
+                    />
+                </n-layout-sider>
                 <n-layout>
                     <n-layout-header class="app-manager__header" bordered inverted={inverted.value.header}>
                         Header
