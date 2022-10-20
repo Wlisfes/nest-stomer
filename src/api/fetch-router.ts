@@ -2,6 +2,7 @@ import { request } from '@/utils/utils-request'
 import { ICommon, RCommon } from '@/interface/fetch-core'
 
 export interface IRouter extends ICommon {
+    base: number
     type: number
     title: string
     name: string

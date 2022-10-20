@@ -19,7 +19,7 @@ export default defineComponent({
             }
         })
         const options = computed(() => formatterSider(manager.router))
-
+        console.log(options.value)
         return () => (
             <n-layout class="app-manager" has-sider>
                 <n-layout-sider
