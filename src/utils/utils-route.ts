@@ -94,3 +94,23 @@ export function formatterSider<T extends RouteRecordRaw>(data: Array<T>) {
         return current
     }, []) as Array<MenuOption>
 }
+
+export function bfs<T extends MenuOption>(target: T[], path: string, children = 'children'): T | undefined {
+    const quene = [...target]
+    do {
+        const current = quene.shift()
+        if (current?.[children]) {
+            const node = ((current[children] || []) as Array<T>).map(x => {
+                return {
+                    ...x,
+                    current: (current.current || current.key) + '~' + x.key
+                }
+            })
+            quene.push(...node)
+        }
+        if (current?.key === path) {
+            return { ...current }
+        }
+    } while (quene.length)
+    return undefined
+}

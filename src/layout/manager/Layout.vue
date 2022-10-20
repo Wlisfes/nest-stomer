@@ -3,13 +3,11 @@ import { defineComponent, computed, CSSProperties } from 'vue'
 import { RouterView } from 'vue-router'
 import { useManager } from '@/store/manager'
 import { useProvider } from '@/hooks/hook-provider'
-import { formatterSider } from '@/utils/utils-route'
 
 export default defineComponent({
     name: 'ALayout',
     setup() {
         const { vars, inverted } = useProvider()
-
         const manager = useManager()
         const mobile = computed(() => manager.device === 'MOBILE')
         const native = computed<CSSProperties>(() => {
@@ -18,8 +16,7 @@ export default defineComponent({
                 backgroundColor: vars.value.backColor
             }
         })
-        const options = computed(() => formatterSider(manager.router))
-        console.log(options.value)
+
         return () => (
             <n-layout class="app-manager" has-sider>
                 <n-layout-sider
@@ -41,7 +38,7 @@ export default defineComponent({
                         value={manager.current}
                         collapsed={manager.collapse}
                         collapsed-width={64}
-                        options={options.value}
+                        options={manager.menu}
                     />
                 </n-layout-sider>
                 <n-layout>

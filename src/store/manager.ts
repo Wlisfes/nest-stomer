@@ -1,6 +1,7 @@
 import { defineStore } from 'pinia'
 import { RouteRecordRaw } from 'vue-router'
-import { formatter, formaterTree } from '@/utils/utils-route'
+import { MenuOption } from 'naive-ui'
+import { formatter, formaterTree, formatterSider, bfs } from '@/utils/utils-route'
 import { httpColumnDynamic } from '@/api/fetch-router'
 
 export interface RState {
@@ -15,7 +16,8 @@ export interface RState {
     reload: boolean
     breadcr: boolean
     better: boolean
-    router: Array<any>
+    router: Array<RouteRecordRaw>
+    menu: Array<MenuOption>
 }
 
 export const useManager = defineStore({
@@ -32,7 +34,8 @@ export const useManager = defineStore({
         reload: true,
         breadcr: true,
         better: true,
-        router: []
+        router: [],
+        menu: []
     }),
     actions: {
         setDevice(device: string): void {
@@ -42,6 +45,8 @@ export const useManager = defineStore({
             this.width = width
         },
         setCurrent(current: string) {
+            //@ts-ignore
+            const route = bfs(this.menu, current)
             this.current = current
         },
         setExpanded(expanded: string[]) {
@@ -71,6 +76,8 @@ export const useManager = defineStore({
         setRouter(): Promise<Array<RouteRecordRaw>> {
             return httpColumnDynamic().then(({ data }) => {
                 this.router = formatter(formaterTree(data.list))
+                //@ts-ignore
+                this.menu = formatterSider(this.router)
                 return this.router
             })
         }
