@@ -13,6 +13,7 @@ export const router = createRouter({
     routes
 })
 
+/**注册动态路由**/
 async function mountRouter(data: Array<RouteRecordRaw>) {
     const transfer = (parentName: RouteRecordName | null, list: Array<RouteRecordRaw>) => {
         if (parentName) {
@@ -34,6 +35,16 @@ async function mountRouter(data: Array<RouteRecordRaw>) {
     return transfer(null, data)
 }
 
+/**重置路由**/
+export async function resetRouter() {
+    return router.getRoutes().forEach(route => {
+        if (!routes.some(x => x.path === route.path) && router.hasRoute(route.name as RouteRecordName)) {
+            router.removeRoute(route.name as RouteRecordName)
+        }
+    })
+}
+
+/**路由守卫**/
 export function setupGuardRouter(router: Router) {
     const manager = useManager()
     router.beforeEach(async (to, form, next) => {
@@ -48,7 +59,8 @@ export function setupGuardRouter(router: Router) {
                     await mountRouter(data)
                 } catch (e) {
                     await delSession()
-                    return next({ path: '/', replace: true })
+                    await resetRouter()
+                    return next({ path: '/compute', replace: true })
                 }
             }
             if (to.meta?.cannot) {
@@ -63,7 +75,7 @@ export function setupGuardRouter(router: Router) {
                 return next()
             }
         } else {
-            if (to.name === '404' && !(to.meta?.white || to.meta?.cannot)) {
+            if (to.name === '404' || !(to.meta?.white || to.meta?.cannot)) {
                 return next({ path: '/compute', replace: true })
             } else {
                 return next()
