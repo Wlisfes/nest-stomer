@@ -1,6 +1,7 @@
 <script lang="tsx">
 import { defineComponent, computed, CSSProperties } from 'vue'
 import { RouterView } from 'vue-router'
+import { NBetter } from '@/layout/common'
 import { useManager } from '@/store/manager'
 import { useProvider } from '@/hooks/hook-provider'
 
@@ -45,6 +46,7 @@ export default defineComponent({
                     <n-layout-header class="app-manager__header" bordered inverted={inverted.value.header}>
                         Header
                     </n-layout-header>
+                    {manager.better && <NBetter></NBetter>}
                     <n-layout
                         class="app-manager__container"
                         position="absolute"
