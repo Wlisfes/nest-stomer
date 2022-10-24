@@ -16,9 +16,9 @@ export interface IRouter extends ICommon {
 }
 
 /**动态路由节点**/
-export function httpColumnDynamic() {
+export function httpDynamic() {
     return request<{ list: Array<IRouter> }>({
-        url: `/api/router/column-dynamic`,
+        url: `/api/router/dynamic`,
         method: 'GET'
     })
 }

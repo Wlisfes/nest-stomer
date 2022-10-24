@@ -2,7 +2,7 @@ import { defineStore } from 'pinia'
 import { RouteRecordRaw } from 'vue-router'
 import { MenuOption } from 'naive-ui'
 import { formatter, formaterTree, formatterSider, bfs } from '@/utils/utils-route'
-import { httpColumnDynamic } from '@/api/fetch-router'
+import { httpDynamic } from '@/api/fetch-router'
 
 export interface RState {
     device: string
@@ -74,7 +74,7 @@ export const useManager = defineStore({
             this.better = better
         },
         setRouter(): Promise<Array<RouteRecordRaw>> {
-            return httpColumnDynamic().then(({ data }) => {
+            return httpDynamic().then(({ data }) => {
                 this.router = formatter(formaterTree(data.list))
                 //@ts-ignore
                 this.menu = formatterSider(this.router)
