@@ -5,7 +5,7 @@ export function useState<T extends Object>(props: T) {
 
     const setState = (parameter: Partial<T>, handler?: (e: typeof state) => void): Promise<UnwrapNestedRefs<T>> => {
         return new Promise(resolve => {
-            for (const key in parameter) {
+            for (const key in parameter ?? {}) {
                 state[key as keyof UnwrapNestedRefs<T>] = parameter[key as keyof T] as never
             }
             nextTick(() => {

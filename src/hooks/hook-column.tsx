@@ -1,8 +1,10 @@
-import { h, ref, computed, CSSProperties, VNode, type UnwrapNestedRefs } from 'vue'
-import { type DataTableBaseColumn } from 'naive-ui'
-import { type NResponse } from '@/axios'
+import { h, ref, toRefs, computed, CSSProperties, VNode, UnwrapNestedRefs } from 'vue'
+import { DataTableBaseColumn } from 'naive-ui'
+import { NResponse } from '@/axios'
+import { useState } from '@/hooks/hook-state'
+import { initMounte } from '@/utils/utils-tool'
 
-interface ISource<T> {
+export interface ISource<T> {
     page: number
     size: number
     total: number
@@ -10,7 +12,7 @@ interface ISource<T> {
     status: number | null | undefined
     dataSource: Array<T>
 }
-interface IOption<T, R> {
+export interface IOption<T, R> {
     dataColumn: Array<DataTableBaseColumn>
     props?: R
     immediate?: boolean
@@ -25,9 +27,62 @@ interface IOption<T, R> {
 }
 
 export function useColumn<T, R extends Object>(option: IOption<T, R>) {
-    const dataColumn = ref(option.dataColumn)
+    const { props = {}, immediate, init } = option
+    const { state, setState } = useState<ISource<T> & R>(
+        Object.assign({
+            ...props,
+            page: 1,
+            size: 10,
+            total: 0,
+            loading: true,
+            status: null,
+            dataSource: [],
+            dataColumn: option.dataColumn
+        })
+    )
+
+    initMounte(() => {
+        immediate && fetchColumn()
+    })
+
+    /**初始化列表接口**/
+    const fetchColumn = (handler?: Function) => {
+        return new Promise(async resolve => {
+            try {
+                await setState({ loading: true } as never)
+                const { data } = await init(state)
+                setState({
+                    total: data.total,
+                    dataSource: data.list || [],
+                    loading: false
+                } as never).then(() => {
+                    handler?.(data)
+                    resolve(data)
+                })
+            } catch (e) {
+                setState({ loading: false } as never)
+            }
+        })
+    }
+
+    /**列表更新**/
+    const fetchUpdate = (parameter?: Partial<ISource<T> & R>, handler?: Function) => {
+        return new Promise(async (resolve, reject) => {
+            try {
+                await setState(parameter as never)
+                const data = await fetchColumn(handler)
+                resolve(data)
+            } catch (e) {
+                reject(e)
+            }
+        })
+    }
 
     return {
-        dataColumn
+        ...toRefs(state),
+        state,
+        setState,
+        fetchColumn,
+        fetchUpdate
     }
 }
