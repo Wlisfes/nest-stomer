@@ -1,5 +1,5 @@
 import { createApp, createVNode, nextTick, type Component } from 'vue'
-import { AppProvider } from '@/components/global'
+import { UProvider } from '@/components/global'
 import { setupStore } from '@/store'
 import { setupRouter } from '@/router'
 
@@ -8,7 +8,7 @@ type IParameter = {}
 export function createComponent(rootComponent: Component, parameter?: IParameter) {
     const el = document.createElement('div')
     const app = createApp(
-        createVNode(AppProvider, parameter, {
+        createVNode(UProvider, parameter, {
             default: () => createVNode(rootComponent, parameter)
         })
     )

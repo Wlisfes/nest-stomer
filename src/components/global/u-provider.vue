@@ -3,7 +3,7 @@ import { defineComponent } from 'vue'
 import { useProvider } from '@/hooks/hook-provider'
 
 export default defineComponent({
-    name: 'AppProvider',
+    name: 'UProvider',
     setup(props, { slots }) {
         const { theme, themeOverrides } = useProvider()
         return () => (

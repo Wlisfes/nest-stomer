@@ -1,5 +1,5 @@
-export { default as AppProvider } from './app-provider.vue'
-export { default as AppContainer } from './app-container.vue'
+export { default as UProvider } from './u-provider.vue'
+export { default as UContainer } from './u-container.vue'
 export { default as UEmpty } from './u-empty.vue'
 export { default as UScale } from './u-scale.vue'
 export { default as UAvatar } from './u-avatar.vue'
