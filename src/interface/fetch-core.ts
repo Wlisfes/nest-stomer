@@ -4,9 +4,10 @@ export interface ICommon {
     updateTime: string
     status: number
 }
-export interface RCommon {
+export interface RCommon<T = Object> {
     page: number
     size: number
     total: number
+    list: Array<T>
     message: string
 }

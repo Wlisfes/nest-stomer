@@ -17,10 +17,10 @@ export interface IRouter extends ICommon {
 
 /**路由列表**/
 export function httpColumn() {
-    return request<{ list: Array<IRouter> }>({ url: `/api/router/column`, method: 'GET' })
+    return request<RCommon<IRouter>>({ url: `/api/router/column`, method: 'GET' })
 }
 
 /**动态路由节点**/
 export function httpDynamic() {
-    return request<{ list: Array<IRouter> }>({ url: `/api/router/dynamic`, method: 'GET' })
+    return request<RCommon<IRouter>>({ url: `/api/router/dynamic`, method: 'GET' })
 }

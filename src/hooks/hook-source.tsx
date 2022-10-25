@@ -1,4 +1,4 @@
-import { h, ref, toRefs, computed, CSSProperties, VNode, UnwrapNestedRefs } from 'vue'
+import { toRefs, UnwrapNestedRefs } from 'vue'
 import { DataTableBaseColumn } from 'naive-ui'
 import { NResponse } from '@/axios'
 import { useState } from '@/hooks/hook-state'
@@ -26,7 +26,7 @@ export interface IOption<T, R> {
     >
 }
 
-export function useColumn<T, R extends Object>(option: IOption<T, R>) {
+export function useSource<T, R extends Object>(option: IOption<T, R>) {
     const { props = {}, immediate, init } = option
     const { state, setState } = useState<ISource<T> & R>(
         Object.assign({
@@ -40,10 +40,6 @@ export function useColumn<T, R extends Object>(option: IOption<T, R>) {
             dataColumn: option.dataColumn
         })
     )
-
-    initMounte(() => {
-        immediate && fetchColumn()
-    })
 
     /**初始化列表接口**/
     const fetchColumn = (handler?: Function) => {
@@ -77,6 +73,10 @@ export function useColumn<T, R extends Object>(option: IOption<T, R>) {
             }
         })
     }
+
+    initMounte(() => {
+        immediate && fetchColumn()
+    })
 
     return {
         ...toRefs(state),
