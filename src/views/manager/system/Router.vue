@@ -1,22 +1,25 @@
 <script lang="tsx">
-import type { ICommon } from '@/interface/fetch-core'
-import { defineComponent } from 'vue'
-import { useSource } from '@/hooks/hook-source'
+import { defineComponent, computed } from 'vue'
 import { useProvider } from '@/hooks/hook-provider'
-import { httpColumn } from '@/api/fetch-router'
+import { useColumn } from '@/hooks/hook-column'
+import { useSource } from '@/hooks/hook-source'
+import { httpColumn, IRouter } from '@/api/fetch-router'
+import { formaterTree } from '@/utils/utils-route'
 
 export default defineComponent({
     name: 'MRouter',
     setup() {
         const { vars } = useProvider()
-        const { state, setState, fetchUpdate } = useSource({
+        const {} = useColumn()
+        const { state, setState, fetchUpdate } = useSource<IRouter, Object>({
             dataColumn: [
                 { title: '名称', key: 'title', minWidth: 120 },
                 { title: '图标', key: 'icon', minWidth: 120 }
             ],
             immediate: true,
-            init: () => httpColumn()
+            init: e => httpColumn()
         })
+        const dataSource = computed(() => formaterTree(state.dataSource))
 
         return () => (
             <u-container space="10px" style={{ margin: '0 10px 10px', backgroundColor: vars.value.cardColor }}>
@@ -28,7 +31,7 @@ export default defineComponent({
                     bordered={false}
                     flex-height={true}
                     loading={state.loading}
-                    row-key={(row: ICommon) => row.id}
+                    row-key={(row: IRouter) => row.id}
                     columns={state.dataColumn}
                     data={state.dataSource}
                     // render-cell={render}

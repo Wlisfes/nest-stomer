@@ -11,3 +11,10 @@ export interface RCommon<T = Object> {
     list: Array<T>
     message: string
 }
+export interface IColumn<T = Object> {
+    page: number
+    size: number
+    total: number
+    loading: boolean
+    dataSource: Array<T>
+}
