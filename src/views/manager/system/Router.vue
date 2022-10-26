@@ -1,8 +1,10 @@
 <script lang="tsx">
-import { defineComponent, computed } from 'vue'
+import { defineComponent, h } from 'vue'
+import { DataTableBaseColumn } from 'naive-ui'
 import { useProvider } from '@/hooks/hook-provider'
 import { useColumn } from '@/hooks/hook-column'
 import { useSource } from '@/hooks/hook-source'
+import { INode, useRxicon } from '@/hooks/hook-icon'
 import { httpColumn, IRouter } from '@/api/fetch-router'
 import { formaterTree } from '@/utils/utils-route'
 
@@ -10,16 +12,36 @@ export default defineComponent({
     name: 'MRouter',
     setup() {
         const { vars } = useProvider()
-        const {} = useColumn()
+        const { Icon, compute } = useRxicon()
+        const { calcColumn, divineColumn } = useColumn()
         const { state, setState, fetchUpdate } = useSource<IRouter, Object>({
             dataColumn: [
-                { title: '名称', key: 'title', minWidth: 120 },
-                { title: '图标', key: 'icon', minWidth: 120 }
+                { title: '名称', key: 'title', width: calcColumn(100, 1080) },
+                { title: '图标', key: 'icon', width: calcColumn(100, 1080) }
             ],
             immediate: true,
-            init: e => httpColumn()
+            init: () => {
+                return httpColumn().then(response => {
+                    return Object.assign(response, {
+                        data: { list: formaterTree(response.data.list) }
+                    })
+                })
+            }
         })
-        const dataSource = computed(() => formaterTree(state.dataSource))
+
+        const render = (value: unknown, row: IRouter, base: DataTableBaseColumn) => {
+            const __COLUME__ = {
+                icon: (node: IRouter) => {
+                    return h(Icon, {
+                        size: 24,
+                        depth: 2,
+                        component: compute(node.icon as INode)
+                    })
+                }
+            }
+
+            return __COLUME__[base.key as keyof typeof __COLUME__]?.(row) ?? divineColumn(value)
+        }
 
         return () => (
             <u-container space="10px" style={{ margin: '0 10px 10px', backgroundColor: vars.value.cardColor }}>
@@ -34,17 +56,7 @@ export default defineComponent({
                     row-key={(row: IRouter) => row.id}
                     columns={state.dataColumn}
                     data={state.dataSource}
-                    // render-cell={render}
-                    pagination={{
-                        page: state.page,
-                        pageSize: state.size,
-                        pageSizes: [10, 20, 30, 40, 50],
-                        pageCount: state.total,
-                        showSizePicker: true,
-                        showQuickJumper: true,
-                        onUpdatePage: (value: number) => fetchUpdate({ page: value }),
-                        onUpdatePageSize: (value: number) => fetchUpdate({ page: 1, size: value })
-                    }}
+                    render-cell={render}
                 ></n-data-table>
             </u-container>
         )

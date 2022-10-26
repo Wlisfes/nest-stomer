@@ -24,10 +24,9 @@ export interface IOption<T, R> {
 }
 
 export function useSource<T, R extends Object>(option: IOption<T, R>) {
-    type State = IState<T> & R
     const { props, immediate, init } = option
     //prettier-ignore
-    const { state, setState } = useState<State>(Object.assign({
+    const { state, setState } = useState<IState<T> & R>(Object.assign({
         ...props,
         page: 1,
         size: 10,
@@ -41,14 +40,18 @@ export function useSource<T, R extends Object>(option: IOption<T, R>) {
     const fetchColumn = (handler?: Function) => {
         return new Promise(async (resolve, reject) => {
             try {
-                await setState({ loading: true } as State)
-                await init(state).then(async ({ data }) => {
-                    return await setState({ total: data.total, dataSource: data.list, loading: false } as State)
+                await setState({ loading: true } as Partial<IState<T> & R>)
+                await init?.(state).then(async ({ data }) => {
+                    return await setState({
+                        total: data.total,
+                        dataSource: data.list,
+                        loading: false
+                    } as Partial<IState<T> & R>)
                 })
                 handler?.(state)
                 resolve(state)
             } catch (e) {
-                setState({ loading: false } as State).then(() => {
+                setState({ loading: false } as Partial<IState<T> & R>).then(() => {
                     reject(e)
                 })
             }
@@ -56,10 +59,10 @@ export function useSource<T, R extends Object>(option: IOption<T, R>) {
     }
 
     /**列表更新**/
-    const fetchUpdate = (parameter: Partial<State> = {}, handler?: Function) => {
+    const fetchUpdate = (parameter: Partial<IState<T> & R> = {}, handler?: Function) => {
         return new Promise(async (resolve, reject) => {
             try {
-                await setState(parameter as State)
+                await setState(parameter)
                 await fetchColumn(handler)
                 resolve(state)
             } catch (e) {
