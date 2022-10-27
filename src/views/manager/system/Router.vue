@@ -4,7 +4,7 @@ import { DataTableBaseColumn } from 'naive-ui'
 import { useProvider } from '@/hooks/hook-provider'
 import { useColumn } from '@/hooks/hook-column'
 import { useSource } from '@/hooks/hook-source'
-import { INode, useRxicon } from '@/hooks/hook-icon'
+import { useRxicon, INode } from '@/hooks/hook-icon'
 import { httpColumn, IRouter } from '@/api/fetch-router'
 import { formaterTree } from '@/utils/utils-route'
 
@@ -13,10 +13,10 @@ export default defineComponent({
     setup() {
         const { vars } = useProvider()
         const { Icon, compute } = useRxicon()
-        const { calcColumn, divineColumn } = useColumn()
+        const { calcColumn, divineColumn, divineRxicon } = useColumn()
         const { state, setState, fetchUpdate } = useSource<IRouter, Object>({
             dataColumn: [
-                { title: '名称', key: 'title', width: calcColumn(100, 1080) },
+                { title: '名称', key: 'title', width: calcColumn(100) },
                 { title: '图标', key: 'icon', width: calcColumn(100, 1080) }
             ],
             immediate: true,
@@ -31,16 +31,10 @@ export default defineComponent({
 
         const render = (value: unknown, row: IRouter, base: DataTableBaseColumn) => {
             const __COLUME__ = {
-                icon: (node: IRouter) => {
-                    return h(Icon, {
-                        size: 24,
-                        depth: 2,
-                        component: compute(node.icon as INode)
-                    })
-                }
+                icon: () => divineRxicon(row.icon)
             }
 
-            return __COLUME__[base.key as keyof typeof __COLUME__]?.(row) ?? divineColumn(value)
+            return divineRxicon(row.icon) //divineColumn(value)
         }
 
         return () => (

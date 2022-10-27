@@ -1,5 +1,5 @@
 import { h, Component } from 'vue'
-import { NIcon as Icon } from 'naive-ui'
+import { NIcon as Icon, IconProps } from 'naive-ui'
 import {
     LeftOutlined,
     RightOutlined,
@@ -139,6 +139,7 @@ const ICON = {
 }
 
 export type INode = keyof typeof ICON
+export type INodeProps = IconProps
 export function useRxicon() {
     const compute = (name: INode): Component => {
         return h(ICON[name])
