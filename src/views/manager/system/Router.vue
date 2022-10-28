@@ -13,11 +13,15 @@ export default defineComponent({
     setup() {
         const { vars } = useProvider()
         const { Icon, compute } = useRxicon()
-        const { calcColumn, divineColumn, divineRxicon } = useColumn()
+        const { divineColumn, divineRxicon } = useColumn()
         const { state, setState, fetchUpdate } = useSource<IRouter, Object>({
             dataColumn: [
-                { title: '名称', key: 'title', width: calcColumn(100) },
-                { title: '图标', key: 'icon', width: calcColumn(100, 1080) }
+                { title: '名称', key: 'title' },
+                { title: '图标', key: 'icon', align: 'center', width: 100 },
+                { title: '类型', key: 'type', align: 'center', width: 100 },
+                { title: '节点路由', key: 'path' },
+                { title: '组件路径', key: 'component' },
+                { title: '更新时间', key: 'updateTime' }
             ],
             immediate: true,
             init: () => {
@@ -31,10 +35,10 @@ export default defineComponent({
 
         const render = (value: unknown, row: IRouter, base: DataTableBaseColumn) => {
             const __COLUME__ = {
-                icon: () => divineRxicon(row.icon)
+                icon: () => divineColumn(value, divineRxicon(row.icon, { depth: 1 }))
             }
 
-            return divineRxicon(row.icon) //divineColumn(value)
+            return __COLUME__[base.key as keyof typeof __COLUME__]?.() ?? divineColumn(value)
         }
 
         return () => (

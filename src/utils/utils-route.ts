@@ -1,8 +1,8 @@
-import type { MenuOption } from 'naive-ui'
-import type { IRouter } from '@/api/fetch-router'
 import { h } from 'vue'
-import { RouterLink, type RouteRecordRaw, type RouteMeta } from 'vue-router'
-import { Icons, useRxicon } from '@/hooks/hook-icon'
+import { MenuOption } from 'naive-ui'
+import { RouterLink, RouteRecordRaw, RouteMeta } from 'vue-router'
+import { IRouter } from '@/api/fetch-router'
+import { useRxicon } from '@/hooks/hook-icon'
 import Layout from '@/layout/manager/Layout.vue'
 
 export const page = import.meta.glob('@/views/manager/**/*.vue')
@@ -74,7 +74,7 @@ export function formatterSider<T extends RouteRecordRaw>(data: Array<T>) {
                 option.icon = () => {
                     return h(Icon, {
                         size: 20,
-                        component: compute(node.meta?.icon as keyof typeof Icons)
+                        component: compute(node.meta?.icon as never)
                     })
                 }
             }
