@@ -13,7 +13,7 @@ export default defineComponent({
     setup() {
         const { vars } = useProvider()
         const { Icon, compute } = useRxicon()
-        const { divineColumn, divineRxicon, divineCmule, divineButton } = useColumn()
+        const { divineColumn, divineRxicon, divineCmule, divineCommand } = useColumn()
         const { state, setState, fetchUpdate } = useSource<IRouter, Object>({
             dataColumn: [
                 { title: '名称', key: 'title', minWidth: 200 },
@@ -21,8 +21,8 @@ export default defineComponent({
                 { title: '类型', key: 'type', align: 'center', width: 100 },
                 { title: '节点路由', key: 'path', minWidth: 200 },
                 { title: '组件路径', key: 'component', ellipsis: { tooltip: true } },
-                { title: '更新时间', key: 'updateTime', align: 'center', width: 160 },
-                { title: '操作', key: 'command', fixed: 'right', width: 150 }
+                { title: '更新时间', key: 'updateTime', align: 'center', minWidth: 160 },
+                { title: '操作', key: 'command', fixed: 'right', align: 'center', width: 150 }
             ],
             immediate: true,
             init: () => {
@@ -43,6 +43,9 @@ export default defineComponent({
                     } else if (value === 2) {
                         return divineCmule('目录', { type: 'success', bordered: false }, { class: 'naive-customize' })
                     }
+                },
+                command: () => {
+                    return divineCommand(row, { native: ['edit'] })
                 }
             }
 

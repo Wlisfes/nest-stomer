@@ -1,4 +1,4 @@
-import { h, CSSProperties, VNode } from 'vue'
+import { h, computed, CSSProperties, VNode } from 'vue'
 import { TagProps, ButtonProps, DropdownOption } from 'naive-ui'
 import { isEmpty } from 'class-validator'
 import { ICommand } from '@/interface/fetch-core'
@@ -63,7 +63,7 @@ export function useColumn() {
     }
 
     /**操作列**/
-    const divineComman = <T extends Object>(
+    const divineCommand = <T extends Object>(
         row: T,
         props: { native: Array<ICommand>; onSelecter?: (key: ICommand, row: T) => void }
     ) => {
@@ -72,7 +72,29 @@ export function useColumn() {
             { label: '删除', key: 'delete', icon: 'DeleteOutlined', color: '#ff4d4f' },
             { label: '重置密码', key: 'reset', icon: 'ReloadOutlined', color: '#f5222d' }
         ]
+        const native = computed(() => props.native.map(key => command.find(x => key === x.key)))
+
+        return (
+            <n-space justify="center">
+                <n-dropdown
+                    options={native.value as Array<any>}
+                    show-arrow
+                    trigger="click"
+                    placement="top-end"
+                    render-icon={(u: any) => h(<Icon {...{ color: u.color, component: compute(u.icon) }}></Icon>)}
+                    render-label={(u: any) => h(<n-text style={{ color: u.color }}>{u.label}</n-text>)}
+                    onSelect={(key: ICommand) => props.onSelecter?.(key, row)}
+                >
+                    <n-button size="small" type="info" tertiary strong>
+                        操作
+                    </n-button>
+                </n-dropdown>
+                <n-button size="small" tertiary strong>
+                    启用
+                </n-button>
+            </n-space>
+        )
     }
 
-    return { vars, common, divineColumn, divineRxicon, divineButton, divineCmule, divineComman }
+    return { vars, common, divineColumn, divineRxicon, divineButton, divineCmule, divineCommand }
 }
