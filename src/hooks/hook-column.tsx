@@ -1,6 +1,7 @@
 import { h, CSSProperties, VNode } from 'vue'
-import { TagProps, ButtonProps } from 'naive-ui'
+import { TagProps, ButtonProps, DropdownOption } from 'naive-ui'
 import { isEmpty } from 'class-validator'
+import { ICommand } from '@/interface/fetch-core'
 import { useRxicon, INode, INodeProps } from '@/hooks/hook-icon'
 import { useProvider } from '@/hooks/hook-provider'
 
@@ -29,7 +30,7 @@ export function useColumn() {
         )
     }
 
-    /**按钮组**/
+    /**按钮列**/
     const divineButton = (
         value: unknown,
         props: ButtonProps = {},
@@ -61,5 +62,17 @@ export function useColumn() {
         )
     }
 
-    return { vars, common, divineColumn, divineRxicon, divineButton, divineCmule }
+    /**操作列**/
+    const divineComman = <T extends Object>(
+        row: T,
+        props: { native: Array<ICommand>; onSelecter?: (key: ICommand, row: T) => void }
+    ) => {
+        const command = [
+            { label: '编辑', key: 'edit', icon: 'EditOutlined', color: '#1890ff' },
+            { label: '删除', key: 'delete', icon: 'DeleteOutlined', color: '#ff4d4f' },
+            { label: '重置密码', key: 'reset', icon: 'ReloadOutlined', color: '#f5222d' }
+        ]
+    }
+
+    return { vars, common, divineColumn, divineRxicon, divineButton, divineCmule, divineComman }
 }
