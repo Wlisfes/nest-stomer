@@ -1,6 +1,7 @@
 <script lang="tsx">
-import { defineComponent } from 'vue'
+import { defineComponent, computed, CSSProperties } from 'vue'
 import { useRoute } from 'vue-router'
+import { useProvider } from '@/hooks/hook-provider'
 
 export default defineComponent({
     name: 'Refresh',
@@ -9,23 +10,38 @@ export default defineComponent({
     },
     setup() {
         const route = useRoute()
+        const { vars } = useProvider()
+        const style = computed<CSSProperties>(() => ({
+            width: '100%',
+            height: '100%',
+            backgroundColor: vars.value.cardColor
+        }))
 
         return () => {
             return route.name === '404' ? (
-                <div>404</div>
+                <u-container style={style.value}>404</u-container>
             ) : (
-                <div id="loading-mask">
-                    <div class="loading-wrapper">
-                        <span class="loading-dot loading-dot-spin">
-                            <i></i>
-                            <i></i>
-                            <i></i>
-                            <i></i>
-                        </span>
+                <u-container style={style.value}>
+                    <div id="loading-mask" style={{ background: 'transparent' }}>
+                        <div class="loading-wrapper">
+                            <span class="loading-dot loading-dot-spin">
+                                <i></i>
+                                <i></i>
+                                <i></i>
+                                <i></i>
+                            </span>
+                        </div>
                     </div>
-                </div>
+                </u-container>
             )
         }
     }
 })
 </script>
+
+<style lang="scss" scoped>
+.n-refresh {
+    width: 100%;
+    height: 100%;
+}
+</style>
