@@ -4,11 +4,14 @@ import { RouterView } from 'vue-router'
 import { NBetter } from '@/layout/common'
 import { useManager } from '@/store/manager'
 import { useProvider } from '@/hooks/hook-provider'
+import { useRxicon } from '@/hooks/hook-icon'
+import { fetchSettin } from '@/components/core'
 
 export default defineComponent({
     name: 'ALayout',
     setup() {
         const { vars, inverted } = useProvider()
+        const { Icon, compute } = useRxicon()
         const manager = useManager()
         const mobile = computed(() => manager.device === 'MOBILE')
         const native = computed<CSSProperties>(() => {
@@ -44,7 +47,10 @@ export default defineComponent({
                 </n-layout-sider>
                 <n-layout>
                     <n-layout-header class="app-manager__header" bordered inverted={inverted.value.header}>
-                        Header
+                        <div style={{ flex: 1 }}></div>
+                        <div class="n-trigger" onClick={fetchSettin}>
+                            <Icon size={20} component={compute('SettingOutlined')} />
+                        </div>
                     </n-layout-header>
                     {manager.better && <NBetter></NBetter>}
                     <n-layout
@@ -67,8 +73,16 @@ export default defineComponent({
     height: 100%;
     &__header {
         height: 60px;
-        padding: 0 20px;
+        padding: 0 10px 0 20px;
         display: flex;
+        .n-trigger {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            position: relative;
+            padding: 0 10px;
+        }
     }
     &__container {
         :deep(.n-scrollbar-content) {

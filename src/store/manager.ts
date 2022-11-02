@@ -22,6 +22,12 @@ export interface RState {
 
 export const useManager = defineStore({
     id: 'manager',
+    persist: {
+        enabled: true,
+        strategies: [
+            { storage: localStorage, paths: ['theme', 'inverted', 'primaryColor', 'reload', 'breadcr', 'better'] }
+        ]
+    },
     state: (): RState => ({
         device: 'PC',
         width: 0,
