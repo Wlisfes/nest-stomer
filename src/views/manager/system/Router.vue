@@ -1,10 +1,9 @@
 <script lang="tsx">
-import { defineComponent, h } from 'vue'
+import { defineComponent } from 'vue'
 import { DataTableBaseColumn } from 'naive-ui'
 import { useProvider } from '@/hooks/hook-provider'
 import { useColumn } from '@/hooks/hook-column'
 import { useSource } from '@/hooks/hook-source'
-import { useRxicon, INode } from '@/hooks/hook-icon'
 import { httpColumn, IRouter } from '@/api/fetch-router'
 import { formaterTree } from '@/utils/utils-route'
 
@@ -12,17 +11,16 @@ export default defineComponent({
     name: 'MRouter',
     setup() {
         const { vars } = useProvider()
-        const { Icon, compute } = useRxicon()
         const { divineColumn, divineRxicon, divineCmule, divineCommand } = useColumn()
         const { state, setState, fetchUpdate } = useSource<IRouter, Object>({
             dataColumn: [
                 { title: '名称', key: 'title', minWidth: 200 },
-                { title: '图标', key: 'icon', align: 'center', width: 100 },
-                { title: '类型', key: 'type', align: 'center', width: 100 },
-                { title: '节点路由', key: 'path', minWidth: 200 },
+                { title: '图标', key: 'icon', width: 120 },
+                { title: '类型', key: 'type', width: 120 },
+                { title: '节点路由', key: 'path', minWidth: 200, ellipsis: { tooltip: true } },
                 { title: '组件路径', key: 'component', ellipsis: { tooltip: true } },
-                { title: '更新时间', key: 'updateTime', align: 'center', minWidth: 160 },
-                { title: '操作', key: 'command', fixed: 'right', align: 'center', width: 150 }
+                { title: '更新时间', key: 'updateTime', align: 'center', width: 180 },
+                { title: '操作', key: 'command', fixed: 'right', align: 'center', width: 160 }
             ],
             immediate: true,
             init: () => {

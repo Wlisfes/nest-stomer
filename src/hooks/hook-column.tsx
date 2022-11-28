@@ -48,7 +48,7 @@ export function useColumn() {
         value: unknown,
         props: TagProps = {},
         attr: { class?: string; style?: CSSProperties } = {}
-    ) => {
+    ): VNode => {
         return h(
             <n-el tag="div" style={common.divine}>
                 <n-tag
@@ -66,7 +66,7 @@ export function useColumn() {
     const divineCommand = <T extends Object>(
         row: T,
         props: { native: Array<ICommand>; onSelecter?: (key: ICommand, row: T) => void }
-    ) => {
+    ): VNode => {
         const command = [
             { label: '编辑', key: 'edit', icon: 'EditOutlined', color: '#1890ff' },
             { label: '删除', key: 'delete', icon: 'DeleteOutlined', color: '#ff4d4f' },
