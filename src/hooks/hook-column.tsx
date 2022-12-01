@@ -1,5 +1,5 @@
 import { h, computed, CSSProperties, VNode } from 'vue'
-import { TagProps, ButtonProps, DropdownOption } from 'naive-ui'
+import { NEl, TagProps, ButtonProps, DropdownOption } from 'naive-ui'
 import { isEmpty } from 'class-validator'
 import { ICommand } from '@/interface/fetch-core'
 import { useRxicon, INode, INodeProps } from '@/hooks/hook-icon'
@@ -18,7 +18,8 @@ export function useColumn() {
         if (isEmpty(value)) {
             return divineRxicon('DashOutlined')
         }
-        return vnode ?? h(<n-text style={style}>{value}</n-text>)
+        //prettier-ignore
+        return vnode ?? h(<n-el tag="span" style={style}>{value}</n-el>)
     }
 
     /**图标列**/

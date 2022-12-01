@@ -50,38 +50,37 @@ export function setupGuardRouter(router: Router) {
     router.beforeEach(async (to, form, next) => {
         window.$loading.start()
         const AUTH = getSession()
-        return next()
 
-        // if (AUTH) {
-        //     const refresh = manager.router.length === 0
-        //     if (refresh) {
-        //         try {
-        //             const data = await manager.setRouter()
-        //             await mountRouter(data)
-        //         } catch (e) {
-        //             await delSession()
-        //             await resetRouter()
-        //             return next({ path: '/compute', replace: true })
-        //         }
-        //     }
-        //     if (to.meta?.cannot) {
-        //         return next({ path: '/', replace: true })
-        //     } else if (refresh) {
-        //         return next({
-        //             path: `/refresh`,
-        //             query: { target: to.path },
-        //             replace: true
-        //         })
-        //     } else {
-        //         return next()
-        //     }
-        // } else {
-        //     if (to.name === '404' || !(to.meta?.white || to.meta?.cannot)) {
-        //         return next({ path: '/compute', replace: true })
-        //     } else {
-        //         return next()
-        //     }
-        // }
+        if (AUTH) {
+            const refresh = manager.router.length === 0
+            if (refresh) {
+                try {
+                    const data = await manager.setRouter()
+                    await mountRouter(data)
+                } catch (e) {
+                    await delSession()
+                    await resetRouter()
+                    return next({ path: '/compute', replace: true })
+                }
+            }
+            if (to.meta?.cannot) {
+                return next({ path: '/', replace: true })
+            } else if (refresh) {
+                return next({
+                    path: `/refresh`,
+                    query: { target: to.path },
+                    replace: true
+                })
+            } else {
+                return next()
+            }
+        } else {
+            if (to.name === '404' || !(to.meta?.white || to.meta?.cannot)) {
+                return next({ path: '/compute', replace: true })
+            } else {
+                return next()
+            }
+        }
     })
 
     router.afterEach((to, form) => {
