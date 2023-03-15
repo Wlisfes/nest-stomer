@@ -15,7 +15,7 @@
         "cropperjs": "^1.5.12",
         "dayjs": "^1.11.7",
         "js-cookie": "^3.0.1",
-        "naive-ui": "^2.34.2",
+        "naive-ui": "^2.34.3",
         "normalize.css": "^8.0.1",
         "pinia": "^2.0.33",
         "pinia-plugin-persist": "^1.0.0",
