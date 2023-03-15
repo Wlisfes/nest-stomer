@@ -2,11 +2,11 @@ import type { App } from 'vue'
 import { createRouter, createWebHistory, RouteRecordRaw, RouteRecordName, Router } from 'vue-router'
 import { routeClient } from '@/router/route-client'
 import { routeManager } from '@/router/route-manager'
-import { routeCommin } from '@/router/route-commin'
+import { routeCompute } from '@/router/route-compute'
 import { useManager } from '@/store/manager'
 import { getSession, delSession } from '@/utils/utils-cookie'
 
-const routes: Array<RouteRecordRaw> = [...routeClient, ...routeManager, ...routeCommin]
+const routes: Array<RouteRecordRaw> = [...routeClient, ...routeManager, ...routeCompute]
 
 export const router = createRouter({
     history: createWebHistory(import.meta.env.BASE_URL),

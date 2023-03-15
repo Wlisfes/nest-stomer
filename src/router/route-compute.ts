@@ -2,7 +2,7 @@ import { RouteRecordRaw } from 'vue-router'
 import { Compute, Login, Register } from '@/views/pipe'
 import { Refresh } from '@/layout/common'
 
-export const routeCommin: Array<RouteRecordRaw> = [
+export const routeCompute: Array<RouteRecordRaw> = [
     {
         path: '/compute',
         name: 'Compute',
