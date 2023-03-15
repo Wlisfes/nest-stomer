@@ -10,30 +10,30 @@
     },
     "dependencies": {
         "@vicons/antd": "^0.12.0",
-        "axios": "^1.1.2",
+        "axios": "^1.3.4",
         "class-validator": "^0.13.2",
         "cropperjs": "^1.5.12",
-        "dayjs": "^1.11.5",
+        "dayjs": "^1.11.7",
         "js-cookie": "^3.0.1",
         "naive-ui": "^2.34.2",
         "normalize.css": "^8.0.1",
-        "pinia": "^2.0.23",
+        "pinia": "^2.0.33",
         "pinia-plugin-persist": "^1.0.0",
-        "vue": "^3.2.37",
-        "vue-router": "^4.1.5"
+        "vue": "^3.2.45",
+        "vue-router": "^4.1.6"
     },
     "devDependencies": {
         "@types/ali-oss": "^6.16.5",
         "@types/dplayer": "^1.25.2",
-        "@types/js-cookie": "^3.0.2",
-        "@types/node": "^18.8.3",
-        "@vitejs/plugin-vue": "^3.1.0",
-        "@vitejs/plugin-vue-jsx": "^2.0.1",
-        "sass": "^1.55.0",
-        "typescript": "^4.6.4",
-        "unplugin-auto-import": "^0.11.2",
-        "unplugin-vue-components": "^0.22.8",
-        "vite": "^3.1.0",
-        "vue-tsc": "^0.40.4"
+        "@types/js-cookie": "^3.0.3",
+        "@types/node": "^18.15.2",
+        "@vitejs/plugin-vue": "^4.0.0",
+        "@vitejs/plugin-vue-jsx": "^3.0.0",
+        "sass": "^1.59.2",
+        "typescript": "^4.9.3",
+        "unplugin-auto-import": "^0.15.1",
+        "unplugin-vue-components": "^0.24.1",
+        "vite": "^4.1.0",
+        "vue-tsc": "^1.0.24"
     }
 }
