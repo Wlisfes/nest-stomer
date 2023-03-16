@@ -1,25 +1,24 @@
 import { RouteRecordRaw } from 'vue-router'
-import { Compute, Login, Register } from '@/views/pipe'
 import { Refresh } from '@/layout/common'
 
 export const routeCompute: Array<RouteRecordRaw> = [
     {
         path: '/compute',
         name: 'Compute',
-        component: Compute,
+        component: () => import('@/views/pipe/Compute.vue'),
         redirect: '/compute/login',
         children: [
             {
                 path: '/compute/login',
                 name: 'Login',
                 meta: { cannot: true },
-                component: Login
+                component: () => import('@/views/pipe/Login.vue')
             },
             {
                 path: '/compute/register',
                 name: 'Register',
                 meta: { cannot: true },
-                component: Register
+                component: () => import('@/views/pipe/Register.vue')
             }
         ]
     },

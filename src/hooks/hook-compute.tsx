@@ -30,21 +30,34 @@ export function useCompute(props?: ICompute) {
     const codeURL = ref<string>(`${state.base}/api/core/fetch-captcha?width=120&height=50&fontSize=50&t=${Date.now()}`)
     const formRef = ref<FormInst>()
     const rules = ref<FormRules>({
-        mobile: [
-            { key: 'mobile', required: true, message: '请输入手机号', trigger: 'blur' },
-            {
-                key: 'mobile',
-                message: '手机号错误',
-                trigger: 'blur',
-                validator: (rule, value) => value && /^(?:(?:\+|00)86)?1\d{10}$/.test(value)
+        mobile: {
+            key: 'mobile',
+            required: true,
+            trigger: 'blur',
+            validator: (rule, value) => {
+                if (!value) {
+                    return new Error('请输入手机号')
+                } else if (!/^(?:(?:\+|00)86)?1\d{10}$/.test(value)) {
+                    return new Error('手机号错误')
+                }
+                return true
             }
-        ],
-        password: [
-            { key: 'password', required: true, message: '请输入密码', trigger: 'blur' },
-            { key: 'password', min: 6, max: 18, message: '密码长度必须6~18位', trigger: 'blur' }
-        ],
-        code: [{ key: 'code', required: true, message: '请输入验证码', trigger: 'blur' }],
-        nickname: [{ key: 'nickname', required: true, message: '请输入用户昵称', trigger: 'blur' }]
+        },
+        password: {
+            key: 'password',
+            required: true,
+            trigger: 'blur',
+            validator: (rule, value) => {
+                if (!value) {
+                    return new Error('请输入密码')
+                } else if (value.length < 6 || value.length > 18) {
+                    return new Error('密码长度必须6~18位')
+                }
+                return true
+            }
+        },
+        code: { key: 'code', required: true, message: '请输入验证码', trigger: 'blur' },
+        nickname: { key: 'nickname', required: true, message: '请输入用户昵称', trigger: 'blur' }
     })
 
     const isRule = (rule: FormItemRule, keys: string[]) => {

@@ -44,6 +44,7 @@ export default defineComponent({
                             <n-input
                                 v-model:value={state.mobile}
                                 maxlength={11}
+                                type="text"
                                 size="medium"
                                 placeholder="手机号"
                                 input-props={{ autocomplete: 'off' }}
@@ -109,15 +110,11 @@ export default defineComponent({
                         </n-form-item>
                         <n-form-item>
                             <n-space justify="space-between" style={{ width: '100%' }}>
-                                <n-checkbox v-model:checked={state.checked}>记住密码</n-checkbox>
                                 <RouterLink replace to="/compute/register">
-                                    {{
-                                        default: ({ navigate, href }: { navigate: Function; href: string }) => (
-                                            <n-a href={href} onClick={navigate}>
-                                                立即注册
-                                            </n-a>
-                                        )
-                                    }}
+                                    <n-a href="#">忘记密码</n-a>
+                                </RouterLink>
+                                <RouterLink replace to="/compute/register">
+                                    <n-a href="#">立即注册</n-a>
                                 </RouterLink>
                             </n-space>
                         </n-form-item>
