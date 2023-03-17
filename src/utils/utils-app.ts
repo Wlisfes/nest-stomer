@@ -1,11 +1,13 @@
 import { createApp, createVNode, nextTick, type Component } from 'vue'
 import { UProvider } from '@/components/global'
 import { setupStore } from '@/store'
+import { setupI18n } from '@/locale'
 import { setupRouter } from '@/router'
 
-type IParameter = {}
-
-export function createComponent(rootComponent: Component, parameter?: IParameter) {
+export function createComponent<RootComponent extends Component, Parameter extends Record<string, unknown>>(
+    rootComponent: RootComponent,
+    parameter?: Parameter
+) {
     const el = document.createElement('div')
     const app = createApp(
         createVNode(UProvider, parameter, {
@@ -46,6 +48,7 @@ export function createComponent(rootComponent: Component, parameter?: IParameter
     }
 
     setupStore(app)
+    setupI18n(app)
     setupRouter(app)
 
     return { app, el, mounte, unmount }
