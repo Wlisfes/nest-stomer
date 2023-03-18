@@ -1,45 +1,29 @@
-import axios, { AxiosInstance, AxiosRequestConfig, AxiosResponse, AxiosError } from 'axios'
+import axios, { AxiosInstance, InternalAxiosRequestConfig, AxiosResponse, AxiosError } from 'axios'
 
 export const request: AxiosInstance = axios.create({
     baseURL: import.meta.env.VITE_API_BASE,
     timeout: 60000
 })
 
-const interNotice = (error: AxiosError<any, any>) => {
+const interNotice = (response: AxiosResponse) => {
     const notification = window.$notification
-    if (error?.response) {
-        const { data, status } = error.response
-        switch (status) {
-            case 400:
-                notification.error({ duration: 2000, title: '管道拦截', content: data.message })
-                break
-            case 401:
-                notification.error({ duration: 2000, title: '守卫拦截', content: data.message })
-                break
-            case 403:
-                notification.error({ duration: 2000, title: '账号异常', content: data.message })
-                break
-            default:
-                notification.error({ duration: 2000, title: '服务器开了小个差', content: data.message })
-                break
-        }
-        return Promise.reject(data || error.response)
+    if (response.data.code !== 200) {
+        notification.error({ duration: 2000, title: response.data.message })
+        return Promise.reject(response.data)
     }
-    return Promise.reject(error)
+    return Promise.resolve(response.data)
 }
 
 request.interceptors.request.use(
-    (config: AxiosRequestConfig) => {
+    (config: InternalAxiosRequestConfig) => {
         return config
     },
-    (error: AxiosError) => interNotice(error)
+    (error: AxiosError) => Promise.reject(error)
 )
 
 request.interceptors.response.use(
-    (response: AxiosResponse) => {
-        return response.data
-    },
-    (error: AxiosError) => interNotice(error)
+    (response: AxiosResponse) => interNotice(response),
+    (error: AxiosError) => Promise.reject(error)
 )
 
 export default request

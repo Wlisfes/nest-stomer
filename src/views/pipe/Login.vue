@@ -26,9 +26,9 @@ export default defineComponent({
                     code: state.code
                 })
                 setState({ loading: false }).then(() => {
-                    setSession(data.session, data.seconds).then(() => {
-                        router.replace('/manager/system')
-                    })
+                    // setSession(data.session, data.seconds).then(() => {
+                    //     router.replace('/manager/system')
+                    // })
                 })
             } catch (e) {
                 setState({ loading: false }).finally(() => onRefresh())

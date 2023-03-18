@@ -13,6 +13,6 @@ interface NResponse<T = any> extends AResponse {
 
 declare module 'axios' {
     export interface AxiosInstance extends AxiosStatic {
-        <T = any, R = NResponse<T>>(config: AxiosRequestConfig): Promise<R>
+        <T = any, R = NResponse<T>>(config: InternalAxiosRequestConfig): Promise<R>
     }
 }
