@@ -5,7 +5,6 @@ import { useProvider } from '@/hooks/hook-provider'
 import { useColumn } from '@/hooks/hook-column'
 import { useSource } from '@/hooks/hook-source'
 import { httpColumn, IRouter } from '@/api/fetch-router'
-import { formaterTree } from '@/utils/utils-route'
 
 export default defineComponent({
     name: 'MRouter',
@@ -18,18 +17,11 @@ export default defineComponent({
                 { title: '图标', key: 'icon', width: 120 },
                 { title: '类型', key: 'type', width: 120 },
                 { title: '节点路由', key: 'path', minWidth: 200, ellipsis: { tooltip: true } },
-                { title: '组件路径', key: 'component', ellipsis: { tooltip: true } },
                 { title: '更新时间', key: 'updateTime', align: 'center', width: 180 },
                 { title: '操作', key: 'command', fixed: 'right', align: 'center', width: 160 }
             ],
             immediate: true,
-            init: () => {
-                return httpColumn().then(response => {
-                    return Object.assign(response, {
-                        data: { list: formaterTree(response.data.list) }
-                    })
-                })
-            }
+            init: e => httpColumn()
         })
 
         const render = (value: unknown, row: IRouter, base: DataTableBaseColumn) => {

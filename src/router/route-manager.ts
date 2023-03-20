@@ -12,6 +12,18 @@ export const routeManager: Array<RouteRecordRaw> = [
                 name: 'Master',
                 meta: { title: '主控台' },
                 component: () => import('@/views/manager/basic/Master.vue')
+            },
+            {
+                path: '/manager/system/user',
+                name: 'User',
+                meta: { title: '用户管理' },
+                component: () => import('@/views/manager/system/User.vue')
+            },
+            {
+                path: '/manager/system/router',
+                name: 'Router',
+                meta: { title: '路由管理' },
+                component: () => import('@/views/manager/system/Router.vue')
             }
         ]
     }

@@ -1,7 +1,7 @@
-import { toRefs, UnwrapNestedRefs } from 'vue'
-import { DataTableBaseColumn } from 'naive-ui'
-import { NResponse } from '@/axios'
-import { IColumn } from '@/interface/fetch-core'
+import { toRefs, type UnwrapNestedRefs } from 'vue'
+import { type DataTableBaseColumn } from 'naive-ui'
+import { type AxiosResponse } from 'axios'
+import { type IColumn, type RCommon } from '@/interface/fetch-core'
 import { useState } from '@/hooks/hook-state'
 import { initMounte } from '@/utils/utils-tool'
 
@@ -13,14 +13,7 @@ export interface IOption<T, R> {
     dataColumn: Array<DataTableBaseColumn>
     props?: R
     immediate?: boolean
-    init: (e: UnwrapNestedRefs<IState<T> & R>) => Promise<
-        NResponse<{
-            list: Array<T>
-            total: number
-            page: number
-            size: number
-        }>
-    >
+    init: (e: UnwrapNestedRefs<IState<T> & R>) => Promise<AxiosResponse<RCommon<T>>>
 }
 
 export function useSource<T, R extends Object>(option: IOption<T, R>) {
@@ -41,7 +34,7 @@ export function useSource<T, R extends Object>(option: IOption<T, R>) {
         return new Promise(async (resolve, reject) => {
             try {
                 await setState({ loading: true } as Partial<IState<T> & R>)
-                await init?.(state).then(async ({ data }) => {
+                await init(state).then(async ({ data }) => {
                     return await setState({
                         total: data.total,
                         dataSource: data.list,
@@ -51,6 +44,7 @@ export function useSource<T, R extends Object>(option: IOption<T, R>) {
                 handler?.(state)
                 resolve(state)
             } catch (e) {
+                console.log(e)
                 setState({ loading: false } as Partial<IState<T> & R>).then(() => {
                     reject(e)
                 })
