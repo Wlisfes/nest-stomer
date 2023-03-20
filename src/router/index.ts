@@ -35,15 +35,6 @@ async function mountRouter(data: Array<RouteRecordRaw>) {
     return transfer(null, data)
 }
 
-/**重置路由**/
-export async function resetRouter() {
-    return router.getRoutes().forEach(route => {
-        if (!routes.some(x => x.path === route.path) && router.hasRoute(route.name as RouteRecordName)) {
-            router.removeRoute(route.name as RouteRecordName)
-        }
-    })
-}
-
 /**路由守卫**/
 export function setupGuardRouter(router: Router) {
     const manager = useManager()
@@ -51,36 +42,36 @@ export function setupGuardRouter(router: Router) {
         window.$loading.start()
         const AUTH = getSession()
 
-        // if (AUTH) {
-        //     const refresh = manager.router.length === 0
-        //     if (refresh) {
-        //         try {
-        //             const data = await manager.setRouter()
-        //             await mountRouter(data)
-        //         } catch (e) {
-        //             await delSession()
-        //             await resetRouter()
-        //             return next({ path: '/compute', replace: true })
-        //         }
-        //     }
-        //     if (to.meta?.cannot) {
-        //         return next({ path: '/', replace: true })
-        //     } else if (refresh) {
-        //         return next({
-        //             path: `/refresh`,
-        //             query: { target: to.path },
-        //             replace: true
-        //         })
-        //     } else {
-        //         return next()
-        //     }
-        // } else {
-        //     if (to.name === '404' || !(to.meta?.white || to.meta?.cannot)) {
-        //         return next({ path: '/compute', replace: true })
-        //     } else {
-        //         return next()
-        //     }
-        // }
+        console.log(AUTH)
+
+        if (AUTH) {
+            const refresh = manager.router.length === 0
+            if (refresh) {
+                try {
+                    await manager.setRouter()
+                } catch (e) {
+                    await delSession()
+                    return next({ path: '/compute', replace: true })
+                }
+            }
+            //     if (to.meta?.cannot) {
+            //         return next({ path: '/', replace: true })
+            //     } else if (refresh) {
+            //         return next({
+            //             path: `/refresh`,
+            //             query: { target: to.path },
+            //             replace: true
+            //         })
+            //     } else {
+            //         return next()
+            //     }
+        } else {
+            //     if (to.name === '404' || !(to.meta?.white || to.meta?.cannot)) {
+            //         return next({ path: '/compute', replace: true })
+            //     } else {
+            //         return next()
+            //     }
+        }
 
         return next()
     })
