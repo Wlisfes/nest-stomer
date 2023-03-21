@@ -1,4 +1,5 @@
-export const compute = {
+export default {
+    namespace: 'compute',
     cn: {
         mobile: {
             value: '手机号',
@@ -14,5 +15,3 @@ export const compute = {
         }
     }
 }
-
-export default compute

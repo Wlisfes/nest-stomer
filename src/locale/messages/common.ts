@@ -1,6 +1,5 @@
-export const common = {
+export default {
+    namespace: 'common',
     cn: {},
     en: {}
 }
-
-export default common
