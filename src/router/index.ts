@@ -42,8 +42,6 @@ export function setupGuardRouter(router: Router) {
         window.$loading.start()
         const AUTH = getSession()
 
-        console.log(AUTH)
-
         if (AUTH) {
             const refresh = manager.router.length === 0
             if (refresh) {
@@ -54,26 +52,25 @@ export function setupGuardRouter(router: Router) {
                     return next({ path: '/compute', replace: true })
                 }
             }
-            //     if (to.meta?.cannot) {
-            //         return next({ path: '/', replace: true })
-            //     } else if (refresh) {
-            //         return next({
-            //             path: `/refresh`,
-            //             query: { target: to.path },
-            //             replace: true
-            //         })
-            //     } else {
-            //         return next()
-            //     }
+            if (to.meta.cannot) {
+                //登陆后不能在进入登录页、注册页
+                return next({ path: '/', replace: true })
+            } else {
+                return next()
+            }
         } else {
-            //     if (to.name === '404' || !(to.meta?.white || to.meta?.cannot)) {
-            //         return next({ path: '/compute', replace: true })
-            //     } else {
-            //         return next()
-            //     }
+            if (to.meta.Authorize) {
+                return next({
+                    path: '/compute',
+                    replace: true,
+                    query: {
+                        path: window.btoa(to.fullPath)
+                    }
+                })
+            } else {
+                return next()
+            }
         }
-
-        return next()
     })
 
     router.afterEach((to, form) => {

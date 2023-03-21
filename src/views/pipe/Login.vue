@@ -1,6 +1,6 @@
 <script lang="tsx">
 import { defineComponent } from 'vue'
-import { useRouter, RouterLink } from 'vue-router'
+import { useRouter, useRoute, RouterLink } from 'vue-router'
 import { useRxicon } from '@/hooks/hook-icon'
 import { useCompute } from '@/hooks/hook-compute'
 import { useEnter } from '@/utils/utils-event'
@@ -11,6 +11,7 @@ import { setSession } from '@/utils/utils-cookie'
 export default defineComponent({
     name: 'Login',
     setup() {
+        const route = useRoute()
         const router = useRouter()
         const { compute } = useRxicon()
         const { codeURL, formRef, rules, state, setState, onRefresh } = useCompute()
@@ -27,7 +28,15 @@ export default defineComponent({
                 })
                 setState({ loading: false }).then(() => {
                     setSession(data.session, data.seconds).then(() => {
-                        router.replace('/manager/master')
+                        try {
+                            if (route.query.path) {
+                                router.replace(window.atob(route.query.path as string))
+                            } else {
+                                router.replace('/manager/master')
+                            }
+                        } catch (e) {
+                            router.replace('/manager/master')
+                        }
                     })
                 })
             } catch (e) {
