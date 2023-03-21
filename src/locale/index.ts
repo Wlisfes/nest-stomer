@@ -1,28 +1,31 @@
-import type { App } from 'vue'
+import { type App } from 'vue'
+import { zhCN, dateZhCN, enUS, dateEnUS } from 'naive-ui'
 import { createI18n } from 'vue-i18n'
+import * as locale from './messages'
 
-interface Message {
-    default: {
-        namespace: string
-        cn: Record<string, unknown>
-        en: Record<string, unknown>
+export const messages = {
+    cn: {
+        ...zhCN,
+        ...dateZhCN,
+        common: locale.common.cn,
+        compute: locale.compute.cn
+    },
+    en: {
+        ...enUS,
+        ...dateEnUS,
+        common: locale.common.en,
+        compute: locale.compute.en
     }
 }
-const _default_ = { cn: {}, en: {} }
 
-const read = import.meta.glob('./messages/*.ts')
-const messages = (await Object.keys(read).reduce(async (compose: any, fnName) => {
-    const current = await compose
-    const { default: n } = (await read[fnName]()) as Message
-    if (n.namespace && typeof n.namespace === 'string') {
-        current.cn[n.namespace] = n.cn
-        current.en[n.namespace] = n.cn
-    } else {
-        current.cn = Object.assign(current.cn, n.cn)
-        current.en = Object.assign(current.en, n.en)
-    }
-    return current
-}, _default_)) as typeof _default_
+export type I18nMessages = typeof messages
+export type Path<Obj> = {
+    [Key in keyof Obj]: Key extends string
+        ? Obj[Key] extends Record<string, any>
+            ? Key | `${Key}.${Path<Obj[Key]>}`
+            : Key
+        : never
+}[keyof Obj]
 
 export const i18n = createI18n({
     legacy: false,
