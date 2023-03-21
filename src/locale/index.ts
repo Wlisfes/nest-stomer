@@ -11,10 +11,10 @@ interface Message {
 const _default_ = { cn: {}, en: {} }
 
 const read = import.meta.glob('./messages/*.ts')
-const messages = await Object.keys(read).reduce(async (compose: any, fnName) => {
+const messages = (await Object.keys(read).reduce(async (compose: any, fnName) => {
     const current = await compose
     const { default: n } = (await read[fnName]()) as Message
-    if (n.namespace) {
+    if (n.namespace && typeof n.namespace === 'string') {
         current.cn[n.namespace] = n.cn
         current.en[n.namespace] = n.cn
     } else {
@@ -22,7 +22,7 @@ const messages = await Object.keys(read).reduce(async (compose: any, fnName) => 
         current.en = Object.assign(current.en, n.en)
     }
     return current
-}, _default_)
+}, _default_)) as typeof _default_
 
 export const i18n = createI18n({
     legacy: false,
