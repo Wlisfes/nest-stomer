@@ -1,6 +1,7 @@
 <script lang="tsx">
 import { defineComponent } from 'vue'
 import { useRouter, RouterLink } from 'vue-router'
+import { useLocale } from '@/hooks/hook-locale'
 import { useRxicon } from '@/hooks/hook-icon'
 import { useCompute } from '@/hooks/hook-compute'
 import { httpMobile } from '@/api/fetch-core'
@@ -11,6 +12,7 @@ export default defineComponent({
     name: 'Register',
     setup() {
         const router = useRouter()
+        const { t } = useLocale()
         const { compute } = useRxicon()
         const { formRef, rules, state, setState, isRule, setTime } = useCompute()
 
@@ -49,13 +51,13 @@ export default defineComponent({
         return () => {
             return (
                 <div>
-                    <h1>注 册</h1>
+                    <h1>{t('compute.register.value')}</h1>
                     <n-form ref={formRef} model={state} rules={rules.value} label-placement="left">
                         <n-form-item path="nickname">
                             <n-input
                                 v-model:value={state.nickname}
                                 size="medium"
-                                placeholder="用户昵称"
+                                placeholder={t('compute.nickname.value')}
                                 input-props={{ autocomplete: 'off' }}
                                 onKeydown={(e: KeyboardEvent) => useEnter(e, 'Enter', onSubmit)}
                             >
@@ -67,7 +69,7 @@ export default defineComponent({
                                 v-model:value={state.password}
                                 size="medium"
                                 type="password"
-                                placeholder="密码"
+                                placeholder={t('compute.password.value')}
                                 show-password-on="mousedown"
                                 input-props={{ autocomplete: 'new-password' }}
                                 onKeydown={(e: KeyboardEvent) => useEnter(e, 'Enter', onSubmit)}
@@ -80,7 +82,7 @@ export default defineComponent({
                                 v-model:value={state.mobile}
                                 size="medium"
                                 maxlength={11}
-                                placeholder="手机号"
+                                placeholder={t('compute.mobile.value')}
                                 input-props={{ autocomplete: 'off' }}
                                 onKeydown={(e: KeyboardEvent) => useEnter(e, 'Enter', onSubmit)}
                             >
@@ -95,14 +97,18 @@ export default defineComponent({
                                 loading={state.fetch}
                                 onClick={fetchMobile}
                             >
-                                {{ default: () => (state.duration > 0 ? `${state.duration}秒后重试` : '发送验证码') }}
+                                {state.duration > 0 ? (
+                                    <n-text>{t('compute.code.reset', { n: state.duration })}</n-text>
+                                ) : (
+                                    <n-text>{t('compute.code.send')}</n-text>
+                                )}
                             </n-button>
                         </n-form-item>
                         <n-form-item path="code">
                             <n-input
                                 v-model:value={state.code}
                                 size="medium"
-                                placeholder="验证码"
+                                placeholder={t('compute.code.value')}
                                 input-props={{ autocomplete: 'off' }}
                                 onKeydown={(e: KeyboardEvent) => useEnter(e, 'Enter', onSubmit)}
                             >
@@ -118,7 +124,7 @@ export default defineComponent({
                                 loading={state.loading}
                                 onClick={onSubmit}
                             >
-                                提 交
+                                {t('common.submit.value')}
                             </n-button>
                         </n-form-item>
                         <n-form-item show-feedback={false}>
@@ -128,7 +134,7 @@ export default defineComponent({
                                     {{
                                         default: ({ navigate, href }: { navigate: Function; href: string }) => (
                                             <n-a href={href} onClick={navigate}>
-                                                返回登录
+                                                {t('compute.login.alias')}
                                             </n-a>
                                         )
                                     }}

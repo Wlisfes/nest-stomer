@@ -2,10 +2,13 @@
 import { defineComponent } from 'vue'
 import { RouterView } from 'vue-router'
 import { loadFile } from '@/utils/utils-tool'
+import { useLocale } from '@/hooks/hook-locale'
 
 export default defineComponent({
     name: 'Compute',
     setup() {
+        const { locale, setLocale } = useLocale()
+
         return () => (
             <div class="container">
                 <n-el class="app-compute">
@@ -13,6 +16,15 @@ export default defineComponent({
                         <img src={loadFile('resource/login-stomer.svg')} />
                     </div>
                     <div class="app-compute__form">
+                        <div class={`n-locale is-${locale.value}`}>
+                            <n-text
+                                class="n-locale__value"
+                                depth={1}
+                                onClick={() => setLocale(locale.value === 'cn' ? 'en' : 'cn')}
+                            >
+                                {{ default: () => locale.value.toUpperCase() }}
+                            </n-text>
+                        </div>
                         <RouterView></RouterView>
                     </div>
                 </n-el>
@@ -32,6 +44,33 @@ export default defineComponent({
     justify-content: center;
     align-items: center;
     padding: 0 20px;
+    .n-locale {
+        position: absolute;
+        right: -50px;
+        top: -50px;
+        width: 100px;
+        height: 100px;
+        transform: rotateZ(45deg);
+        user-select: none;
+        transition: all 300ms;
+        &.is-en {
+            box-shadow: 0 0 10px #8ec5fc;
+            background-image: linear-gradient(120deg, #e0c3fc 0%, #8ec5fc 100%);
+        }
+        &.is-cn {
+            box-shadow: 0 0 10px #e3eeff;
+            background-image: linear-gradient(to top, #f3e7e9 0%, #e3eeff 99%, #e3eeff 100%);
+        }
+        &__value {
+            position: absolute;
+            left: 37px;
+            top: 67px;
+            transform: rotateZ(-45deg);
+            font-weight: bold;
+            font-size: 16px;
+            cursor: pointer;
+        }
+    }
     .app-compute {
         background-color: var(--body-color);
         border-radius: 8px;
@@ -62,6 +101,7 @@ export default defineComponent({
             }
         }
         &__form {
+            position: relative;
             width: 100%;
             max-width: 480px;
             padding: 4rem;

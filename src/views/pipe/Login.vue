@@ -1,6 +1,7 @@
 <script lang="tsx">
 import { defineComponent } from 'vue'
 import { useRouter, useRoute, RouterLink } from 'vue-router'
+import { useLocale } from '@/hooks/hook-locale'
 import { useRxicon } from '@/hooks/hook-icon'
 import { useCompute } from '@/hooks/hook-compute'
 import { useEnter } from '@/utils/utils-event'
@@ -13,6 +14,7 @@ export default defineComponent({
     setup() {
         const route = useRoute()
         const router = useRouter()
+        const { t } = useLocale()
         const { compute } = useRxicon()
         const { codeURL, formRef, rules, state, setState, onRefresh } = useCompute()
 
@@ -47,7 +49,7 @@ export default defineComponent({
         return () => {
             return (
                 <div>
-                    <h1>登 录</h1>
+                    <h1>{t('compute.login.value')}</h1>
                     <n-form ref={formRef} model={state} rules={rules.value} label-placement="left">
                         <n-form-item path="mobile">
                             <n-input
@@ -55,7 +57,7 @@ export default defineComponent({
                                 maxlength={11}
                                 type="text"
                                 size="medium"
-                                placeholder="手机号"
+                                placeholder={t('compute.mobile.value')}
                                 input-props={{ autocomplete: 'off' }}
                                 onKeydown={(e: KeyboardEvent) => useEnter(e, 'Enter', onSubmit)}
                             >
@@ -70,7 +72,7 @@ export default defineComponent({
                                 type="password"
                                 show-password-on="mousedown"
                                 input-props={{ autocomplete: 'new-password' }}
-                                placeholder="密码"
+                                placeholder={t('compute.password.value')}
                                 onKeydown={(e: KeyboardEvent) => useEnter(e, 'Enter', onSubmit)}
                             >
                                 {{ prefix: () => <n-icon size={24} component={compute('LockOutlined')} /> }}
@@ -81,7 +83,7 @@ export default defineComponent({
                                 v-model:value={state.code}
                                 size="medium"
                                 maxlength={4}
-                                placeholder="图形验证码"
+                                placeholder={t('compute.code.value')}
                                 input-props={{ autocomplete: 'off' }}
                                 onKeydown={(e: KeyboardEvent) => useEnter(e, 'Enter', onSubmit)}
                             >
@@ -92,7 +94,7 @@ export default defineComponent({
                                     preview-disabled
                                     src={codeURL.value}
                                     onClick={onRefresh}
-                                    style={{ borderRadius: '4px' }}
+                                    style={{ borderRadius: '2px' }}
                                 >
                                     {{
                                         placeholder: () => (
@@ -114,16 +116,16 @@ export default defineComponent({
                                 loading={state.loading}
                                 onClick={onSubmit}
                             >
-                                提 交
+                                {t('common.submit.value')}
                             </n-button>
                         </n-form-item>
                         <n-form-item>
                             <n-space justify="space-between" style={{ width: '100%' }}>
                                 <RouterLink replace to="/compute/register">
-                                    <n-a href="#">忘记密码</n-a>
+                                    <n-a href="#">{t('compute.password.alias')}</n-a>
                                 </RouterLink>
                                 <RouterLink replace to="/compute/register">
-                                    <n-a href="#">立即注册</n-a>
+                                    <n-a href="#">{t('compute.register.alias')}</n-a>
                                 </RouterLink>
                             </n-space>
                         </n-form-item>

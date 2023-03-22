@@ -1,35 +1,29 @@
 import { type App } from 'vue'
 import { zhCN, dateZhCN, enUS, dateEnUS } from 'naive-ui'
 import { createI18n } from 'vue-i18n'
-import * as locale from './messages'
+import { getCookie, APP_AUTH_LOCALE } from '@/utils/utils-cookie'
+import * as lang from './messages'
+export * from './locale'
 
 export const messages = {
     cn: {
         ...zhCN,
         ...dateZhCN,
-        common: locale.common.cn,
-        compute: locale.compute.cn
+        common: lang.common.cn,
+        compute: lang.compute.cn
     },
     en: {
         ...enUS,
         ...dateEnUS,
-        common: locale.common.en,
-        compute: locale.compute.en
+        common: lang.common.en,
+        compute: lang.compute.en
     }
 }
 
-export type I18nMessages = typeof messages
-export type Path<Obj> = {
-    [Key in keyof Obj]: Key extends string
-        ? Obj[Key] extends Record<string, any>
-            ? Key | `${Key}.${Path<Obj[Key]>}`
-            : Key
-        : never
-}[keyof Obj]
-
+export type I18nContext = typeof messages.cn & typeof messages.en
 export const i18n = createI18n({
     legacy: false,
-    locale: 'cn',
+    locale: getCookie(APP_AUTH_LOCALE) || 'cn',
     messages
 })
 

@@ -1,5 +1,9 @@
 export default {
     namespace: 'common',
-    cn: {},
-    en: {}
+    cn: {
+        submit: { value: '提交' }
+    },
+    en: {
+        submit: { value: 'Submit' }
+    }
 }

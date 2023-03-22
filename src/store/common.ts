@@ -5,12 +5,6 @@ export const useCommon = defineStore({
     persist: {
         enabled: true
     },
-    state: () => ({
-        locale: 'cn'
-    }),
-    actions: {
-        setLocale(locale: 'cn' | 'en') {
-            this.locale = locale
-        }
-    }
+    state: () => ({}),
+    actions: {}
 })

@@ -1,4 +1,5 @@
 import axios, { AxiosInstance, InternalAxiosRequestConfig, AxiosResponse, AxiosError } from 'axios'
+import { getCookie, APP_AUTH_LOCALE } from '@/utils/utils-cookie'
 
 export const request: AxiosInstance = axios.create({
     baseURL: import.meta.env.VITE_API_BASE,
@@ -16,6 +17,7 @@ const interNotice = (response: AxiosResponse) => {
 
 request.interceptors.request.use(
     (config: InternalAxiosRequestConfig) => {
+        config.headers['x-locale'] = getCookie(APP_AUTH_LOCALE) || 'cn'
         return config
     },
     (error: AxiosError) => Promise.reject(error)
