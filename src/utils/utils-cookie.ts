@@ -2,6 +2,7 @@ import Cookie from 'js-cookie'
 
 export const APP_AUTH_SESSION = 'APP-AUTH-SESSION'
 export const APP_AUTH_LOCALE = 'APP_AUTH_LOCALE'
+export const APP_AUTH_RELACE = 'APP_AUTH_RELACE'
 
 export function getSession(defaultValue?: any) {
     return Cookie.get(APP_AUTH_SESSION) ?? defaultValue ?? undefined
@@ -48,6 +49,6 @@ export async function setCookie(key: string, data: any, expires?: number) {
  * @param key string
  * @returns void
  */
-export function delCookie(key: string) {
+export async function delCookie(key: string) {
     return Cookie.remove(key)
 }

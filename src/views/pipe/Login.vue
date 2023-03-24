@@ -7,7 +7,7 @@ import { useCompute } from '@/hooks/hook-compute'
 import { useEnter } from '@/utils/utils-event'
 import { httpLogin } from '@/api/fetch-user'
 import { loadFile } from '@/utils/utils-tool'
-import { setSession } from '@/utils/utils-cookie'
+import { setSession, getCookie, delCookie, APP_AUTH_RELACE } from '@/utils/utils-cookie'
 
 export default defineComponent({
     name: 'Login',
@@ -29,10 +29,11 @@ export default defineComponent({
                     code: state.code
                 })
                 setState({ loading: false }).then(() => {
-                    setSession(data.session, data.seconds).then(() => {
+                    setSession(data.session, data.seconds).then(async () => {
                         try {
-                            if (route.query.path) {
-                                router.replace(window.atob(route.query.path as string))
+                            const path = await getCookie(APP_AUTH_RELACE)
+                            if (path) {
+                                delCookie(APP_AUTH_RELACE).finally(() => router.replace(path))
                             } else {
                                 router.replace('/manager/master')
                             }

@@ -4,7 +4,7 @@ import { routeClient } from '@/router/route-client'
 import { routeManager } from '@/router/route-manager'
 import { routeCompute } from '@/router/route-compute'
 import { useManager } from '@/store/manager'
-import { getSession, delSession } from '@/utils/utils-cookie'
+import { getSession, delSession, setCookie, APP_AUTH_RELACE } from '@/utils/utils-cookie'
 
 const routes: Array<RouteRecordRaw> = [...routeClient, ...routeManager, ...routeCompute]
 
@@ -60,12 +60,8 @@ export function setupGuardRouter(router: Router) {
             }
         } else {
             if (to.meta.Authorize) {
-                return next({
-                    path: '/compute',
-                    replace: true,
-                    query: {
-                        path: window.btoa(to.fullPath)
-                    }
+                return setCookie(APP_AUTH_RELACE, to.fullPath).finally(() => {
+                    next({ path: '/compute', replace: true })
                 })
             } else {
                 return next()
