@@ -90,7 +90,7 @@ export default defineComponent({
                             >
                                 {{ prefix: () => <n-icon size={24} component={compute('VerifiedOutlined')} /> }}
                             </n-input>
-                            <u-scale max-width={120} scale={120 / 50} style={{ marginLeft: '10px', cursor: 'pointer' }}>
+                            <global-scale max-width={120} scale={120 / 50} style={{ marginLeft: '10px', cursor: 'pointer' }}>
                                 <n-image
                                     preview-disabled
                                     src={codeURL.value}
@@ -107,7 +107,7 @@ export default defineComponent({
                                         )
                                     }}
                                 </n-image>
-                            </u-scale>
+                            </global-scale>
                         </n-form-item>
                         <n-form-item>
                             <n-button

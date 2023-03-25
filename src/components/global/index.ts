@@ -1,5 +1,5 @@
 export { default as UProvider } from './u-provider.vue'
 export { default as UContainer } from './u-container.vue'
 export { default as UEmpty } from './u-empty.vue'
-export { default as UScale } from './u-scale.vue'
+export { default as GlobalScale } from './global-scale.vue'
 export { default as UAvatar } from './u-avatar.vue'
