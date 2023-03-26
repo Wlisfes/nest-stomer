@@ -1,8 +1,8 @@
 import { h, computed, CSSProperties, VNode } from 'vue'
-import { NEl, TagProps, ButtonProps, DropdownOption } from 'naive-ui'
+import { NEl, TagProps, ButtonProps, DropdownOption, IconProps } from 'naive-ui'
 import { isEmpty } from 'class-validator'
 import { ICommand } from '@/interface/fetch-core'
-import { useRxicon, INode, INodeProps } from '@/hooks/hook-icon'
+import { useRxicon, INode } from '@/hooks/hook-icon'
 import { useProvider } from '@/hooks/hook-provider'
 
 export function useColumn() {
@@ -23,7 +23,7 @@ export function useColumn() {
     }
 
     /**图标列**/
-    const divineRxicon = (value: unknown, props: INodeProps = {}, style: CSSProperties = {}): VNode => {
+    const divineRxicon = (value: unknown, props: IconProps = {}, style: CSSProperties = {}): VNode => {
         return h(
             <n-el tag="div" style={{ ...common.divine, ...style }}>
                 <Icon {...{ size: 24, depth: 5, ...props, component: compute(value as INode) }}></Icon>
@@ -32,11 +32,7 @@ export function useColumn() {
     }
 
     /**按钮列**/
-    const divineButton = (
-        value: unknown,
-        props: ButtonProps = {},
-        attr: { class?: string; style?: CSSProperties } = {}
-    ): VNode => {
+    const divineButton = (value: unknown, props: ButtonProps = {}, attr: { class?: string; style?: CSSProperties } = {}): VNode => {
         return (
             <n-button {...{ ...props }} class={attr?.class} style={attr?.style}>
                 {value}
@@ -45,18 +41,10 @@ export function useColumn() {
     }
 
     /**标签列**/
-    const divineCmule = (
-        value: unknown,
-        props: TagProps = {},
-        attr: { class?: string; style?: CSSProperties } = {}
-    ): VNode => {
+    const divineCmule = (value: unknown, props: TagProps = {}, attr: { class?: string; style?: CSSProperties } = {}): VNode => {
         return h(
             <n-el tag="div" style={common.divine}>
-                <n-tag
-                    {...{ ...props, size: props.size ?? 'small' }}
-                    style={{ ...common.cmule, ...attr.style }}
-                    class={attr.class}
-                >
+                <n-tag {...{ ...props, size: props.size ?? 'small' }} style={{ ...common.cmule, ...attr.style }} class={attr.class}>
                     {value}
                 </n-tag>
             </n-el>

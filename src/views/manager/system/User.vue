@@ -12,6 +12,9 @@ export default defineComponent({
         const { vars } = useProvider()
         const { divineColumn, divineRxicon, divineCmule, divineCommand } = useColumn()
         const { state, setState, fetchUpdate } = useSource<IRouter, Object>({
+            props: {
+                size: 'medium'
+            },
             dataColumn: [
                 { title: '名称', key: 'title', minWidth: 200 },
                 { title: '图标', key: 'icon', width: 120 },
@@ -44,7 +47,13 @@ export default defineComponent({
 
         return () => (
             <u-container space="10px" style={{ margin: '0 10px 10px', backgroundColor: vars.value.cardColor }}>
-                <basic-table></basic-table>
+                <basic-table
+                    size={state.size}
+                    data-column={state.dataColumn}
+                    data-source={state.dataSource}
+                    loading={state.loading}
+                    onReload={fetchUpdate}
+                ></basic-table>
             </u-container>
         )
     }
