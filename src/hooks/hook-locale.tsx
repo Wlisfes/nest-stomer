@@ -4,7 +4,7 @@ import { i18n, messages, I18nContext, Path } from '@/locale'
 import { setCookie, APP_AUTH_LOCALE } from '@/utils/utils-cookie'
 
 export function useLocale() {
-    const { t: use } = useI18n()
+    const context = useI18n()
     const locale = computed(() => i18n.global.locale.value)
     const Locale = computed(() => {
         switch (locale.value) {
@@ -17,12 +17,14 @@ export function useLocale() {
         }
     })
 
-    /**重载t方法**/
-    function t(key: Path<I18nContext>, named?: Record<string, unknown>) {
-        if (named) {
-            return use(key, named)
-        }
-        return use(key)
+    //@ts-ignore、重载t方法
+    function t(path: Path<I18nContext>, props: Record<string, unknown> = {}) {
+        return context.t(path, props)
+    }
+
+    //@ts-ignore、载tm方法
+    function tm<T = Array<{ label: string; value: unknown }>>(path: Path<I18nContext>): T {
+        return context.tm(path)
     }
 
     const setLocale = (value: 'en' | 'cn') => {
@@ -35,6 +37,7 @@ export function useLocale() {
         locale,
         Locale,
         t,
+        tm,
         setLocale
     }
 }

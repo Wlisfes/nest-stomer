@@ -10,13 +10,15 @@ export const messages = {
         ...zhCN,
         ...dateZhCN,
         common: lang.common.cn,
-        compute: lang.compute.cn
+        compute: lang.compute.cn,
+        basic: lang.basic.cn
     },
     en: {
         ...enUS,
         ...dateEnUS,
         common: lang.common.en,
-        compute: lang.compute.en
+        compute: lang.compute.en,
+        basic: lang.basic.en
     }
 }
 
