@@ -15,6 +15,15 @@ export default defineComponent({
                                     <n-button type="primary">Oops!</n-button>
                                     <n-button type="primary">Oops!</n-button>
                                 </Fragment>
+                            ),
+                            end: () => (
+                                <Fragment>
+                                    {Array.from({ length: 20 }, (x, i) => (
+                                        <n-button key={i} type="primary">
+                                            Oops!
+                                        </n-button>
+                                    ))}
+                                </Fragment>
                             )
                         }}
                     </basic-toolbar>

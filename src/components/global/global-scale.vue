@@ -13,10 +13,12 @@ export default defineComponent({
             default: () => 16 / 9
         },
         align: {
-            type: String
+            type: String as PropType<'start' | 'end' | 'center' | 'baseline' | 'stretch'>,
+            default: 'center'
         },
         justify: {
-            type: String
+            type: String as PropType<'start' | 'end' | 'center' | 'space-around' | 'space-between' | 'space-evenly'>,
+            default: 'center'
         },
         style: {
             type: Object as PropType<CSSProperties>,
@@ -26,31 +28,31 @@ export default defineComponent({
             type: String as PropType<'default' | 'pointer'>,
             default: 'default'
         },
+        flexBox: {
+            type: Boolean
+        },
         boxStyle: {
             type: Object as PropType<CSSProperties>,
             default: null
         }
     },
     setup(props, { slots }) {
-        const { style, align, justify, maxWidth, scale, cursor, boxStyle } = props
-        const max = computed<CSSProperties>(() => ({
+        const { style, align, justify, maxWidth, scale, cursor } = props
+        const docker = computed<CSSProperties>(() => ({
             maxWidth: maxWidth + 'px',
-            align,
-            justify,
+            justifyContent: justify,
+            alignItems: align,
+            cursor,
             ...style
         }))
         const compute = computed<CSSProperties>(() => ({
             paddingBottom: 100 / scale + '%'
         }))
-        const docker = computed<CSSProperties>(() => ({
-            cursor,
-            ...boxStyle
-        }))
 
         return () => (
-            <div class="global-scale" style={max.value}>
+            <div class="global-scale" style={docker.value}>
                 <div class="global-scale__compute" style={compute.value}>
-                    <div class="global-scale__column" style={docker.value}>
+                    <div class={{ 'global-scale__column': true, 'flex-box': props.flexBox }} style={props.boxStyle}>
                         {slots.default?.()}
                     </div>
                 </div>
@@ -77,9 +79,11 @@ export default defineComponent({
         right: 0;
         top: 0;
         bottom: 0;
-        display: flex;
-        flex-direction: column;
-        overflow: hidden;
+        &.flex-box {
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
         :deep(.n-image),
         :deep(.n-image) img {
             width: 100%;
