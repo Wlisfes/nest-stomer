@@ -1,19 +1,21 @@
 <script lang="tsx">
-import { defineComponent, ref, Fragment, computed, PropType } from 'vue'
+import { defineComponent, Fragment, computed, PropType } from 'vue'
 import { useLocale } from '@/hooks/hook-locale'
 import { useRxicon } from '@/hooks/hook-icon'
 
 export default defineComponent({
     name: 'BasicToolbar',
     props: {
-        size: {
+        density: {
             type: String as PropType<'small' | 'medium' | 'large'>,
             default: 'medium'
+        },
+        setState: {
+            type: Function
         }
     },
     emits: ['reload'],
     setup(props, { slots, emit }) {
-        const u = ref('medium')
         const { t, tm } = useLocale()
         const { Icon, compute } = useRxicon()
         const have = computed(() => [slots.start, slots.end].some(Boolean))
@@ -41,12 +43,17 @@ export default defineComponent({
                 </n-tooltip>
                 <n-tooltip trigger="hover">
                     {{
-                        default: () => <span class="no-selecter">{t('basic.toolbar.size.value')}</span>,
+                        default: () => <span class="no-selecter">{t('basic.toolbar.density.value')}</span>,
                         trigger: () => (
                             <global-scale class="global-scale no-selecter" max-width={18} scale={1} cursor="pointer">
-                                <n-dropdown show-arrow trigger="click" key-field="value" options={tm('basic.toolbar.size.column')}>
+                                <n-popselect
+                                    value={props.density}
+                                    trigger="click"
+                                    options={tm('basic.toolbar.density.column')}
+                                    on-update:value={(density: string) => props.setState?.({ density })}
+                                >
                                     <Icon component={compute('ColumnHeightOutlined')} size={18} style={{ margin: 'auto' }}></Icon>
-                                </n-dropdown>
+                                </n-popselect>
                             </global-scale>
                         )
                     }}

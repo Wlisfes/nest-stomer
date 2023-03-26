@@ -20,12 +20,15 @@ export default defineComponent({
             type: Array as PropType<Array<Record<string, unknown>>>,
             default: () => []
         },
-        render: {
+        basicRender: {
             type: Object as PropType<Record<string, Function>>
         },
-        size: {
+        density: {
             type: String as PropType<'small' | 'medium' | 'large'>,
             default: 'medium'
+        },
+        setState: {
+            type: Function
         }
     },
     emits: ['reload'],
@@ -36,8 +39,8 @@ export default defineComponent({
 
         //自定义单元格
         function nodeRender(value: unknown, row: Record<string, unknown>, base: DataTableBaseColumn) {
-            if (props.render && typeof props.render[base.key] === 'function') {
-                return props.render[base.key](value, row, base)
+            if (props.basicRender && typeof props.basicRender[base.key] === 'function') {
+                return props.basicRender[base.key](value, row, base)
             }
             return divineColumn(value)
         }
@@ -45,7 +48,7 @@ export default defineComponent({
         return () => {
             return (
                 <u-container class="basic-table">
-                    <basic-toolbar size={props.size} onReload={() => emit('reload')}>
+                    <basic-toolbar density={props.density} set-state={props.setState} onReload={() => emit('reload')}>
                         {{
                             start: () => (
                                 <n-button
@@ -60,7 +63,7 @@ export default defineComponent({
                     </basic-toolbar>
                     <n-data-table
                         class="naive-customize"
-                        size="small"
+                        size={props.density}
                         style={{ flex: 1 }}
                         scroll-x={1080}
                         bordered={false}

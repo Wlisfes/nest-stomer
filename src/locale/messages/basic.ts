@@ -3,7 +3,7 @@ export default {
     cn: {
         toolbar: {
             setting: { value: '列设置' },
-            size: {
+            density: {
                 value: '密度',
                 column: [
                     { label: '紧凑', value: 'small' },
@@ -16,8 +16,8 @@ export default {
     en: {
         toolbar: {
             setting: { value: '列设置' },
-            size: {
-                value: 'Size',
+            density: {
+                value: 'Density',
                 column: [
                     { label: 'Small', value: 'small' },
                     { label: 'Medium', value: 'medium' },
