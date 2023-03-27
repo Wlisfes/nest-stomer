@@ -15,7 +15,7 @@ export default {
     },
     en: {
         toolbar: {
-            setting: { value: '列设置' },
+            setting: { value: 'Row setting' },
             density: {
                 value: 'Density',
                 column: [

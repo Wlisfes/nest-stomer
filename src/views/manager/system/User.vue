@@ -13,7 +13,7 @@ export default defineComponent({
         const { divineColumn, divineRxicon, divineCmule, divineCommand } = useColumn()
         const { state, setState, fetchUpdate } = useSource<IRouter, Record<string, unknown>>({
             props: {
-                density: 'medium'
+                density: 'small'
             },
             dataColumn: [
                 { title: '名称', key: 'title', minWidth: 200 },
@@ -55,7 +55,7 @@ export default defineComponent({
         }
 
         return () => (
-            <u-container space="10px" style={{ margin: '0 10px 10px', backgroundColor: vars.value.cardColor }}>
+            <u-container space="16px" style={{ margin: '0 10px 10px', backgroundColor: vars.value.cardColor }}>
                 <basic-table
                     density={state.density}
                     data-column={state.dataColumn}

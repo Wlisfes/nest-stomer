@@ -3,7 +3,6 @@ import { RouteRecordRaw } from 'vue-router'
 export const routeManager: Array<RouteRecordRaw> = [
     {
         path: '/manager',
-        name: 'Layout',
         component: () => import('@/layout/manager/Layout.vue'),
         redirect: '/manager/master',
         children: [
@@ -12,7 +11,14 @@ export const routeManager: Array<RouteRecordRaw> = [
                 name: 'Master',
                 meta: { title: '主控台', Authorize: true },
                 component: () => import('@/views/manager/basic/Master.vue')
-            },
+            }
+        ]
+    },
+    {
+        path: '/manager/system',
+        component: () => import('@/layout/manager/Layout.vue'),
+        redirect: '/manager/system/user',
+        children: [
             {
                 path: '/manager/system/user',
                 name: 'User',
