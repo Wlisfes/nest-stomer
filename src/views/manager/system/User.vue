@@ -32,9 +32,9 @@ export default defineComponent({
         //         icon: () => divineColumn(value, divineRxicon(row.icon, { depth: 1 }, { cursor: 'pointer' })),
         //         type: () => {
         //             if (value === 1) {
-        //                 return divineCmule('目录', { type: 'info', bordered: false }, { class: 'naive-customize' })
+        //                 return divineCmule('目录', { type: 'info', bordered: false }, { class: 'n-customize' })
         //             } else if (value === 2) {
-        //                 return divineCmule('目录', { type: 'success', bordered: false }, { class: 'naive-customize' })
+        //                 return divineCmule('目录', { type: 'success', bordered: false }, { class: 'n-customize' })
         //             }
         //         },
         //         command: () => {

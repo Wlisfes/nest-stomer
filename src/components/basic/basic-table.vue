@@ -45,24 +45,19 @@ export default defineComponent({
             return divineColumn(value)
         }
 
+        // {{
+        //     start: () => (
+        // <n-button type="primary" render-icon={() => <Icon component={compute('PlusOutlined')}></Icon>} style={{ marginRight: 'auto' }} > 新建 </n-button>
+        //     )
+        // }}
         return () => {
             return (
                 <u-container class="basic-table">
                     <basic-toolbar density={props.density} set-state={props.setState} onReload={() => emit('reload')}>
-                        {{
-                            start: () => (
-                                <n-button
-                                    type="primary"
-                                    render-icon={() => <Icon component={compute('PlusOutlined')}></Icon>}
-                                    style={{ marginRight: 'auto' }}
-                                >
-                                    新建
-                                </n-button>
-                            )
-                        }}
+                        {slots}
                     </basic-toolbar>
                     <n-data-table
-                        class="naive-customize"
+                        class="n-customize"
                         size={props.density}
                         style={{ flex: 1 }}
                         scroll-x={1080}

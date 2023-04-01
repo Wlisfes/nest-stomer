@@ -90,7 +90,7 @@ export default defineComponent({
                             </n-input>
                             <n-button
                                 size="medium"
-                                class="naive-customize"
+                                class="n-customize"
                                 ghost
                                 style={{ minWidth: '120px', height: '50px', marginLeft: '10px' }}
                                 disabled={state.duration > 0}
@@ -116,14 +116,7 @@ export default defineComponent({
                             </n-input>
                         </n-form-item>
                         <n-form-item>
-                            <n-button
-                                class="antd-submit"
-                                type="info"
-                                size="medium"
-                                round
-                                loading={state.loading}
-                                onClick={onSubmit}
-                            >
+                            <n-button class="antd-submit" type="info" size="medium" round loading={state.loading} onClick={onSubmit}>
                                 {t('common.submit.value')}
                             </n-button>
                         </n-form-item>

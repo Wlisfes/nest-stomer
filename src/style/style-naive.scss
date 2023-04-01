@@ -1,9 +1,19 @@
-.n-tag.naive-customize > .n-tag__content,
-.n-button.naive-customize > .n-button__content {
-    padding-top: 1px;
+.n-tag.n-customize {
+    > .n-tag__content {
+        padding-top: 1px;
+    }
 }
 
-.n-data-table.naive-customize {
+.n-button.n-customize {
+    &.is-basic-left {
+        margin-left: auto;
+    }
+    &.is-basic-right {
+        margin-right: auto;
+    }
+}
+
+.n-data-table.n-customize {
     .n-data-table-base-table-header .n-data-table-th {
         height: 48px;
     }

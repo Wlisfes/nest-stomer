@@ -4,6 +4,7 @@ import { DataTableBaseColumn } from 'naive-ui'
 import { useProvider } from '@/hooks/hook-provider'
 import { useColumn } from '@/hooks/hook-column'
 import { useSource } from '@/hooks/hook-source'
+import { useRxicon } from '@/hooks/hook-icon'
 import { httpColumn, IRouter } from '@/api/fetch-router'
 import { fetchRouter } from '@/views/manager/hooks/fetch-router'
 
@@ -11,6 +12,7 @@ export default defineComponent({
     name: 'MRouter',
     setup() {
         const { vars } = useProvider()
+        const { Icon, compute } = useRxicon()
         const { divineColumn, divineRxicon, divineCmule, divineCommand } = useColumn()
         const { state, setState, fetchUpdate } = useSource<IRouter, Record<string, unknown>>({
             props: {
@@ -51,7 +53,18 @@ export default defineComponent({
                     basic-render={basicRender}
                     set-state={setState}
                     onReload={fetchUpdate}
-                ></basic-table>
+                >
+                    {{
+                        start: () => (
+                            <n-button type="primary" class="n-customize is-basic-right" onClick={fetchOneRouter}>
+                                {{
+                                    icon: () => <Icon component={compute('PlusOutlined')}></Icon>,
+                                    default: () => '新建'
+                                }}
+                            </n-button>
+                        )
+                    }}
+                </basic-table>
             </u-container>
         )
     }
