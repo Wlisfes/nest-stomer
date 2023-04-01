@@ -1,17 +1,21 @@
 <script lang="tsx">
-import { defineComponent } from 'vue'
+import { defineComponent, VNode } from 'vue'
 import { DataTableBaseColumn } from 'naive-ui'
 import { useProvider } from '@/hooks/hook-provider'
 import { useColumn } from '@/hooks/hook-column'
 import { useSource } from '@/hooks/hook-source'
 import { httpColumn, IRouter } from '@/api/fetch-router'
+import { fetchRouter } from '@/views/manager/hooks/fetch-router'
 
 export default defineComponent({
     name: 'MRouter',
     setup() {
         const { vars } = useProvider()
         const { divineColumn, divineRxicon, divineCmule, divineCommand } = useColumn()
-        const { state, setState, fetchUpdate } = useSource<IRouter, Object>({
+        const { state, setState, fetchUpdate } = useSource<IRouter, Record<string, unknown>>({
+            props: {
+                density: 'small'
+            },
             dataColumn: [
                 { title: '名称', key: 'title', minWidth: 200 },
                 { title: '图标', key: 'icon', width: 120 },
@@ -24,39 +28,30 @@ export default defineComponent({
             init: e => httpColumn()
         })
 
-        const render = (value: unknown, row: IRouter, base: DataTableBaseColumn) => {
-            const __COLUME__ = {
-                icon: () => divineColumn(value, divineRxicon(row.icon, { depth: 1 }, { cursor: 'pointer' })),
-                type: () => {
-                    if (value === 1) {
-                        return divineCmule('目录', { type: 'info', bordered: false }, { class: 'naive-customize' })
-                    } else if (value === 2) {
-                        return divineCmule('目录', { type: 'success', bordered: false }, { class: 'naive-customize' })
-                    }
-                },
-                command: () => {
-                    return divineCommand(row, { native: ['edit'] })
-                }
+        const basicRender: Record<string, (value: unknown, row: IRouter, base: DataTableBaseColumn) => VNode> = {
+            icon: (value, row) => {
+                return divineColumn(value, divineRxicon(row.icon, { depth: 1 }, { cursor: 'pointer' }))
+            },
+            command: (value, row) => {
+                return divineCommand(row, { native: ['edit'] })
             }
+        }
 
-            return __COLUME__[base.key as keyof typeof __COLUME__]?.() ?? divineColumn(value)
+        const fetchOneRouter = () => {
+            fetchRouter()
         }
 
         return () => (
-            <u-container space="10px" style={{ margin: '0 10px 10px', backgroundColor: vars.value.cardColor }}>
-                <n-data-table
-                    class="naive-customize"
-                    size="small"
-                    style={{ flex: 1 }}
-                    scroll-x={1080}
-                    bordered={false}
-                    flex-height={true}
+            <u-container space="16px" style={{ margin: '0 10px 10px', backgroundColor: vars.value.cardColor }}>
+                <basic-table
+                    density={state.density}
+                    data-column={state.dataColumn}
+                    data-source={state.dataSource}
                     loading={state.loading}
-                    row-key={(row: IRouter) => row.id}
-                    columns={state.dataColumn}
-                    data={state.dataSource}
-                    render-cell={render}
-                ></n-data-table>
+                    basic-render={basicRender}
+                    set-state={setState}
+                    onReload={fetchUpdate}
+                ></basic-table>
             </u-container>
         )
     }
