@@ -1,5 +1,5 @@
-import { h, Component } from 'vue'
-import { NIcon } from 'naive-ui'
+import { h, VNode } from 'vue'
+import { NIcon as Icon, IconProps } from 'naive-ui'
 import * as antd from '@vicons/antd'
 
 const ICON = {
@@ -32,9 +32,20 @@ const ICON = {
 
 export type INode = keyof typeof ICON
 export function useRxicon() {
-    const compute = (name: INode): Component => {
+    //@ts-ignore、icon拆解函数
+    function compute(name: INode): VNode {
         return h(ICON[name])
     }
 
-    return { Icon: NIcon, compute }
+    //@ts-ignore、icon组合函数
+    function NCompute(name: INode, props: IconProps = {}): VNode {
+        return h(<Icon {...{ props }} component={compute(name)}></Icon>)
+    }
+
+    //@ts-ignore、icon异步组合函数
+    function FCompute<T = Record<string, unknown>>(name: INode, props: IconProps = {}): (e: T) => VNode {
+        return (e: T) => h(<Icon {...{ props }} component={compute(name)}></Icon>)
+    }
+
+    return { antd, Icon, compute, NCompute, FCompute }
 }
