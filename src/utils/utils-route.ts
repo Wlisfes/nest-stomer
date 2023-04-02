@@ -1,7 +1,7 @@
 import { h } from 'vue'
 import type { MenuOption } from 'naive-ui'
 import { RouterLink } from 'vue-router'
-import { IRouter } from '@/api/fetch-router'
+import { IRoute } from '@/api/fetch-route'
 import { useRxicon } from '@/hooks/hook-icon'
 
 /**
@@ -9,7 +9,7 @@ import { useRxicon } from '@/hooks/hook-icon'
  * @param data 动态路由
  * @returns 路由树
  */
-export function formaterTree<T extends IRouter>(data: Array<T>) {
+export function formaterTree<T extends IRoute>(data: Array<T>) {
     const map: Record<string, T> = {}
     const tree: Array<T> = []
     data.forEach(node => {
@@ -28,7 +28,7 @@ export function formaterTree<T extends IRouter>(data: Array<T>) {
  * 动态路由树菜单
  * @param data 动态路由树
  */
-export function formatter<T extends IRouter>(data: Array<T>) {
+export function formatter<T extends IRoute>(data: Array<T>) {
     const { Icon, compute } = useRxicon()
     const transfer = <R extends T>(nest: Array<R>) => {
         return nest.map(node => {

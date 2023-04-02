@@ -21,7 +21,7 @@ const useCurrent = (target: HTMLElement & Record<string, never>, key: string) =>
     return document.defaultView?.getComputedStyle(target, null)[key as never]
 }
 
-export function transfer(target: HTMLElement & Record<string, never>, callback?: Function) {
+export function transfer(target: HTMLElement & Record<string, never>, callback?: Function, className: string = 'n-transfer') {
     const screenWidth = document.body.clientWidth //body当前宽度
     const screenHeight = document.documentElement.clientHeight //可见区域高度
 
@@ -40,9 +40,9 @@ export function transfer(target: HTMLElement & Record<string, never>, callback?:
         instance.top = useCurrent(target, 'top') as never
     }
 
+    target.classList.add(className)
     const element = target.querySelector('.n-dialog__title') as HTMLElement
     if (element) {
-        element.style.cursor = 'move'
         element.onmousedown = function (event) {
             instance.run = true
             if (!event) {

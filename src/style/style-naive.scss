@@ -18,3 +18,10 @@
         height: 48px;
     }
 }
+
+.n-dialog {
+    &.n-transfer .n-dialog__title {
+        user-select: none;
+        cursor: move;
+    }
+}

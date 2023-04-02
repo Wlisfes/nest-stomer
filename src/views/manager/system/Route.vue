@@ -5,16 +5,18 @@ import { useProvider } from '@/hooks/hook-provider'
 import { useColumn } from '@/hooks/hook-column'
 import { useSource } from '@/hooks/hook-source'
 import { useRxicon } from '@/hooks/hook-icon'
-import { httpColumn, IRouter } from '@/api/fetch-router'
+import { useLocale } from '@/hooks/hook-locale'
+import { httpColumn, IRoute } from '@/api/fetch-route'
 import { fetchRouter } from '@/views/manager/hooks/fetch-router'
 
 export default defineComponent({
     name: 'MRouter',
     setup() {
+        const { t } = useLocale()
         const { vars } = useProvider()
         const { Icon, compute } = useRxicon()
         const { divineColumn, divineRxicon, divineCmule, divineCommand } = useColumn()
-        const { state, setState, fetchUpdate } = useSource<IRouter, Record<string, unknown>>({
+        const { state, setState, fetchUpdate } = useSource<IRoute, Record<string, unknown>>({
             props: {
                 density: 'small'
             },
@@ -30,7 +32,7 @@ export default defineComponent({
             init: e => httpColumn()
         })
 
-        const basicRender: Record<string, (value: unknown, row: IRouter, base: DataTableBaseColumn) => VNode> = {
+        const basicRender: Record<string, (value: unknown, row: IRoute, base: DataTableBaseColumn) => VNode> = {
             icon: (value, row) => {
                 return divineColumn(value, divineRxicon(row.icon, { depth: 1 }, { cursor: 'pointer' }))
             },
@@ -39,8 +41,14 @@ export default defineComponent({
             }
         }
 
-        const fetchOneRouter = () => {
-            fetchRouter()
+        /**创建菜单**/
+        const createOneRouter = async () => {
+            const { observer } = await fetchRouter({
+                title: t('common.create.value'),
+                command: 'CREATE'
+            })
+
+            // observer
         }
 
         return () => (
@@ -56,10 +64,10 @@ export default defineComponent({
                 >
                     {{
                         start: () => (
-                            <n-button type="primary" class="n-customize is-basic-right" onClick={fetchOneRouter}>
+                            <n-button type="primary" class="n-customize is-basic-right" onClick={createOneRouter}>
                                 {{
-                                    icon: () => <Icon component={compute('PlusOutlined')}></Icon>,
-                                    default: () => '新建'
+                                    default: () => t('common.create.value'),
+                                    icon: () => <Icon component={compute('PlusOutlined')}></Icon>
                                 }}
                             </n-button>
                         )

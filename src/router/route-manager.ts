@@ -26,10 +26,10 @@ export const routeManager: Array<RouteRecordRaw> = [
                 component: () => import('@/views/manager/system/User.vue')
             },
             {
-                path: '/manager/system/router',
-                name: 'Router',
+                path: '/manager/system/route',
+                name: 'Route',
                 meta: { title: '路由管理', Authorize: true },
-                component: () => import('@/views/manager/system/Router.vue')
+                component: () => import('@/views/manager/system/Route.vue')
             }
         ]
     }

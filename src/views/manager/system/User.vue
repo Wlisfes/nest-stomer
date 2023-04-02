@@ -4,14 +4,14 @@ import { DataTableBaseColumn } from 'naive-ui'
 import { useProvider } from '@/hooks/hook-provider'
 import { useColumn } from '@/hooks/hook-column'
 import { useSource } from '@/hooks/hook-source'
-import { httpColumn, IRouter } from '@/api/fetch-router'
+import { httpColumn, IRoute } from '@/api/fetch-route'
 
 export default defineComponent({
     name: 'User',
     setup() {
         const { vars } = useProvider()
         const { divineColumn, divineRxicon, divineCmule, divineCommand } = useColumn()
-        const { state, setState, fetchUpdate } = useSource<IRouter, Record<string, unknown>>({
+        const { state, setState, fetchUpdate } = useSource<IRoute, Record<string, unknown>>({
             props: {
                 density: 'small'
             },
@@ -45,7 +45,7 @@ export default defineComponent({
         //     return __COLUME__[base.key as keyof typeof __COLUME__]?.() ?? divineColumn(value)
         // }
 
-        const basicRender: Record<string, (value: unknown, row: IRouter, base: DataTableBaseColumn) => VNode> = {
+        const basicRender: Record<string, (value: unknown, row: IRoute, base: DataTableBaseColumn) => VNode> = {
             icon: (value, row) => {
                 return divineColumn(value, divineRxicon(row.icon, { depth: 1 }, { cursor: 'pointer' }))
             },

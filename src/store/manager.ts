@@ -1,7 +1,7 @@
 import { defineStore } from 'pinia'
 import { MenuOption } from 'naive-ui'
 import { formatter, formaterTree, bfs } from '@/utils/utils-route'
-import { httpDynamic, IRouter } from '@/api/fetch-router'
+import { httpDynamic, IRoute } from '@/api/fetch-route'
 
 export interface RState {
     device: string
@@ -15,7 +15,7 @@ export interface RState {
     reload: boolean
     breadcr: boolean
     better: boolean
-    router: Array<IRouter>
+    router: Array<IRoute>
     menu: Array<MenuOption>
 }
 
@@ -23,9 +23,7 @@ export const useManager = defineStore({
     id: 'manager',
     persist: {
         enabled: true,
-        strategies: [
-            { storage: localStorage, paths: ['theme', 'inverted', 'primaryColor', 'reload', 'breadcr', 'better'] }
-        ]
+        strategies: [{ storage: localStorage, paths: ['theme', 'inverted', 'primaryColor', 'reload', 'breadcr', 'better'] }]
     },
     state: (): RState => ({
         device: 'PC',
@@ -78,7 +76,7 @@ export const useManager = defineStore({
         setBetter(better: boolean) {
             this.better = better
         },
-        setRouter(): Promise<Array<IRouter>> {
+        setRouter(): Promise<Array<IRoute>> {
             return httpDynamic().then(({ data }) => {
                 this.router = data.list
                 this.menu = formatter(formaterTree(data.list))
