@@ -1,5 +1,5 @@
 <script lang="tsx">
-import { defineComponent, VNode } from 'vue'
+import { defineComponent, ref, VNode } from 'vue'
 import { DataTableBaseColumn } from 'naive-ui'
 import { useProvider } from '@/hooks/hook-provider'
 import { useColumn } from '@/hooks/hook-column'
@@ -12,21 +12,22 @@ import { fetchRouter } from '@/views/manager/hooks/fetch-router'
 export default defineComponent({
     name: 'MRouter',
     setup() {
-        const { t } = useLocale()
+        const elRef = ref()
+        const { t, at } = useLocale()
         const { vars } = useProvider()
-        const { Icon, compute } = useRxicon()
+        const { FCompute } = useRxicon()
         const { divineColumn, divineRxicon, divineCmule, divineCommand } = useColumn()
         const { state, setState, fetchUpdate } = useSource<IRoute, Record<string, unknown>>({
             props: {
                 density: 'small'
             },
             dataColumn: [
-                { title: '名称', key: 'title', minWidth: 200 },
-                { title: '图标', key: 'icon', width: 120 },
-                { title: '类型', key: 'type', width: 120 },
-                { title: '节点路由', key: 'path', minWidth: 200, ellipsis: { tooltip: true } },
-                { title: '更新时间', key: 'updateTime', align: 'center', width: 180 },
-                { title: '操作', key: 'command', fixed: 'right', align: 'center', width: 160 }
+                { title: at('route.title.value'), key: 'title', minWidth: 200 },
+                { title: at('route.icon.value'), key: 'icon', width: 120 },
+                { title: at('route.type.value'), key: 'type', width: 120 },
+                { title: at('route.path.value'), key: 'path', minWidth: 200, ellipsis: { tooltip: true } },
+                { title: at('common.createTime.value'), key: 'updateTime', align: 'center', width: 180 },
+                { title: at('common.operate.value'), key: 'command', fixed: 'right', align: 'center', width: 160 }
             ],
             immediate: true,
             init: e => httpColumn()
@@ -44,6 +45,7 @@ export default defineComponent({
         /**创建菜单**/
         const createOneRouter = async () => {
             const { observer } = await fetchRouter({
+                el: elRef.value.$el,
                 title: t('common.create.value'),
                 command: 'CREATE'
             })
@@ -52,7 +54,7 @@ export default defineComponent({
         }
 
         return () => (
-            <u-container space="16px" style={{ margin: '0 10px 10px', backgroundColor: vars.value.cardColor }}>
+            <u-container ref={elRef} space="16px" style={{ margin: '0 10px 10px', backgroundColor: vars.value.cardColor }}>
                 <basic-table
                     density={state.density}
                     data-column={state.dataColumn}
@@ -64,11 +66,8 @@ export default defineComponent({
                 >
                     {{
                         start: () => (
-                            <n-button type="primary" class="n-customize is-basic-right" onClick={createOneRouter}>
-                                {{
-                                    default: () => t('common.create.value'),
-                                    icon: () => <Icon component={compute('PlusOutlined')}></Icon>
-                                }}
+                            <n-button type="primary" class="n-start" onClick={createOneRouter}>
+                                {{ default: at('common.create.value'), icon: FCompute('PlusOutlined') }}
                             </n-button>
                         )
                     }}
@@ -78,3 +77,5 @@ export default defineComponent({
     }
 })
 </script>
+
+<style lang="scss" scoped></style>

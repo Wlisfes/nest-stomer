@@ -1,3 +1,17 @@
 .no-selecter {
     user-select: none;
 }
+
+.n-row {
+    display: flex;
+}
+.n-column {
+    display: flex;
+    flex-direction: column;
+}
+.n-align {
+    align-items: center;
+}
+.n-justify {
+    justify-content: center;
+}
