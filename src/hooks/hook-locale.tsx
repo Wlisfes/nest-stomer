@@ -22,9 +22,20 @@ export function useLocale() {
         return context.t(path, props)
     }
 
+    //@ts-ignore、异步重载t方法
+    function at<T = Record<string, unknown>>(path: Path<I18nContext>, props: Record<string, unknown> = {}) {
+        return (e: T) => t(path, props)
+    }
+
     //@ts-ignore、载tm方法
     function tm<T = Array<{ label: string; value: unknown }>>(path: Path<I18nContext>): T {
         return context.tm(path)
+    }
+
+    //@ts-ignore、异步重载tm方法
+    function atm<T = Array<{ label: string; value: unknown }>, R = Record<string, unknown>>(path: Path<I18nContext>): (e: R) => T {
+        //@ts-ignore
+        return (e: R) => context.tm(path)
     }
 
     const setLocale = (value: 'en' | 'cn') => {
@@ -37,6 +48,8 @@ export function useLocale() {
         locale,
         Locale,
         t,
+        at,
+        atm,
         tm,
         setLocale
     }
