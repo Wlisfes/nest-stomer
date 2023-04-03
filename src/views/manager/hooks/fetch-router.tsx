@@ -118,7 +118,7 @@ export function fetchRouter(option: Option) {
                                     width="trigger"
                                     scrollable
                                     style={{ maxHeight: '240px' }}
-                                    content-style={{ padding: 0 }}
+                                    content-style={{ padding: '16px 0' }}
                                 >
                                     {{
                                         trigger: () => (
@@ -133,24 +133,27 @@ export function fetchRouter(option: Option) {
                                             </n-input>
                                         ),
                                         default: () => (
-                                            <n-space size={14} wrap-item={false} justify="space-between" style={{ padding: '16px' }}>
-                                                {Object.values(antd).map((SVGIcon, index) => (
-                                                    <n-button
-                                                        key={SVGIcon.name}
-                                                        style={{
-                                                            padding: 0,
-                                                            width: '48px',
-                                                            height: '48px',
-                                                            backgroundColor: 'var(--n-color-hover)',
-                                                            color:
-                                                                state.icon === SVGIcon.name
-                                                                    ? 'var(--n-text-color-focus)'
-                                                                    : 'var(--n-text-color)'
-                                                        }}
-                                                    >
-                                                        <Icon size={28} component={SVGIcon}></Icon>
-                                                    </n-button>
-                                                ))}
+                                            <n-space size={14} wrap-item={false} justify="space-between" style={{ padding: '0 16px' }}>
+                                                {Object.values(antd).map((SVGIcon, index) => {
+                                                    if (index > 100) return null
+                                                    return (
+                                                        <n-button
+                                                            key={SVGIcon.name}
+                                                            style={{
+                                                                padding: 0,
+                                                                width: '48px',
+                                                                height: '48px',
+                                                                backgroundColor: 'var(--n-color-hover)',
+                                                                color:
+                                                                    state.icon === SVGIcon.name
+                                                                        ? 'var(--n-text-color-focus)'
+                                                                        : 'var(--n-text-color)'
+                                                            }}
+                                                        >
+                                                            <Icon size={28} component={SVGIcon}></Icon>
+                                                        </n-button>
+                                                    )
+                                                })}
                                             </n-space>
                                         )
                                     }}
