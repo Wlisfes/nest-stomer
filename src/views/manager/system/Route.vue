@@ -45,7 +45,7 @@ export default defineComponent({
         /**创建菜单**/
         const createOneRouter = async () => {
             const { observer } = await fetchRouter({
-                el: elRef.value.$el,
+                // el: elRef.value.$el,
                 title: t('common.create.value'),
                 command: 'CREATE'
             })

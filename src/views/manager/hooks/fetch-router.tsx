@@ -39,6 +39,10 @@ export function fetchRouter(option: Option) {
                 type: { required: true, message: t('route.type.placeholder'), trigger: 'blur' }
             }
 
+            function onUnmounte() {
+                unmount(() => setState({ visible: false }))
+            }
+
             const onSubmit = () => {
                 setState({ loading: true })
             }
@@ -58,11 +62,11 @@ export function fetchRouter(option: Option) {
                     title={option.title}
                     preset="dialog"
                     style={{ width: '640px' }}
-                    onAfterLeave={unmount}
+                    onAfterLeave={onUnmounte}
                     onAfterEnter={transfer}
                     action={() => (
                         <n-space class="n-stomer">
-                            <n-button>{t('common.cancel.value')}</n-button>
+                            <n-button onClick={onUnmounte}>{t('common.cancel.value')}</n-button>
                             <n-button type="primary" onClick={onSubmit}>
                                 {t('common.submit.value')}
                             </n-button>
