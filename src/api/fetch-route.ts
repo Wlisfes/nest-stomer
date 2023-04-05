@@ -2,7 +2,7 @@ import { request } from '@/utils/utils-request'
 import { ICommon, RCommon } from '@/interface/fetch-core'
 
 export interface IRoute extends ICommon {
-    type: number
+    type: string
     title: string
     status: number
     path: string

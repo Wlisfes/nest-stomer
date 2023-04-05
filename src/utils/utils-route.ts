@@ -36,7 +36,7 @@ export function formatter<T extends IRoute>(data: Array<T>) {
                 meta: {},
                 key: node.path,
                 label: () => {
-                    if (node.type === 1) {
+                    if (node.type === 'directory') {
                         return node.title
                     } else {
                         return h(RouterLink, { to: node.path }, { default: () => node.title })
