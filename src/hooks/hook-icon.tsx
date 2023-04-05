@@ -1,4 +1,4 @@
-import { h, VNode } from 'vue'
+import { h, VNode, computed } from 'vue'
 import { NIcon as Icon, IconProps } from 'naive-ui'
 import * as antd from '@vicons/antd'
 
@@ -32,6 +32,10 @@ const ICON = {
 
 export type INode = keyof typeof ICON
 export function useRxicon() {
+    const icon = computed<Array<{ name: string; component: VNode }>>(() => {
+        return Object.keys(ICON).map(name => ({ name, component: ICON[name as never] as VNode }))
+    })
+
     //@ts-ignore、icon拆解函数
     function compute(name: INode): VNode {
         return h(ICON[name])
@@ -47,5 +51,5 @@ export function useRxicon() {
         return (e: T) => h(<Icon {...{ props }} component={compute(name)}></Icon>)
     }
 
-    return { antd, Icon, compute, NCompute, FCompute }
+    return { antd, icon, Icon, compute, NCompute, FCompute }
 }
