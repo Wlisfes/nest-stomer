@@ -2,7 +2,7 @@ export interface ICommon {
     id: number
     createTime: string
     updateTime: string
-    status: number
+    status: string
 }
 export interface RCommon<T = Object> {
     page: number

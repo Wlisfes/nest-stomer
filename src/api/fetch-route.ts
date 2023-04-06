@@ -4,7 +4,6 @@ import { ICommon, RCommon } from '@/interface/fetch-core'
 export interface IRoute extends ICommon {
     type: string
     title: string
-    status: number
     path: string
     redirect: string
     icon: string
@@ -20,4 +19,17 @@ export function httpColumn() {
 /**动态路由节点**/
 export function httpDynamic() {
     return request<RCommon<IRoute>>({ url: `/api/router/dynamic`, method: 'GET' })
+}
+
+/**创建路由菜单**/
+export function httpCreateRoute(data: {
+    status: string
+    type: string
+    title: string | undefined
+    path: string | undefined
+    redirect?: string
+    parent?: number
+    icon?: string
+}) {
+    return request({ method: 'POST', url: `/api/router/create`, data })
 }

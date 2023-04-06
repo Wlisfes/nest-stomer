@@ -7,7 +7,7 @@ import { useRxicon } from '@/hooks/hook-icon'
 import { createComponent } from '@/utils/utils-app'
 import { Observer } from '@/utils/utils-observer'
 import { transfer } from '@/utils/utils-transfer'
-import { httpColumn, IRoute } from '@/api/fetch-route'
+import { httpColumn, httpCreateRoute, IRoute } from '@/api/fetch-route'
 interface Option {
     el?: HTMLElement
     title: string
@@ -21,9 +21,7 @@ export function fetchRouter(option: Option) {
         name: 'FetchRouter',
         setup() {
             const formRef = ref<FormInst>()
-            const { vars } = useProvider()
             const { t, tm } = useLocale()
-            const { Icon, antd, FCompute, NCompute } = useRxicon()
             const { state, setState } = useState({
                 visible: false,
                 loading: false,
@@ -32,25 +30,30 @@ export function fetchRouter(option: Option) {
                 path: undefined,
                 redirect: undefined,
                 status: 'enable',
-                icon: 'AccountBookFilled',
-                popover: false
+                icon: undefined,
+                parent: undefined
             })
             const rules: FormRules = {
                 type: { required: true, message: t('route.type.placeholder'), trigger: 'blur' }
             }
 
-            function onUnmounte() {
-                unmount(() => setState({ visible: false }))
-            }
-
-            const onSubmit = () => {
-                setState({ loading: true })
+            async function onSubmit() {
+                try {
+                    await formRef.value?.validate()
+                    const {} = await httpCreateRoute({
+                        type: state.type,
+                        title: state.title,
+                        path: state.path,
+                        redirect: state.redirect,
+                        status: state.status,
+                        icon: state.icon,
+                        parent: state.parent
+                    })
+                } catch (e) {}
             }
 
             onMounted(() => {
                 setState({ visible: true })
-
-                console.log(vars.value)
             })
 
             return () => (
@@ -62,11 +65,11 @@ export function fetchRouter(option: Option) {
                     title={option.title}
                     preset="dialog"
                     style={{ width: '640px' }}
-                    onAfterLeave={onUnmounte}
+                    onAfterLeave={unmount}
                     onAfterEnter={transfer}
                     action={() => (
                         <n-space class="n-stomer">
-                            <n-button onClick={onUnmounte}>{t('common.cancel.value')}</n-button>
+                            <n-button onClick={() => setState({ visible: false })}>{t('common.cancel.value')}</n-button>
                             <n-button type="primary" onClick={onSubmit}>
                                 {t('common.submit.value')}
                             </n-button>
@@ -116,8 +119,8 @@ export function fetchRouter(option: Option) {
                                 />
                             </n-form-item>
                             <n-form-item label={t('route.icon.value')}>
-                                <n-popover
-                                    show={state.popover}
+                                <n-input v-model:value={state.icon} clearable placeholder={t('route.icon.placeholder')}></n-input>
+                                {/* <n-popover
                                     trigger="focus"
                                     width="trigger"
                                     scrollable
@@ -131,7 +134,6 @@ export function fetchRouter(option: Option) {
                                                 clearable
                                                 readonly
                                                 placeholder={t('route.icon.placeholder')}
-                                                onClick={() => setState({ popover: true })}
                                             >
                                                 {{ suffix: FCompute('DownOutlined') }}
                                             </n-input>
@@ -161,7 +163,7 @@ export function fetchRouter(option: Option) {
                                             </n-space>
                                         )
                                     }}
-                                </n-popover>
+                                </n-popover> */}
                             </n-form-item>
                         </n-form>
                     </n-spin>
