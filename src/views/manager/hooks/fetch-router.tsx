@@ -37,19 +37,28 @@ export function fetchRouter(option: Option) {
                 type: { required: true, message: t('route.type.placeholder'), trigger: 'blur' }
             }
 
-            async function onSubmit() {
-                try {
-                    await formRef.value?.validate()
-                    const {} = await httpCreateRoute({
-                        type: state.type,
-                        title: state.title,
-                        path: state.path,
-                        redirect: state.redirect,
-                        status: state.status,
-                        icon: state.icon,
-                        parent: state.parent
+            function onSubmit() {
+                formRef.value?.validate(err => {
+                    if (err) return false
+                    setState({ loading: true }).then(async () => {
+                        try {
+                            await httpCreateRoute({
+                                type: state.type,
+                                title: state.title,
+                                path: state.path,
+                                redirect: state.redirect,
+                                status: state.status,
+                                icon: state.icon,
+                                parent: state.parent
+                            })
+                            setState({ loading: false, visible: false }).then(() => {
+                                observer.emit('submit')
+                            })
+                        } catch (e) {
+                            setState({ loading: false })
+                        }
                     })
-                } catch (e) {}
+                })
             }
 
             onMounted(() => {
