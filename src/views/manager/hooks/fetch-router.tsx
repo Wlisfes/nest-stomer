@@ -3,7 +3,7 @@ import { FormInst, FormRules } from 'naive-ui'
 import { useProvider } from '@/hooks/hook-provider'
 import { useState } from '@/hooks/hook-state'
 import { useLocale } from '@/hooks/hook-locale'
-import { useRxicon } from '@/hooks/hook-icon'
+import { useRxicon, INode } from '@/hooks/hook-icon'
 import { createComponent } from '@/utils/utils-app'
 import { Observer } from '@/utils/utils-observer'
 import { transfer } from '@/utils/utils-transfer'
@@ -22,6 +22,7 @@ export function fetchRouter(option: Option) {
         setup() {
             const formRef = ref<FormInst>()
             const { t, tm } = useLocale()
+            const { icon, Icon, compute } = useRxicon()
             const { state, setState } = useState({
                 visible: false,
                 loading: false,
@@ -128,7 +129,20 @@ export function fetchRouter(option: Option) {
                                 />
                             </n-form-item>
                             <n-form-item label={t('route.icon.value')}>
-                                <n-input v-model:value={state.icon} clearable placeholder={t('route.icon.placeholder')}></n-input>
+                                <n-select
+                                    label-field="name"
+                                    value-field="name"
+                                    placeholder={t('route.icon.placeholder')}
+                                    v-model:value={state.icon}
+                                    options={icon.value}
+                                    filterable={true}
+                                    render-label={(option: { name: INode }) => (
+                                        <div style={{ display: 'flex', alignItems: 'center' }}>
+                                            <Icon size={28} component={compute(option.name)}></Icon>
+                                            <n-text style={{ marginLeft: '10px' }}>{option.name}</n-text>
+                                        </div>
+                                    )}
+                                />
                                 {/* <n-popover
                                     trigger="focus"
                                     width="trigger"
