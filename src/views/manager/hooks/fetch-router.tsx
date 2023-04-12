@@ -35,7 +35,10 @@ export function fetchRouter(option: Option) {
                 parent: undefined
             })
             const rules: FormRules = {
-                type: { required: true, message: t('route.type.placeholder'), trigger: 'blur' }
+                type: { required: true, message: t('route.type.placeholder'), trigger: 'blur' },
+                title: { required: true, message: t('route.title.placeholder'), trigger: 'blur' },
+                path: { required: true, message: t('route.path.placeholder'), trigger: 'blur' },
+                status: { required: true, message: t('route.status.placeholder'), trigger: 'blur' }
             }
 
             function onSubmit() {
@@ -80,7 +83,7 @@ export function fetchRouter(option: Option) {
                     action={() => (
                         <n-space class="n-stomer">
                             <n-button onClick={() => setState({ visible: false })}>{t('common.cancel.value')}</n-button>
-                            <n-button type="primary" onClick={onSubmit}>
+                            <n-button type="primary" disabled={state.loading} loading={state.loading} onClick={onSubmit}>
                                 {t('common.submit.value')}
                             </n-button>
                         </n-space>
