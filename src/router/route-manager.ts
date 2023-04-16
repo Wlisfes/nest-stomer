@@ -32,5 +32,18 @@ export const routeManager: Array<RouteRecordRaw> = [
                 component: () => import('@/views/manager/system/Route.vue')
             }
         ]
+    },
+    {
+        path: '/manager/cloud',
+        component: () => import('@/layout/manager/Layout.vue'),
+        redirect: '/manager/cloud/similar',
+        children: [
+            {
+                path: '/manager/system/similar',
+                name: 'Similar',
+                meta: { title: '分类管理', Authorize: true },
+                component: () => import('@/views/manager/cloud/Similar.vue')
+            }
+        ]
     }
 ]

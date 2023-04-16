@@ -37,6 +37,13 @@ export default defineComponent({
             icon: (value, row) => {
                 return divineColumn(value, divineRxicon(row.icon, { depth: 1 }, { cursor: 'pointer' }))
             },
+            type: (value, row) => {
+                const _u_ = {
+                    directory: divineCmule('菜单', { type: 'success', bordered: false }, { class: 'n-customize' }),
+                    menu: divineCmule('目录', { type: 'info', bordered: false }, { class: 'n-customize' })
+                }
+                return _u_[value as keyof typeof _u_]
+            },
             command: (value, row) => {
                 return divineCommand(row, { native: ['edit'] })
             }
@@ -45,12 +52,13 @@ export default defineComponent({
         /**创建菜单**/
         const createOneRouter = async () => {
             const { observer } = await fetchRouter({
-                // el: elRef.value.$el,
                 title: t('common.create.value'),
                 command: 'CREATE'
             })
 
-            // observer
+            observer.once('submit', () => {
+                fetchUpdate()
+            })
         }
 
         return () => (
