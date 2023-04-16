@@ -45,7 +45,7 @@ export default defineComponent({
                 return _u_[value as keyof typeof _u_]
             },
             command: (value, row) => {
-                return divineCommand(row, { native: ['edit'] })
+                return divineCommand(row, { native: [] })
             }
         }
 

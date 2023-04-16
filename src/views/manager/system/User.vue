@@ -48,10 +48,10 @@ export default defineComponent({
         const basicRender: Record<string, (value: unknown, row: IRoute, base: DataTableBaseColumn) => VNode> = {
             icon: (value, row) => {
                 return divineColumn(value, divineRxicon(row.icon, { depth: 1 }, { cursor: 'pointer' }))
-            },
-            command: (value, row) => {
-                return divineCommand(row, { native: ['edit'] })
             }
+            // command: (value, row) => {
+            //     return divineCommand(row, { native: ['edit'] })
+            // }
         }
 
         return () => (

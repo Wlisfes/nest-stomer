@@ -1,7 +1,7 @@
 import { h, computed, CSSProperties, VNode } from 'vue'
 import { NEl, TagProps, ButtonProps, DropdownOption, IconProps } from 'naive-ui'
 import { isEmpty } from 'class-validator'
-import { ICommand } from '@/interface/fetch-core'
+import { ICommon } from '@/interface/fetch-core'
 import { useRxicon, INode } from '@/hooks/hook-icon'
 import { useProvider } from '@/hooks/hook-provider'
 
@@ -52,32 +52,30 @@ export function useColumn() {
     }
 
     /**操作列**/
-    const divineCommand = <T extends Object>(
+    const divineCommand = <T extends ICommon>(
         row: T,
-        props: { native: Array<ICommand>; onSelecter?: (key: ICommand, row: T) => void }
+        props?: {
+            native: Array<DropdownOption & { color?: string }>
+            onSelecter?: (key: string, row: T) => void
+        }
     ): VNode => {
-        const command = [
-            { label: '编辑', key: 'edit', icon: 'EditOutlined', color: '#1890ff' },
-            { label: '删除', key: 'delete', icon: 'DeleteOutlined', color: '#ff4d4f' },
-            { label: '重置密码', key: 'reset', icon: 'ReloadOutlined', color: '#f5222d' }
-        ]
-        const native = computed(() => props.native.map(key => command.find(x => key === x.key)))
-
         return (
             <n-space justify="center">
-                <n-dropdown
-                    options={native.value as Array<any>}
-                    show-arrow
-                    trigger="click"
-                    placement="top-end"
-                    render-icon={(u: any) => h(<Icon {...{ color: u.color, component: compute(u.icon) }}></Icon>)}
-                    render-label={(u: any) => h(<n-text style={{ color: u.color }}>{u.label}</n-text>)}
-                    onSelect={(key: ICommand) => props.onSelecter?.(key, row)}
-                >
-                    <n-button size="small" type="info" tertiary strong>
-                        操作
-                    </n-button>
-                </n-dropdown>
+                {!!props?.native?.length && (
+                    <n-dropdown
+                        options={props.native}
+                        show-arrow
+                        trigger="click"
+                        placement="top-end"
+                        render-icon={(u: any) => h(<Icon {...{ color: u.color, component: compute(u.icon) }}></Icon>)}
+                        render-label={(u: any) => h(<n-text style={{ color: u.color }}>{u.label}</n-text>)}
+                        onSelect={(key: string) => props.onSelecter?.(key, row)}
+                    >
+                        <n-button size="small" type="info" tertiary strong>
+                            操作
+                        </n-button>
+                    </n-dropdown>
+                )}
                 <n-button size="small" tertiary strong>
                     启用
                 </n-button>

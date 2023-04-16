@@ -18,5 +18,3 @@ export interface IColumn<T = Object> {
     loading: boolean
     dataSource: Array<T>
 }
-
-export type ICommand = 'edit' | 'reset' | 'disable' | 'enable' | 'delete'
