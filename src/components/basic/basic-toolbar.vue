@@ -79,11 +79,10 @@ export default defineComponent({
     position: relative;
     overflow: hidden;
     margin-bottom: 10px;
-
-    :deep(.n-button.n-start) {
+    :deep(.n-start) {
         margin-right: auto;
     }
-    :deep(.n-button.n-end) {
+    :deep(.n-end) {
         margin-left: auto;
     }
     :deep(.global-scale) {

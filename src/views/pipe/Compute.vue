@@ -1,7 +1,7 @@
 <script lang="tsx">
 import { defineComponent } from 'vue'
 import { RouterView } from 'vue-router'
-import { loadFile } from '@/utils/utils-tool'
+import { loadFile } from '@/utils/utils-common'
 import { useLocale } from '@/hooks/hook-locale'
 
 export default defineComponent({
@@ -17,11 +17,7 @@ export default defineComponent({
                     </div>
                     <div class="app-compute__form">
                         <div class={`n-locale is-${locale.value}`}>
-                            <n-text
-                                class="n-locale__value"
-                                depth={1}
-                                onClick={() => setLocale(locale.value === 'cn' ? 'en' : 'cn')}
-                            >
+                            <n-text class="n-locale__value" depth={1} onClick={() => setLocale(locale.value === 'cn' ? 'en' : 'cn')}>
                                 {{ default: () => locale.value.toUpperCase() }}
                             </n-text>
                         </div>

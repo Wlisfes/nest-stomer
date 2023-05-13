@@ -1,7 +1,6 @@
 <script lang="tsx">
 import { defineComponent, ref, VNode } from 'vue'
 import { DataTableBaseColumn } from 'naive-ui'
-import { useProvider } from '@/hooks/hook-provider'
 import { useColumn } from '@/hooks/hook-column'
 import { useSource } from '@/hooks/hook-source'
 import { useRxicon } from '@/hooks/hook-icon'
@@ -14,7 +13,6 @@ export default defineComponent({
     setup() {
         const elRef = ref()
         const { t, at } = useLocale()
-        const { vars } = useProvider()
         const { FCompute } = useRxicon()
         const { divineColumn, divineRxicon, divineCmule, divineCommand } = useColumn()
         const { state, setState, fetchUpdate } = useSource<IRoute, Record<string, unknown>>({
@@ -62,7 +60,7 @@ export default defineComponent({
         }
 
         return () => (
-            <u-container ref={elRef} space="16px" style={{ margin: '0 10px 10px', backgroundColor: vars.value.cardColor }}>
+            <u-container ref={elRef} space="16px" style={{ margin: '0 10px 10px' }}>
                 <basic-table
                     density={state.density}
                     data-column={state.dataColumn}

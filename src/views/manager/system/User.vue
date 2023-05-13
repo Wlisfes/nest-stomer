@@ -1,7 +1,6 @@
 <script lang="tsx">
 import { defineComponent, VNode } from 'vue'
 import { DataTableBaseColumn } from 'naive-ui'
-import { useProvider } from '@/hooks/hook-provider'
 import { useColumn } from '@/hooks/hook-column'
 import { useSource } from '@/hooks/hook-source'
 import { httpColumn, IRoute } from '@/api/fetch-route'
@@ -9,7 +8,6 @@ import { httpColumn, IRoute } from '@/api/fetch-route'
 export default defineComponent({
     name: 'User',
     setup() {
-        const { vars } = useProvider()
         const { divineColumn, divineRxicon, divineCmule, divineCommand } = useColumn()
         const { state, setState, fetchUpdate } = useSource<IRoute, Record<string, unknown>>({
             props: {
@@ -55,7 +53,7 @@ export default defineComponent({
         }
 
         return () => (
-            <u-container space="16px" style={{ margin: '0 10px 10px', backgroundColor: vars.value.cardColor }}>
+            <u-container space="16px" style={{ margin: '0 10px 10px' }}>
                 <basic-table
                     density={state.density}
                     data-column={state.dataColumn}

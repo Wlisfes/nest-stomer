@@ -1,5 +1,7 @@
 <script lang="tsx">
 import { defineComponent, computed, PropType, CSSProperties, VNode } from 'vue'
+import { divineHandler } from '@/utils/utils-common'
+import { useProvider } from '@/hooks/hook-provider'
 
 export default defineComponent({
     name: 'UContainer',
@@ -14,7 +16,7 @@ export default defineComponent({
         },
         style: {
             type: Object as PropType<CSSProperties>,
-            default: null
+            default: () => ({})
         },
         space: {
             type: String,
@@ -22,11 +24,11 @@ export default defineComponent({
         }
     },
     setup(props, { slots }) {
+        const { vars } = useProvider()
         const style = computed(() => {
-            const u: CSSProperties = {}
-            if (props.space) u.padding = props.space
-            if (props.style) return { ...u, ...props.style }
-            return u
+            props.style.backgroundColor = vars.value.cardColor
+            divineHandler(!!props.space, () => (props.style.padding = props.space))
+            return props.style
         })
         const RContent = () => {
             if (props.loading && slots.hasOwnProperty('placeholder')) {

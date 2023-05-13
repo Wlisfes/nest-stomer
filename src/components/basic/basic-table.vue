@@ -45,11 +45,6 @@ export default defineComponent({
             return divineColumn(value)
         }
 
-        // {{
-        //     start: () => (
-        // <n-button type="primary" render-icon={() => <Icon component={compute('PlusOutlined')}></Icon>} style={{ marginRight: 'auto' }} > 新建 </n-button>
-        //     )
-        // }}
         return () => {
             return (
                 <u-container class="basic-table">

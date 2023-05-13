@@ -6,7 +6,7 @@ import { useRxicon } from '@/hooks/hook-icon'
 import { useCompute } from '@/hooks/hook-compute'
 import { useEnter } from '@/utils/utils-event'
 import { httpLogin } from '@/api/fetch-user'
-import { loadFile } from '@/utils/utils-tool'
+import { loadFile } from '@/utils/utils-common'
 import { setSession, getCookie, delCookie, APP_AUTH_RELACE } from '@/utils/utils-cookie'
 
 export default defineComponent({
@@ -91,12 +91,7 @@ export default defineComponent({
                                 {{ prefix: () => <n-icon size={24} component={compute('VerifiedOutlined')} /> }}
                             </n-input>
                             <global-scale max-width={120} scale={120 / 50} style={{ marginLeft: '10px', cursor: 'pointer' }}>
-                                <n-image
-                                    preview-disabled
-                                    src={codeURL.value}
-                                    onClick={onRefresh}
-                                    style={{ borderRadius: '2px' }}
-                                >
+                                <n-image preview-disabled src={codeURL.value} onClick={onRefresh} style={{ borderRadius: '2px' }}>
                                     {{
                                         placeholder: () => (
                                             <n-skeleton
@@ -110,13 +105,7 @@ export default defineComponent({
                             </global-scale>
                         </n-form-item>
                         <n-form-item>
-                            <n-button
-                                class="antd-submit"
-                                type="info"
-                                size="medium"
-                                loading={state.loading}
-                                onClick={onSubmit}
-                            >
+                            <n-button class="antd-submit" type="info" size="medium" loading={state.loading} onClick={onSubmit}>
                                 {t('common.submit.value')}
                             </n-button>
                         </n-form-item>
@@ -131,12 +120,7 @@ export default defineComponent({
                             </n-space>
                         </n-form-item>
                         <n-form-item show-feedback={false}>
-                            <n-space
-                                justify="center"
-                                align="center"
-                                size={25}
-                                style={{ width: '100%', height: '50px' }}
-                            >
+                            <n-space justify="center" align="center" size={25} style={{ width: '100%', height: '50px' }}>
                                 <n-image width="44" src={loadFile('resource/github-stomer.png')} preview-disabled />
                                 <n-image width="44" src={loadFile('resource/wechat-stomer.png')} preview-disabled />
                                 <n-image width="44" src={loadFile('resource/google-stomer.png')} preview-disabled />

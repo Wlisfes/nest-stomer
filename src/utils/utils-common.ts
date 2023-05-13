@@ -23,3 +23,16 @@ export function loadCover(url: string): Promise<HTMLImageElement> {
 export async function initMounte(handler: Function) {
     return handler()
 }
+
+/**参数隔离组合函数**/
+export async function divineParameter<T extends Object>(data: T): Promise<T> {
+    return data
+}
+
+/**条件链式执行函数**/
+export async function divineHandler(value: boolean | Function, handler: Function) {
+    if ((typeof value === 'function' && value()) || (typeof value === 'boolean' && value)) {
+        return await handler()
+    }
+    return value
+}

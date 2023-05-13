@@ -3,7 +3,7 @@ import { type DataTableBaseColumn } from 'naive-ui'
 import { type AxiosResponse } from 'axios'
 import { type IColumn, type RCommon } from '@/interface/fetch-core'
 import { useState } from '@/hooks/hook-state'
-import { initMounte } from '@/utils/utils-tool'
+import { initMounte } from '@/utils/utils-common'
 
 export interface IState<T> extends IColumn<T> {
     status: number | null | undefined
