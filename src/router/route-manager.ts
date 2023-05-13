@@ -30,6 +30,12 @@ export const routeManager: Array<RouteRecordRaw> = [
                 name: 'Route',
                 meta: { title: '路由管理', Authorize: true },
                 component: () => import('@/views/manager/system/Route.vue')
+            },
+            {
+                path: '/manager/system/chacter',
+                name: 'Chacter',
+                meta: { title: '字典管理', Authorize: true },
+                component: () => import('@/views/manager/system/Chacter.vue')
             }
         ]
     },
