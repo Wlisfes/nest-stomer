@@ -12,7 +12,8 @@ export const messages = {
         common: locale.common.cn,
         compute: locale.compute.cn,
         basic: locale.basic.cn,
-        route: locale.route.cn
+        route: locale.route.cn,
+        chacter: locale.chacter.cn
     },
     en: {
         ...enUS,
@@ -20,7 +21,8 @@ export const messages = {
         common: locale.common.en,
         compute: locale.compute.en,
         basic: locale.basic.en,
-        route: locale.route.en
+        route: locale.route.en,
+        chacter: locale.chacter.en
     }
 }
 
