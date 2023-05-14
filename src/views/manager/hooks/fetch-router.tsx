@@ -7,7 +7,7 @@ import { useRxicon, INode } from '@/hooks/hook-icon'
 import { createComponent } from '@/utils/utils-app'
 import { Observer } from '@/utils/utils-observer'
 import { transfer } from '@/utils/utils-transfer'
-import { httpColumn, httpCreateRoute, IRoute } from '@/api/fetch-route'
+import { columnRoute, createRoute, IRoute } from '@/api/fetch-route'
 interface Option {
     el?: HTMLElement
     title: string
@@ -46,7 +46,7 @@ export function fetchRouter(option: Option) {
                     if (err) return false
                     setState({ loading: true }).then(async () => {
                         try {
-                            await httpCreateRoute({
+                            await createRoute({
                                 type: state.type,
                                 title: state.title,
                                 path: state.path,

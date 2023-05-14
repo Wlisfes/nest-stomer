@@ -3,7 +3,7 @@ import { defineComponent, VNode } from 'vue'
 import { DataTableBaseColumn } from 'naive-ui'
 import { useColumn } from '@/hooks/hook-column'
 import { useSource } from '@/hooks/hook-source'
-import { httpColumn, IRoute } from '@/api/fetch-route'
+import { columnRoute, IRoute } from '@/api/fetch-route'
 
 export default defineComponent({
     name: 'User',
@@ -22,7 +22,7 @@ export default defineComponent({
                 { title: '操作', key: 'command', fixed: 'right', align: 'center', width: 160 }
             ],
             immediate: true,
-            init: httpColumn
+            init: columnRoute
         })
 
         // const render = (value: unknown, row: IRouter, base: DataTableBaseColumn) => {

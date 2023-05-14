@@ -5,7 +5,7 @@ import { useColumn } from '@/hooks/hook-column'
 import { useSource } from '@/hooks/hook-source'
 import { useRxicon } from '@/hooks/hook-icon'
 import { useLocale } from '@/hooks/hook-locale'
-import { httpColumn, IRoute } from '@/api/fetch-route'
+import { columnRoute, IRoute } from '@/api/fetch-route'
 import { fetchRouter } from '@/views/manager/hooks/fetch-router'
 
 export default defineComponent({
@@ -28,7 +28,7 @@ export default defineComponent({
                 { title: at('common.operate.value'), key: 'command', fixed: 'right', align: 'center', width: 160 }
             ],
             immediate: true,
-            init: e => httpColumn()
+            init: columnRoute
         })
 
         const basicRender: Record<string, (value: unknown, row: IRoute, base: DataTableBaseColumn) => VNode> = {

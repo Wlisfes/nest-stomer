@@ -12,17 +12,17 @@ export interface IRoute extends ICommon {
 }
 
 /**路由列表**/
-export function httpColumn() {
+export function columnRoute() {
     return request<RCommon<IRoute>>({ url: `/api/router/column`, method: 'GET' })
 }
 
 /**动态路由节点**/
-export function httpDynamic() {
+export function dynamicRoute() {
     return request<RCommon<IRoute>>({ url: `/api/router/dynamic`, method: 'GET' })
 }
 
 /**创建路由菜单**/
-export function httpCreateRoute(data: {
+export function createRoute(data: {
     status: string
     type: string
     title: string | undefined
