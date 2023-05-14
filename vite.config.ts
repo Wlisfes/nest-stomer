@@ -1,10 +1,12 @@
 import { defineConfig, loadEnv, type ConfigEnv, type UserConfig } from 'vite'
 import { fileURLToPath, URL } from 'node:url'
 import { NaiveUiResolver } from 'unplugin-vue-components/resolvers'
+import { createSvgIconsPlugin } from 'vite-plugin-svg-icons'
 import AutoImport from 'unplugin-auto-import/vite'
 import Components from 'unplugin-vue-components/vite'
 import Vue from '@vitejs/plugin-vue'
 import VueJSX from '@vitejs/plugin-vue-jsx'
+import path from 'path'
 
 export default defineConfig(({ command, mode }: ConfigEnv): UserConfig => {
     const root = process.cwd()
@@ -14,6 +16,10 @@ export default defineConfig(({ command, mode }: ConfigEnv): UserConfig => {
         plugins: [
             Vue(),
             VueJSX(),
+            createSvgIconsPlugin({
+                iconDirs: [path.resolve(process.cwd(), 'src/icons')],
+                symbolId: '[name]'
+            }),
             AutoImport({
                 resolvers: [NaiveUiResolver()]
             }),

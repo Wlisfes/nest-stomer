@@ -1,6 +1,15 @@
 import { h, VNode, computed } from 'vue'
 import { NIcon as Icon, IconProps } from 'naive-ui'
 import * as antd from '@vicons/antd'
+import { Add28Filled } from '@vicons/fluent'
+
+export function useSVG(name: string, color = '#333') {
+    return h(
+        <svg aria-hidden="true">
+            <use xlinkHref={name} fill={color} />
+        </svg>
+    )
+}
 
 const ICON = {
     ...antd,
@@ -27,7 +36,9 @@ const ICON = {
         <svg viewBox="0 0 512 512">
             <path d="M264 480A232 232 0 0 1 32 248c0-94 54-178.28 137.61-214.67a16 16 0 0 1 21.06 21.06C181.07 76.43 176 104.66 176 136c0 110.28 89.72 200 200 200c31.34 0 59.57-5.07 81.61-14.67a16 16 0 0 1 21.06 21.06C442.28 426 358 480 264 480z"></path>
         </svg>
-    )
+    ),
+    Add28Filled,
+    AddFilled: useSVG('AddFilled')
 }
 
 export type INode = keyof typeof ICON

@@ -1,6 +1,5 @@
 <script lang="tsx">
 import { defineComponent, VNode, Fragment } from 'vue'
-import { DataTableBaseColumn } from 'naive-ui'
 import { useRxicon } from '@/hooks/hook-icon'
 import { useSource } from '@/hooks/hook-source'
 import { useLocale } from '@/hooks/hook-locale'
@@ -47,6 +46,7 @@ export default defineComponent({
                                 </n-form-item>
                                 <n-button type="primary" class="n-start">
                                     {{
+                                        icon: () => <Icon component={compute('AddFilled')}></Icon>,
                                         default: () => t('chacter.basic.create')
                                     }}
                                 </n-button>
