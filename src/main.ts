@@ -1,10 +1,14 @@
-import 'virtual:svg-icons-register'
-import '@/style/index.scss'
-import App from '@/App.vue'
-import { createComponent } from '@/utils/utils-app'
+import './assets/main.css'
 
-async function bootstrap() {
-    const { app } = createComponent(App)
-    app.mount('#app', true)
-}
-bootstrap()
+import { createApp } from 'vue'
+import { createPinia } from 'pinia'
+
+import App from './App.vue'
+import router from './router'
+
+const app = createApp(App)
+
+app.use(createPinia())
+app.use(router)
+
+app.mount('#app')

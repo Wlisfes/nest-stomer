@@ -1,39 +1,17 @@
-import { defineConfig, loadEnv, type ConfigEnv, type UserConfig } from 'vite'
 import { fileURLToPath, URL } from 'node:url'
-import { NaiveUiResolver } from 'unplugin-vue-components/resolvers'
-import { createSvgIconsPlugin } from 'vite-plugin-svg-icons'
-import AutoImport from 'unplugin-auto-import/vite'
-import Components from 'unplugin-vue-components/vite'
-import Vue from '@vitejs/plugin-vue'
-import VueJSX from '@vitejs/plugin-vue-jsx'
-import path from 'path'
+import { defineConfig, loadEnv, ConfigEnv, UserConfig } from 'vite'
+import vue from '@vitejs/plugin-vue'
+import vueJsx from '@vitejs/plugin-vue-jsx'
 
 export default defineConfig(({ command, mode }: ConfigEnv): UserConfig => {
     const root = process.cwd()
     const env = loadEnv(mode, root)
 
     return {
-        plugins: [
-            Vue(),
-            VueJSX(),
-            createSvgIconsPlugin({
-                iconDirs: [path.resolve(process.cwd(), 'src/icons')],
-                symbolId: '[name]'
-            }),
-            AutoImport({
-                resolvers: [NaiveUiResolver()]
-            }),
-            Components({
-                dts: true,
-                dirs: ['src/components'],
-                resolvers: [NaiveUiResolver()],
-                include: [/\.vue$/, /\.vue\?vue/, /\.tsx$/, /\.tsx\?tsx/]
-            })
-        ],
+        plugins: [vue(), vueJsx()],
         resolve: {
             alias: {
-                '@': fileURLToPath(new URL('./src', import.meta.url)),
-                'vue-i18n': 'vue-i18n/dist/vue-i18n.cjs.js'
+                '@': fileURLToPath(new URL('./src', import.meta.url))
             }
         },
         css: {
