@@ -1,5 +1,8 @@
-import { fileURLToPath, URL } from 'node:url'
 import { defineConfig, loadEnv, ConfigEnv, UserConfig } from 'vite'
+import { fileURLToPath, URL } from 'node:url'
+import { NaiveUiResolver } from 'unplugin-vue-components/resolvers'
+import AutoImport from 'unplugin-auto-import/vite'
+import Components from 'unplugin-vue-components/vite'
 import vue from '@vitejs/plugin-vue'
 import vueJsx from '@vitejs/plugin-vue-jsx'
 
@@ -8,7 +11,19 @@ export default defineConfig(({ command, mode }: ConfigEnv): UserConfig => {
     const env = loadEnv(mode, root)
 
     return {
-        plugins: [vue(), vueJsx()],
+        plugins: [
+            vue(),
+            vueJsx(),
+            AutoImport({
+                resolvers: [NaiveUiResolver()]
+            }),
+            Components({
+                dts: true,
+                dirs: ['src/components'],
+                resolvers: [NaiveUiResolver()],
+                include: [/\.vue$/, /\.vue\?vue/, /\.tsx$/, /\.tsx\?tsx/]
+            })
+        ],
         resolve: {
             alias: {
                 '@': fileURLToPath(new URL('./src', import.meta.url))
