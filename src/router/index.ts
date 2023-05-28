@@ -1,3 +1,4 @@
+import type { App } from 'vue'
 import { createRouter, createWebHistory } from 'vue-router'
 
 const router = createRouter({
@@ -12,3 +13,8 @@ const router = createRouter({
 })
 
 export default router
+
+export function setupRouter(app: App<Element>) {
+    app.use(router)
+    // setupGuardRouter(router)
+}

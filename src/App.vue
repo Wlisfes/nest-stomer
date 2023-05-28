@@ -1,14 +1,14 @@
 <script lang="tsx">
-import { defineComponent, Fragment } from 'vue'
+import { defineComponent } from 'vue'
 import { RouterView } from 'vue-router'
 
 export default defineComponent({
     name: 'App',
     setup() {
         return () => (
-            <Fragment>
+            <common-provider>
                 <RouterView></RouterView>
-            </Fragment>
+            </common-provider>
         )
     }
 })
