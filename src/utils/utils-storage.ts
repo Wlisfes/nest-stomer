@@ -8,6 +8,7 @@ interface INode {
 class LocalStorage {
     private instance: Storage = window.localStorage
     public APP_AUTH_TOKEN: string = 'APP_AUTH_TOKEN'
+    public APP_AUTH_LOCALE: string = 'APP_AUTH_LOCALE'
 
     /**存入**/
     public async setStore(key: string, value: unknown, expire?: number): Promise<void> {
