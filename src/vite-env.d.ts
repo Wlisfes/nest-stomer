@@ -1,5 +1,6 @@
 /// <reference types="vite/client" />
 import { CookieStorage } from '@/utils/utils-cookie'
+import { Layout } from '@/utils/utils-layout'
 
 declare module '*.vue' {
     import { DefineComponent } from 'vue'
@@ -27,7 +28,7 @@ declare global {
         $loading: LoadingBarInst
         $notification: NotificationApiInjection
         $dialog: DialogApiInjection
-        $instance: NInstance
+        $layout: Layout
         AliyunUpload: {
             Vod: new (option) => any
         }
