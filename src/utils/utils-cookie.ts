@@ -5,7 +5,7 @@ interface INode<T = unknown> {
     expire?: number
 }
 
-class CookieStorage {
+export class CookieStorage {
     private instance: Storage = window.localStorage
     public APP_AUTH_TOKEN: string = 'APP_AUTH_TOKEN'
     public APP_AUTH_LOCALE: string = 'APP_AUTH_LOCALE'
@@ -26,7 +26,7 @@ class CookieStorage {
         if (!isEmpty(node.value) && (!node.expire || new Date().getTime() < node.expire)) {
             return node.value
         }
-        return await this.delStore(key).finally(() => value)
+        return await this.delStore(key).then(() => value)
     }
 
     /**删除**/
@@ -41,3 +41,4 @@ class CookieStorage {
 }
 
 export const cookie = new CookieStorage()
+window.$cookie = cookie
