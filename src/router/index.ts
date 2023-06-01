@@ -31,6 +31,7 @@ export function setupGuardRouter(router: Router) {
 
     router.afterEach((to, form) => {
         // window.$loading.finish()
+        store.setCurrent(to.path)
     })
 }
 

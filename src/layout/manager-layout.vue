@@ -1,15 +1,36 @@
 <script lang="tsx">
-import { defineComponent, computed } from 'vue'
+import { defineComponent, computed, type CSSProperties } from 'vue'
+import { RouterView } from 'vue-router'
 import { useManager } from '@/store/manager'
+import { useProvider } from '@/hooks/hook-provider'
 
 export default defineComponent({
     name: 'ManagerLayout',
     setup() {
+        const { vars, inverted } = useProvider()
         const store = useManager()
+        const mobile = computed(() => store.device === 'MOBILE')
+        const native = computed<CSSProperties>(() => {
+            return {
+                top: store.better ? '106px' : '60px',
+                backgroundColor: vars.value.backColor
+            }
+        })
 
         return () => (
             <n-layout class="manager-layout" has-sider>
-                <n-layout-sider bordered>
+                <n-layout-sider
+                    bordered
+                    collapsed={store.collapse}
+                    inverted={inverted.value.sider}
+                    width={240}
+                    collapsed-width={mobile.value ? 0 : 64}
+                    native-scrollbar={false}
+                    show-trigger={mobile.value ? false : 'bar'}
+                    collapse-mode="width"
+                    expanded-keys={[]}
+                    onUpdateCollapsed={() => store.setCollapse(!store.collapse)}
+                >
                     <n-menu
                         accordion
                         root-indent={18}
@@ -23,8 +44,8 @@ export default defineComponent({
                     <n-layout-header class="manager-layout__header" bordered>
                         1
                     </n-layout-header>
-                    <n-layout class="manager-layout__container" position="absolute" native-scrollbar={false}>
-                        2
+                    <n-layout class="manager-layout__container" position="absolute" style={native.value} native-scrollbar={false}>
+                        <RouterView></RouterView>
                     </n-layout>
                 </n-layout>
             </n-layout>
