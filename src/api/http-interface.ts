@@ -1,10 +1,10 @@
-export interface IState {
+export interface Scheme {
     id: number
     createTime: string
     updateTime: string
     status: string
 }
-export interface RCommon<T = Object> {
+export interface Result<T = Object> {
     page: number
     size: number
     total: number

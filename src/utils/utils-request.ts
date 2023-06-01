@@ -1,5 +1,5 @@
 import axios, { type AxiosInstance, type InternalAxiosRequestConfig, type AxiosResponse, AxiosError } from 'axios'
-import { storage } from '@/utils/utils-storage'
+import { cookie } from '@/utils/utils-cookie'
 
 export const request: AxiosInstance = axios.create({
     baseURL: import.meta.env.VITE_API_BASE,
@@ -17,8 +17,8 @@ const interNotice = (response: AxiosResponse) => {
 
 request.interceptors.request.use(
     async (config: InternalAxiosRequestConfig) => {
-        config.headers['x-token'] = await storage.getStore(storage.APP_AUTH_TOKEN)
-        config.headers['x-locale'] = (await storage.getStore(storage.APP_AUTH_LOCALE)) || 'cn'
+        config.headers['x-token'] = await cookie.getStore(cookie.APP_AUTH_TOKEN)
+        config.headers['x-locale'] = await cookie.getStore(cookie.APP_AUTH_LOCALE, 'cn')
         return config
     },
     (error: AxiosError) => Promise.reject(error)

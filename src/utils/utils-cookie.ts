@@ -1,11 +1,11 @@
 import { isEmpty } from 'class-validator'
 
-interface INode {
-    value: any
+interface INode<T = unknown> {
+    value: T
     expire?: number
 }
 
-class LocalStorage {
+class CookieStorage {
     private instance: Storage = window.localStorage
     public APP_AUTH_TOKEN: string = 'APP_AUTH_TOKEN'
     public APP_AUTH_LOCALE: string = 'APP_AUTH_LOCALE'
@@ -20,13 +20,13 @@ class LocalStorage {
     }
 
     /**读取**/
-    public async getStore<T>(key: string): Promise<T | unknown> {
+    public async getStore<T>(key: string, value?: T): Promise<T | unknown> {
         const nodeStr = this.instance.getItem(key)
-        const node: INode = JSON.parse(nodeStr ?? '{}')
-        if (isEmpty(node.value) && (!node.expire || new Date().getTime() < node.expire)) {
+        const node: INode<T> = JSON.parse(nodeStr ?? '{}')
+        if (!isEmpty(node.value) && (!node.expire || new Date().getTime() < node.expire)) {
             return node.value
         }
-        return await this.delStore(key)
+        return await this.delStore(key).finally(() => value)
     }
 
     /**删除**/
@@ -40,4 +40,4 @@ class LocalStorage {
     }
 }
 
-export const storage = new LocalStorage()
+export const cookie = new CookieStorage()
