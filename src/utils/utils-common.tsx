@@ -1,7 +1,6 @@
 import { computed } from 'vue'
 
-export function divineLocale() {
-    return computed(() => {
-        return 111111
-    })
+/**文件导入函数**/
+export function loadFile(path: string) {
+    return new URL(`../assets/${path}`, import.meta.url).href
 }

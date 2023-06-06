@@ -1,5 +1,5 @@
 <script lang="tsx">
-import { defineComponent, type PropType } from 'vue'
+import { defineComponent } from 'vue'
 import { useState } from '@/hooks/hook-state'
 
 interface IState {
@@ -30,7 +30,10 @@ export default defineComponent({
                     }
                 })
             } else {
-                setState(e => ({ user: { uid: Date.now(), nickname: '西莉卡' } })).then(x => {
+                setState(e => ({
+                    loading: false,
+                    user: { uid: Date.now(), nickname: '西莉卡' }
+                })).then(x => {
                     console.log(x)
                 })
             }

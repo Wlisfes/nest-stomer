@@ -3,8 +3,10 @@ import { RouterView, type RouteRecordRaw } from 'vue-router'
 export const manager: Array<RouteRecordRaw> = [
     {
         path: '/manager',
-        component: () => import('@/layout/manager-layout.vue'),
         redirect: '/manager/master',
+        name: 'Manager',
+        meta: { title: { cn: '', en: '' }, Authorize: true },
+        component: () => import('@/layout/manager-layout.vue'),
         children: [
             {
                 path: '/manager/master',
