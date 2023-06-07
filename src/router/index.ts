@@ -8,20 +8,20 @@ import { cookie } from '@/utils/utils-cookie'
 export const routes: Array<RouteRecordRaw> = client.concat([
     ...manager,
     {
-        path: '/compute',
-        redirect: '/compute/login',
+        path: '/middle',
+        redirect: '/middle/login',
         name: 'Compute',
         meta: { Authorize: 'AUTH_NONE' },
         component: () => import('@/views/middle/compute.vue'),
         children: [
             {
-                path: '/compute/login',
+                path: '/middle/login',
                 name: 'Login',
                 meta: { title: { cn: '', en: '' }, Authorize: 'AUTH_NONE' },
                 component: () => import('@/views/middle/login.vue')
             },
             {
-                path: '/compute/register',
+                path: '/middle/register',
                 name: 'Register',
                 meta: { title: { cn: '', en: '' }, Authorize: 'AUTH_NONE' },
                 component: () => import('@/views/middle/register.vue')
@@ -51,7 +51,7 @@ export function setupGuardRouter(router: Router) {
         } else {
             switch (to.meta.Authorize) {
                 case 'AUTH': //未登录进入AUTH界面、重定向到登录页
-                    return next({ path: '/compute/login', replace: true })
+                    return next({ path: '/middle/login', replace: true })
                 case 'AUTH_NONE':
                 case 'NONE': //未登录进入NONE、AUTH_NONE界面、允许进入
                     return next()

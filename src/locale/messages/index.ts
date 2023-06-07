@@ -6,11 +6,11 @@ export const messages = {
     cn: {
         ...zhCN,
         ...dateZhCN,
-        ...middle.cn
+        middle: middle.cn
     },
     en: {
         ...enUS,
         ...dateEnUS,
-        ...middle.en
+        middle: middle.en
     }
 }
