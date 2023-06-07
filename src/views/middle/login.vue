@@ -1,17 +1,86 @@
 <script lang="tsx">
-import { defineComponent } from 'vue'
+import type { FormInst, FormRules, FormItemRule } from 'naive-ui'
+import { defineComponent, ref } from 'vue'
+import { useState } from '@/hooks/hook-state'
+import { useLocale } from '@/locale/instance'
+interface FormState {
+    loading: boolean
+    rules: FormRules
+    form: {
+        mobile: string | undefined | null
+        password: string | undefined | null
+        code: string | undefined | null
+    }
+}
 
 export default defineComponent({
     name: 'Login',
     setup() {
+        const formRef = ref<FormInst>()
+        const { t } = useLocale()
+        const { state, setState } = useState<FormState>({
+            loading: false,
+            form: {
+                mobile: undefined,
+                password: undefined,
+                code: undefined
+            },
+            rules: {
+                mobile: [
+                    { required: true, trigger: ['blur', 'change'], message: '11111111' },
+                    { trigger: ['blur', 'change'], pattern: /^(?:(?:\+|00)86)?1\d{10}$/, message: '222222222' }
+                ],
+                // mobile: {
+                //     key: 'mobile',
+                //     required: true,
+                //     trigger: 'blur',
+                //     validator: (rule, value) => {
+                //         if (!value) {
+                //             return new Error()
+                //         } else if (!/^(?:(?:\+|00)86)?1\d{10}$/.test(value)) {
+                //             return new Error()
+                //         }
+                //         return true
+                //     }
+                // },
+                password: {
+                    key: 'password',
+                    required: true,
+                    trigger: 'blur',
+                    validator: (rule, value) => {
+                        if (!value) {
+                            return new Error()
+                        } else if (value.length < 6 || value.length > 18) {
+                            return new Error()
+                        }
+                        return true
+                    }
+                },
+                code: { key: 'code', required: true, message: '', trigger: 'blur' }
+            }
+        })
+
+        async function onSubmit() {
+            try {
+                await formRef.value?.validate()
+            } catch (e) {}
+        }
+
         return () => (
             <div>
-                <n-form label-placement="left">
+                <n-form ref={formRef} model={state.form} rules={state.rules} label-placement="left">
                     <n-form-item path="mobile">
-                        <n-input maxlength={11} type="text" size="medium" input-props={{ autocomplete: 'off' }}></n-input>
+                        <n-input
+                            v-model:value={state.form.mobile}
+                            maxlength={11}
+                            type="text"
+                            size="medium"
+                            input-props={{ autocomplete: 'off' }}
+                        ></n-input>
                     </n-form-item>
                     <n-form-item path="password">
                         <n-input
+                            v-model:value={state.form.password}
                             maxlength={16}
                             size="medium"
                             type="password"
@@ -34,6 +103,11 @@ export default defineComponent({
                                 }}
                             </n-image>
                         </common-scale>
+                    </n-form-item>
+                    <n-form-item>
+                        <n-button class="antd-submit" type="info" size="medium" loading={state.loading} onClick={onSubmit}>
+                            {111111111}
+                        </n-button>
                     </n-form-item>
                 </n-form>
             </div>

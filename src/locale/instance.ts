@@ -29,7 +29,7 @@ export function useLocale() {
     })
 
     //@ts-ignore、重载t方法
-    function t(path: Path<I18nContext>, props: Record<string, unknown> = {}) {
+    function t(path: Path<I18nContext>, props: Record<string, unknown> = {}): string {
         return context.t(path, props)
     }
 
