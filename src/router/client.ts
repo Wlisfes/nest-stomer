@@ -3,13 +3,14 @@ import type { RouteRecordRaw } from 'vue-router'
 export const client: Array<RouteRecordRaw> = [
     {
         path: '/',
-        component: () => import('@/layout/manager-layout.vue'),
         redirect: '/client/master',
+        meta: { Authorize: 'NONE' },
+        component: () => import('@/layout/manager-layout.vue'),
         children: [
             {
                 path: '/client/master',
                 name: 'Home',
-                meta: { white: true },
+                meta: { Authorize: 'NONE' },
                 component: () => import('@/views/Home.vue')
             }
         ]

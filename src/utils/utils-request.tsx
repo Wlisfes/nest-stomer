@@ -1,8 +1,9 @@
 import axios, { type AxiosInstance, type InternalAxiosRequestConfig, type AxiosResponse, AxiosError } from 'axios'
 import { cookie } from '@/utils/utils-cookie'
 
+export const baseURL = import.meta.env.VITE_API_BASE
 export const request: AxiosInstance = axios.create({
-    baseURL: import.meta.env.VITE_API_BASE,
+    baseURL,
     timeout: 60000
 })
 
