@@ -10,6 +10,7 @@ package-lock.json
 yarn.lock
 auto-imports.d.ts
 components.d.ts
+*.code-workspace
 
 node_modules
 .DS_Store
