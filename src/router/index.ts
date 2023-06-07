@@ -39,7 +39,7 @@ const router = createRouter({
 export function setupGuardRouter(router: Router) {
     const store = useManager()
     router.beforeEach(async (to, form, next) => {
-        const token = await cookie.getStore(cookie.APP_AUTH_TOKEN)
+        const token = await cookie.getStore(cookie.APP_AUTH_TOKEN, { sync: true })
         if (token) {
             const isRefresh = store.router.length === 0
             if (isRefresh) {

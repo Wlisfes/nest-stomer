@@ -17,9 +17,9 @@ const interNotice = (response: AxiosResponse) => {
 }
 
 request.interceptors.request.use(
-    async (config: InternalAxiosRequestConfig) => {
-        config.headers['x-token'] = await cookie.getStore(cookie.APP_AUTH_TOKEN)
-        config.headers['x-locale'] = await cookie.getStore(cookie.APP_AUTH_LOCALE, 'cn')
+    (config: InternalAxiosRequestConfig) => {
+        config.headers['x-token'] = cookie.getStore(cookie.APP_AUTH_TOKEN)
+        config.headers['x-locale'] = cookie.getStore(cookie.APP_AUTH_LOCALE, { value: 'cn' })
         return config
     },
     (error: AxiosError) => Promise.reject(error)

@@ -20,13 +20,21 @@ export class CookieStorage {
     }
 
     /**读取**/
-    public async getStore<T>(key: string, value?: T): Promise<T | unknown> {
+    public getStore<T>(key: string, option?: { sync?: boolean; value?: T }) {
         const nodeStr = this.instance.getItem(key)
         const node: INode<T> = JSON.parse(nodeStr ?? '{}')
         if (!isEmpty(node.value) && (!node.expire || new Date().getTime() < node.expire)) {
+            if (option?.sync) {
+                return Promise.resolve(node.value)
+            }
             return node.value
+        } else {
+            if (option?.sync) {
+                return this.delStore(key).then(() => option.value)
+            }
+            this.delStore(key)
+            return option?.value
         }
-        return await this.delStore(key).then(() => value)
     }
 
     /**删除**/
