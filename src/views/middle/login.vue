@@ -112,7 +112,14 @@ export default defineComponent({
                         </common-scale>
                     </n-form-item>
                     <n-form-item>
-                        <n-button class="antd-submit" type="info" size="medium" loading={state.loading} onClick={onSubmit}>
+                        <n-button
+                            class="antd-submit"
+                            type="info"
+                            size="medium"
+                            disabled={state.loading}
+                            loading={state.loading}
+                            onClick={onSubmit}
+                        >
                             {t('middle.login.alias')}
                         </n-button>
                     </n-form-item>
