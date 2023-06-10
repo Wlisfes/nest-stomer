@@ -20,7 +20,7 @@ export function httpRegister(data: { nickname: string; password: string; mobile:
 
 /**登录**/
 export function httpLogin(data: { mobile?: string; password?: string; code?: string }) {
-    return request<{ token: string; refresh: string; expire: number }>({
+    return request<{ token: string; refresh: string; expire: number; message: string }>({
         url: `/api/user/login`,
         method: 'POST',
         data

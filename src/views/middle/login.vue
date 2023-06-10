@@ -47,7 +47,7 @@ export default defineComponent({
             divineFormValidater(() => {
                 setState({ loading: true }).finally(async () => {
                     try {
-                        const { message, data } = await httpLogin({
+                        const { data } = await httpLogin({
                             mobile: state.form.mobile,
                             password: window.btoa(state.form.password as string),
                             code: state.form.code
@@ -60,7 +60,7 @@ export default defineComponent({
                             data.expire * 1000
                         )
                         window.$notification.success({
-                            title: message,
+                            title: data.message,
                             duration: 2500,
                             onAfterEnter: () => {
                                 setState({ loading: false }).finally(() => {
