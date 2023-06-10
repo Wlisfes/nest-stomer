@@ -1,8 +1,20 @@
-import axios, { type AxiosInstance, type InternalAxiosRequestConfig, type AxiosResponse, AxiosError } from 'axios'
+import axios, { type AxiosInstance, type InternalAxiosRequestConfig, type AxiosRequestConfig, type AxiosResponse } from 'axios'
 import { cookie } from '@/utils/utils-cookie'
 
+export interface Response<T = unknown> {
+    data: T
+    code: number
+    message: string
+    timestamp: string
+}
+
+interface Request extends AxiosInstance {
+    <T = any, R = AxiosResponse<T>, D = any>(config: AxiosRequestConfig<D>): Promise<R & Response<T>>
+    <T = any, R = AxiosResponse<T>, D = any>(url: string, config?: AxiosRequestConfig<D>): Promise<R & Response<T>>
+}
+
 export const baseURL = import.meta.env.VITE_API_BASE
-export const request: AxiosInstance = axios.create({
+export const request: Request = axios.create({
     baseURL,
     timeout: 60000
 })
@@ -22,12 +34,10 @@ request.interceptors.request.use(
         config.headers['x-locale'] = cookie.getStore(cookie.APP_AUTH_LOCALE, { value: 'cn' })
         return config
     },
-    (error: AxiosError) => Promise.reject(error)
+    error => Promise.reject(error)
 )
 
 request.interceptors.response.use(
     (response: AxiosResponse) => interNotice(response),
-    (error: AxiosError) => Promise.reject(error)
+    error => Promise.reject(error)
 )
-
-export default request

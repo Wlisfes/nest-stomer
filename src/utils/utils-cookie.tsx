@@ -8,7 +8,10 @@ interface INode<T = unknown> {
 export class CookieStorage {
     private instance: Storage = window.localStorage
     public APP_AUTH_TOKEN: string = 'APP_AUTH_TOKEN'
+    public APP_AUTH_REFRESH: string = 'APP_AUTH_REFRESH'
+    public APP_AUTH_EXPIRE: string = 'APP_AUTH_EXPIRE'
     public APP_AUTH_LOCALE: string = 'APP_AUTH_LOCALE'
+    public APP_AUTH_RELACE: string = 'APP_AUTH_RELACE'
 
     /**存入**/
     public async setStore(key: string, value: unknown, expire?: number): Promise<void> {

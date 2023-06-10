@@ -1,15 +1,10 @@
 import '@/style/index.scss'
+import App from '@/App.vue'
+import { createComponent } from '@/utils/utils-app'
 
-import App from './App.vue'
-import { createApp } from 'vue'
-import { setupI18n } from '@/locale/instance'
-import { setupStore } from '@/store'
-import { setupRouter } from '@/router'
+async function bootstrap() {
+    const { app } = createComponent(App)
 
-const app = createApp(App)
-
-setupI18n(app)
-setupStore(app)
-setupRouter(app)
-
-app.mount('#app')
+    app.mount('#app')
+}
+bootstrap()

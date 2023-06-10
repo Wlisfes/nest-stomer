@@ -1,15 +1,13 @@
 <script lang="tsx">
-import type { FormInst, FormRules } from 'naive-ui'
-import { defineComponent, ref } from 'vue'
-import { RouterLink } from 'vue-router'
-import { useState } from '@/hooks/hook-state'
+import { defineComponent } from 'vue'
+import { useRouter, RouterLink } from 'vue-router'
+import { useCustomizeForm } from '@/hooks/hook-form'
 import { useLocale } from '@/locale/instance'
 import { loadFile } from '@/utils/utils-common'
 import { httpLogin } from '@/api/http-user'
 import { baseURL } from '@/utils/utils-request'
 interface FormState {
     loading: boolean
-    rules: FormRules
     random: number
     form: {
         mobile: string | undefined
@@ -21,9 +19,9 @@ interface FormState {
 export default defineComponent({
     name: 'Login',
     setup() {
-        const formRef = ref<FormInst>()
+        const router = useRouter()
         const { t } = useLocale()
-        const { state, setState } = useState<FormState>({
+        const { formRef, state, setState, divineFormValidater } = useCustomizeForm<FormState>({
             loading: false,
             random: Math.random(),
             form: {
@@ -44,19 +42,40 @@ export default defineComponent({
             }
         })
 
-        async function onSubmit() {
-            try {
-                await formRef.value?.validate()
-                await setState({ loading: true })
-                const { data } = await httpLogin({
-                    mobile: state.form.mobile,
-                    password: window.btoa(state.form.password as string),
-                    code: state.form.code
+        /**登录**/
+        function onSubmit() {
+            divineFormValidater(() => {
+                setState({ loading: true }).finally(async () => {
+                    try {
+                        const { message, data } = await httpLogin({
+                            mobile: state.form.mobile,
+                            password: window.btoa(state.form.password as string),
+                            code: state.form.code
+                        })
+                        await window.$cookie.setStore(window.$cookie.APP_AUTH_TOKEN, data.token, data.expire * 1000)
+                        await window.$cookie.setStore(window.$cookie.APP_AUTH_REFRESH, data.refresh, data.expire * 1000 * 10)
+                        await window.$cookie.setStore(
+                            window.$cookie.APP_AUTH_EXPIRE,
+                            Date.now() + data.expire * 0.9 * 1000,
+                            data.expire * 1000
+                        )
+                        window.$notification.success({
+                            title: message,
+                            duration: 2500,
+                            onAfterEnter: () => {
+                                setState({ loading: false }).finally(() => {
+                                    const path = window.$cookie.getStore(window.$cookie.APP_AUTH_RELACE, { value: '/' })
+                                    window.$cookie.delStore(window.$cookie.APP_AUTH_RELACE).finally(() => {
+                                        router.replace(path as string)
+                                    })
+                                })
+                            }
+                        })
+                    } catch (e) {
+                        setState({ loading: false })
+                    }
                 })
-                console.log(data)
-            } catch (e) {
-                setState({ loading: false })
-            }
+            }).catch(e => {})
         }
 
         return () => (

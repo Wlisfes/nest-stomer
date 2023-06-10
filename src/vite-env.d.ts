@@ -1,6 +1,4 @@
 /// <reference types="vite/client" />
-import { CookieStorage } from '@/utils/utils-cookie'
-import { Layout } from '@/utils/utils-layout'
 
 declare module '*.vue' {
     import { DefineComponent } from 'vue'
@@ -19,18 +17,4 @@ interface ImportMetaEnv {
 
 interface ImportMeta {
     readonly env: ImportMetaEnv
-}
-
-declare global {
-    interface Window {
-        $cookie: CookieStorage
-        $message: MessageApiInjection
-        $loading: LoadingBarInst
-        $notification: NotificationApiInjection
-        $dialog: DialogApiInjection
-        $layout: Layout
-        AliyunUpload: {
-            Vod: new (option) => any
-        }
-    }
 }

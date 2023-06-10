@@ -4,7 +4,7 @@ import { createRouter, createWebHistory } from 'vue-router'
 import { client } from '@/router/client'
 import { manager } from '@/router/manager'
 import { useManager } from '@/store/manager'
-import { cookie } from '@/utils/utils-cookie'
+import { useUser } from '@/store/user'
 export const routes: Array<RouteRecordRaw> = client.concat([
     ...manager,
     {
@@ -38,15 +38,30 @@ const router = createRouter({
 /**路由守卫**/
 export function setupGuardRouter(router: Router) {
     const store = useManager()
+    const user = useUser()
     router.beforeEach(async (to, form, next) => {
-        const token = await cookie.getStore(cookie.APP_AUTH_TOKEN, { sync: true })
+        window.$loading.start()
+        const token = await window.$cookie.getStore(window.$cookie.APP_AUTH_TOKEN, { sync: true })
         if (token) {
-            const isRefresh = store.router.length === 0
-            if (isRefresh) {
-                await store.httpRouter().catch(async e => {
-                    await cookie.delStore(cookie.APP_AUTH_TOKEN)
+            if (store.router.length === 0) {
+                try {
+                    await user.httpUser()
+                    await store.httpRouter()
+                } catch (e) {
+                    await window.$cookie.delStore(window.$cookie.APP_AUTH_TOKEN)
+                    await window.$cookie.delStore(window.$cookie.APP_AUTH_REFRESH)
+                    await window.$cookie.delStore(window.$cookie.APP_AUTH_EXPIRE)
+                    return next({ path: '/middle/login', replace: true })
+                }
+            }
+            switch (to.meta.Authorize) {
+                case 'AUTH_NONE': //已登录进入AUTH_NONE界面、不允许进入
+                    return next({ path: '/', replace: true })
+                case 'NONE':
+                case 'AUTH': //已登录进入NONE、AUTH界面、允许进入
                     return next()
-                })
+                default:
+                    return next()
             }
         } else {
             switch (to.meta.Authorize) {
@@ -62,7 +77,7 @@ export function setupGuardRouter(router: Router) {
     })
 
     router.afterEach((to, form) => {
-        // window.$loading.finish()
+        window.$loading.finish()
         store.setCurrent(to.path)
     })
 }
