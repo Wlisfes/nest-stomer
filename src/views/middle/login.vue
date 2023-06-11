@@ -1,5 +1,5 @@
 <script lang="tsx">
-import { defineComponent } from 'vue'
+import { defineComponent, onMounted } from 'vue'
 import { useRouter, RouterLink } from 'vue-router'
 import { useCustomizeForm } from '@/hooks/hook-form'
 import { useLocale } from '@/locale/instance'
@@ -8,7 +8,7 @@ import { httpLogin } from '@/api/http-user'
 import { baseURL } from '@/utils/utils-request'
 interface FormState {
     loading: boolean
-    random: number
+    URL?: string
     form: {
         mobile: string | undefined
         password: string | undefined
@@ -23,7 +23,7 @@ export default defineComponent({
         const { t } = useLocale()
         const { formRef, state, setState, divineFormValidater } = useCustomizeForm<FormState>({
             loading: false,
-            random: Math.random(),
+            URL: undefined,
             form: {
                 mobile: undefined,
                 password: undefined,
@@ -36,11 +36,21 @@ export default defineComponent({
                 ],
                 password: [
                     { required: true, trigger: ['blur', 'change'], message: t('middle.password.placeholder') },
-                    { trigger: ['blur', 'change'], min: 6, max: 18, message: t('middle.mobile.rule') }
+                    { trigger: ['blur', 'change'], min: 6, max: 18, message: t('middle.password.rule') }
                 ],
                 code: { trigger: 'blur', required: true, message: t('middle.code.placeholder') }
             }
         })
+
+        /**重载验证码**/
+        function onCompute(e: { done: Function }) {
+            e.done(true).finally(async () => {
+                await setState({
+                    URL: `${baseURL}/api/core/fetch-captcha?width=120&height=50&fontSize=50&t=${Math.random()}`
+                })
+                await e.done(false)
+            })
+        }
 
         /**登录**/
         function onSubmit() {
@@ -112,22 +122,19 @@ export default defineComponent({
                             placeholder={t('middle.code.placeholder')}
                         ></n-input>
                         <common-scale max-width={120} scale={120 / 50} style={{ marginLeft: '10px', cursor: 'pointer' }}>
-                            <n-image
-                                src={`${baseURL}/api/core/fetch-captcha?width=120&height=50&fontSize=50&t=${state.random}`}
-                                preview-disabled
-                                style={{ borderRadius: '2px' }}
-                                onClick={(e: Event) => setState({ random: Math.random() })}
-                            >
-                                {{
-                                    placeholder: () => (
-                                        <n-skeleton
-                                            width="100%"
-                                            height="100%"
-                                            style={{ borderRadius: '4px', backgroundColor: '#E8F0FE' }}
-                                        />
-                                    )
-                                }}
-                            </n-image>
+                            <common-spin runtime onCompute={onCompute}>
+                                <n-image src={state.URL} preview-disabled style={{ borderRadius: '2px' }}>
+                                    {{
+                                        placeholder: () => (
+                                            <n-skeleton
+                                                width="100%"
+                                                height="100%"
+                                                style={{ borderRadius: '4px', backgroundColor: '#E8F0FE' }}
+                                            />
+                                        )
+                                    }}
+                                </n-image>
+                            </common-spin>
                         </common-scale>
                     </n-form-item>
                     <n-form-item>
