@@ -6,6 +6,8 @@ export interface Response<T = unknown> {
     code: number
     message: string
     timestamp: string
+    method: string
+    url: string
 }
 
 interface Request extends AxiosInstance {

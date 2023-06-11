@@ -66,7 +66,9 @@ export function setupGuardRouter(router: Router) {
         } else {
             switch (to.meta.Authorize) {
                 case 'AUTH': //未登录进入AUTH界面、重定向到登录页
-                    return next({ path: '/middle/login', replace: true })
+                    return window.$cookie.setStore(window.$cookie.APP_AUTH_RELACE, to.fullPath).finally(() => {
+                        return next({ path: '/middle/login', replace: true })
+                    })
                 case 'AUTH_NONE':
                 case 'NONE': //未登录进入NONE、AUTH_NONE界面、允许进入
                     return next()

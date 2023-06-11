@@ -81,8 +81,10 @@ export default defineComponent({
                                 })
                             }
                         })
-                    } catch (e) {
-                        setState({ loading: false })
+                    } catch (e: any) {
+                        setState({ loading: false }).finally(() => {
+                            window.$notification.error({ title: e.message, duration: 2500 })
+                        })
                     }
                 })
             }).catch(e => {})
