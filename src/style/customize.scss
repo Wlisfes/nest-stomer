@@ -1,0 +1,7 @@
+.n-scrollbar .n-scrollbar-content {
+    position: relative;
+    min-height: 100%;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+}

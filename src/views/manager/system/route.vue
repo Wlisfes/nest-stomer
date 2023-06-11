@@ -4,7 +4,13 @@ import { defineComponent } from 'vue'
 export default defineComponent({
     name: 'Route',
     setup() {
-        return () => <div>Route</div>
+        return () => (
+            <common-container>
+                {{
+                    toolbar: () => <h1 slot="toolbar">Route</h1>
+                }}
+            </common-container>
+        )
     }
 })
 </script>
