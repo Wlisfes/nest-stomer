@@ -19,7 +19,7 @@ export function httpRegister(data: { nickname: string; password: string; mobile:
 }
 
 /**登录**/
-export function httpLogin(data: { mobile?: string; password?: string; code?: string }) {
+export function httpAuthorize(data: { mobile?: string; password?: string; code?: string }) {
     return request<{ token: string; refresh: string; expire: number; message: string }>({
         url: `/api/user/login`,
         method: 'POST',
@@ -28,9 +28,9 @@ export function httpLogin(data: { mobile?: string; password?: string; code?: str
 }
 
 /**用户信息**/
-export function httpUser() {
+export function httpBasicUser() {
     return request<IUser>({
-        url: `/api/user/base`,
+        url: `/api/user/basic`,
         method: 'GET'
     })
 }

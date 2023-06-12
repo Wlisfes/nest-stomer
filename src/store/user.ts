@@ -1,5 +1,5 @@
 import { defineStore } from 'pinia'
-import { httpUser, type IUser } from '@/api/http-user'
+import { httpBasicUser, type IUser } from '@/api/http-user'
 
 export const useUser = defineStore({
     id: 'user',
@@ -7,10 +7,10 @@ export const useUser = defineStore({
         uid: undefined
     }),
     actions: {
-        httpUser: () => {
+        httpBasicUser: () => {
             return new Promise(async (resolve, reject) => {
                 try {
-                    const { data } = await httpUser()
+                    const { data } = await httpBasicUser()
                     console.log(data)
 
                     resolve(data)

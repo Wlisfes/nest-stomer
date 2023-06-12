@@ -4,7 +4,7 @@ import { useRouter, RouterLink } from 'vue-router'
 import { useCustomizeForm } from '@/hooks/hook-form'
 import { useLocale } from '@/locale/instance'
 import { loadFile } from '@/utils/utils-common'
-import { httpLogin } from '@/api/http-user'
+import { httpAuthorize } from '@/api/http-user'
 import { baseURL } from '@/utils/utils-request'
 interface FormState {
     loading: boolean
@@ -57,7 +57,7 @@ export default defineComponent({
             divineFormValidater(() => {
                 setState({ loading: true }).finally(async () => {
                     try {
-                        const { data } = await httpLogin({
+                        const { data } = await httpAuthorize({
                             mobile: state.form.mobile,
                             password: window.btoa(state.form.password as string),
                             code: state.form.code

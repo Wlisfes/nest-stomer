@@ -45,7 +45,7 @@ export function setupGuardRouter(router: Router) {
         if (token) {
             if (store.router.length === 0) {
                 try {
-                    await user.httpUser()
+                    await user.httpBasicUser()
                     await store.httpRouter()
                 } catch (e) {
                     await window.$cookie.delStore(window.$cookie.APP_AUTH_TOKEN)
