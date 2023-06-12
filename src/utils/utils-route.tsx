@@ -5,11 +5,13 @@ import { RouterLink } from 'vue-router'
 
 /**动态路由转树结构**/
 export function formaterTree<T extends IRoute>(data: Array<T>) {
-    const map: Record<string, T> = {}
     const tree: Array<T> = []
+    const map: Record<string, T> = data.reduce((curr, next) => {
+        next.children = []
+        curr[next.id] = next
+        return curr
+    }, Object.assign({}))
     data.forEach(node => {
-        map[node.id] = node
-        node.children = []
         if (node.parent) {
             map[node.parent].children.push(node)
         } else {
