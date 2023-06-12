@@ -4,10 +4,9 @@ import { defineComponent } from 'vue'
 export default defineComponent({
     name: 'CommonContainer',
     props: {
-        position: {
-            type: String,
-            default: 'is-absolute'
-        }
+        position: { type: String, default: 'is-absolute' },
+        loading: { type: Boolean, default: true },
+        empty: { tyep: Boolean, default: false }
     },
     setup(props, { slots }) {
         return () => (
@@ -29,11 +28,21 @@ export default defineComponent({
                 )}
                 <div class="common-scrollbar">
                     <n-scrollbar x-scrollable>
-                        <div style={{ minWidth: '1000px' }}>
-                            {Array.from({ length: 100 }, () => (
-                                <h1 type="primary">Primary</h1>
-                            ))}
-                        </div>
+                        {props.loading ? (
+                            <n-spin stroke-width={12} size={60} style={{ minHeight: '240px' }}></n-spin>
+                        ) : props.empty ? (
+                            <n-empty style={{ minHeight: '240px', justifyContent: 'center' }}>
+                                {{
+                                    default: () => (
+                                        <n-text depth="3" style={{ fontSize: '20px' }}>
+                                            暂无内容
+                                        </n-text>
+                                    )
+                                }}
+                            </n-empty>
+                        ) : (
+                            slots.default?.(props)
+                        )}
                     </n-scrollbar>
                 </div>
             </section>

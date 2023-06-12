@@ -13,8 +13,17 @@ export default defineComponent({
         })
 
         return () => (
-            <common-container>
-                <section style={{ minWidth: '1000px' }}></section>
+            <common-container loading={state.loading && state.total === 0} empty={!state.loading && state.total === 0}>
+                <section>
+                    {state.dataSource.map(x => (
+                        <common-layout key={x.id}>
+                            <common-layout-column>1</common-layout-column>
+                            <common-layout-column>2</common-layout-column>
+                            <common-layout-column>3</common-layout-column>
+                            <common-layout-column>4</common-layout-column>
+                        </common-layout>
+                    ))}
+                </section>
             </common-container>
         )
     }
