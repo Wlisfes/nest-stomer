@@ -3,6 +3,12 @@ import { defineComponent } from 'vue'
 
 export default defineComponent({
     name: 'CommonTable',
+    props: {
+        width: {
+            type: Number,
+            default: 640
+        }
+    },
     setup(props, { slots }) {
         return () => <div class="common-table">{slots.default?.()}</div>
     }

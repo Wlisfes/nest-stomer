@@ -1,5 +1,5 @@
 <script lang="tsx">
-import { defineComponent, Fragment, type PropType } from 'vue'
+import { defineComponent, Fragment, computed, type PropType, type CSSProperties } from 'vue'
 import { type DataTableBaseColumn } from 'naive-ui'
 
 export default defineComponent({
@@ -20,10 +20,18 @@ export default defineComponent({
         loading: {
             type: Boolean,
             default: true
+        },
+        width: {
+            type: Number,
+            default: 640
         }
     },
     setup(props, { slots }) {
-        console.log(slots)
+        const cameStyle = computed<CSSProperties>(() => ({
+            minWidth: props.width + 'px'
+        }))
+
+        console.log(props.dataColumn)
         return () => (
             <section class="common-source">
                 <n-scrollbar x-scrollable>
@@ -41,14 +49,23 @@ export default defineComponent({
                         </n-empty>
                     ) : (
                         <Fragment>
-                            {props.dataColumn.length > 0 && (
-                                <common-table>
-                                    {props.dataColumn.map(x => (
-                                        <common-table-column key={x.key} title={x.title}></common-table-column>
-                                    ))}
-                                </common-table>
-                            )}
-                            {props.dataSource.map(x => slots.default?.(x))}
+                            <div class="common-source__header" style={cameStyle.value}>
+                                {props.dataColumn.length > 0 && (
+                                    <common-table width={props.width}>
+                                        {props.dataColumn.map(x => (
+                                            <common-table-column
+                                                key={x.key}
+                                                width={props.width}
+                                                minWidth={x.minWidth}
+                                                title={x.title}
+                                            ></common-table-column>
+                                        ))}
+                                    </common-table>
+                                )}
+                            </div>
+                            <div class="common-source__container" style={cameStyle.value}>
+                                {props.dataSource.map(x => slots.default?.(x))}
+                            </div>
                         </Fragment>
                     )}
                 </n-scrollbar>

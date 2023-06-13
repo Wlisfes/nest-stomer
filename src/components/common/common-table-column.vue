@@ -1,15 +1,28 @@
 <script lang="tsx">
-import { defineComponent } from 'vue'
+import { defineComponent, computed, type CSSProperties } from 'vue'
 
 export default defineComponent({
     name: 'CommonTableColumn',
     props: {
         title: { type: String },
-        content: { type: String }
+        content: { type: String },
+        width: {
+            type: Number,
+            default: 640
+        },
+        minWidth: {
+            type: Number,
+            default: 0
+        }
     },
     setup(props, { slots }) {
+        const cameStyle = computed<CSSProperties>(() => ({
+            minWidth: props.minWidth + 'px',
+            width: Math.floor((props.minWidth / props.width) * 1000000) / 10000 + '%'
+        }))
+
         return () => (
-            <div class="common-table__column">
+            <div class="common-table__column" style={cameStyle.value}>
                 <div class="common-table__column__content">
                     {slots.default ? (
                         slots.default(props)
