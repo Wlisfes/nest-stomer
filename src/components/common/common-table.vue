@@ -2,15 +2,16 @@
 import { defineComponent } from 'vue'
 
 export default defineComponent({
-    name: 'CommonLayoutColumn',
+    name: 'CommonTable',
     setup(props, { slots }) {
-        return () => <div class="common-layout__column">{slots.default?.()}</div>
+        return () => <div class="common-table">{slots.default?.()}</div>
     }
 })
 </script>
 
 <style lang="scss" scoped>
-.common-layout__column {
+.common-table {
     position: relative;
+    display: flex;
 }
 </style>

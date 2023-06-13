@@ -8,22 +8,35 @@ export default defineComponent({
     setup() {
         const { state } = useSource<IRoute, Record<string, unknown>>({
             immediate: true,
-            dataColumn: [],
+            dataColumn: [
+                { key: 'title', title: '节点名称' },
+                { key: 'icon', title: '节点图标' },
+                { key: 'type', title: '节点类型' },
+                { key: 'path', title: '页面路径' },
+                { key: 'redirect', title: '重定向地址' },
+                { key: 'status', title: '状态' }
+            ],
             request: () => httpColumnRoute()
         })
 
         return () => (
-            <common-container loading={state.loading && state.total === 0} empty={!state.loading && state.total === 0}>
-                <section>
-                    {state.dataSource.map(x => (
-                        <common-layout key={x.id}>
-                            <common-layout-column>1</common-layout-column>
-                            <common-layout-column>2</common-layout-column>
-                            <common-layout-column>3</common-layout-column>
-                            <common-layout-column>4</common-layout-column>
-                        </common-layout>
-                    ))}
-                </section>
+            <common-container>
+                <common-source loading={state.loading} total={state.total} data-column={state.dataColumn} data-source={state.dataSource}>
+                    {{
+                        default: (e: IRoute) => {
+                            return (
+                                <common-table>
+                                    <common-table-column title={e.title}></common-table-column>
+                                    <common-table-column title={e.icon}></common-table-column>
+                                    <common-table-column title={e.type}></common-table-column>
+                                    <common-table-column title={e.path}></common-table-column>
+                                    <common-table-column title={e.redirect}></common-table-column>
+                                    <common-table-column title={e.status}></common-table-column>
+                                </common-table>
+                            )
+                        }
+                    }}
+                </common-source>
             </common-container>
         )
     }
