@@ -12,10 +12,10 @@ export interface IRoute extends Scheme {
 
 /**动态路由菜单**/
 export function httpDynamicRoute() {
-    return request<Result<IRoute>>({ url: `/api/router/dynamic`, method: 'GET' })
+    return request<Result<IRoute>>({ url: `/api/route/dynamic`, method: 'GET' })
 }
 
 /**路由菜单列表**/
 export function httpColumnRoute() {
-    return request<Result<IRoute>>({ url: `/api/router/column`, method: 'GET' })
+    return request<Result<IRoute>>({ url: `/api/route/column`, method: 'GET' })
 }
