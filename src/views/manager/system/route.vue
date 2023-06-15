@@ -2,10 +2,12 @@
 import { defineComponent } from 'vue'
 import { httpColumnRoute, type IRoute } from '@/api/http-route'
 import { useSource } from '@/hooks/hook-source'
+import { useState } from '@/hooks/hook-state'
 
 export default defineComponent({
     name: 'Route',
     setup() {
+        const { visible, setState } = useState({ visible: false })
         const { state } = useSource<IRoute, Record<string, unknown>>({
             immediate: true,
             dataColumn: [
@@ -21,6 +23,15 @@ export default defineComponent({
 
         return () => (
             <common-container>
+                <div onClick={() => setState({ visible: !visible.value })}>232312</div>
+                <common-collapse visible={visible.value}>
+                    <div>
+                        content 和 footer 可以被分段或 soft 分段，action 可以被分段。分段分割线会在区域的上方出现。content 和 footer
+                        可以被分段或 soft 分段，action 可以被分段。分段分割线会在区域的上方出现。content 和 footer 可以被分段或 soft
+                        分段，action 可以被分段。分段分割线会在区域的上方出现。content 和 footer 可以被分段或 soft 分段，action
+                        可以被分段。分段分割线会在区域的上方出现。
+                    </div>
+                </common-collapse>
                 <common-source
                     width={1080}
                     loading={state.loading}
@@ -29,20 +40,18 @@ export default defineComponent({
                     data-source={state.dataSource}
                 >
                     {{
-                        default: (e: IRoute) => {
-                            return (
-                                <common-table width={1080}>
-                                    {state.dataColumn.map(x => (
-                                        <common-table-column
-                                            key={x.key}
-                                            width={1080}
-                                            minWidth={x.minWidth}
-                                            title={e[x.key as keyof IRoute]}
-                                        ></common-table-column>
-                                    ))}
-                                </common-table>
-                            )
-                        }
+                        default: (e: IRoute) => (
+                            <common-table width={1080}>
+                                {state.dataColumn.map(x => (
+                                    <common-table-column
+                                        key={x.key}
+                                        width={1080}
+                                        minWidth={x.minWidth}
+                                        title={e[x.key as keyof IRoute]}
+                                    ></common-table-column>
+                                ))}
+                            </common-table>
+                        )
                     }}
                 </common-source>
             </common-container>

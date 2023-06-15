@@ -33,6 +33,7 @@ export default defineComponent({
                 >
                     <n-menu
                         accordion
+                        inverted={inverted.value.sider}
                         root-indent={18}
                         value={store.current}
                         collapsed={store.collapse}
@@ -41,10 +42,16 @@ export default defineComponent({
                     />
                 </n-layout-sider>
                 <n-layout>
-                    <n-layout-header class="manager-layout__header" bordered>
-                        1
+                    <n-layout-header class="manager-layout__header" bordered inverted={inverted.value.sider}>
+                        <n-button onClick={() => store.setTheme(store.theme === 'light' ? 'dark' : 'light')}>深色</n-button>
                     </n-layout-header>
-                    <n-layout class="manager-layout__container" position="absolute" style={native.value} native-scrollbar={false}>
+                    <n-layout
+                        class="manager-layout__container"
+                        position="absolute"
+                        style={native.value}
+                        inverted={inverted.value.sider}
+                        native-scrollbar={false}
+                    >
                         <RouterView></RouterView>
                     </n-layout>
                 </n-layout>

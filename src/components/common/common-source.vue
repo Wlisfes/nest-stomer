@@ -24,14 +24,16 @@ export default defineComponent({
         width: {
             type: Number,
             default: 640
+        },
+        header: {
+            type: Boolean,
+            default: false
         }
     },
     setup(props, { slots }) {
         const cameStyle = computed<CSSProperties>(() => ({
             minWidth: props.width + 'px'
         }))
-
-        console.log(props.dataColumn)
         return () => (
             <section class="common-source">
                 <n-scrollbar x-scrollable>
@@ -49,22 +51,24 @@ export default defineComponent({
                         </n-empty>
                     ) : (
                         <Fragment>
-                            <div class="common-source__header" style={cameStyle.value}>
-                                {props.dataColumn.length > 0 && (
-                                    <common-table width={props.width}>
-                                        {props.dataColumn.map(x => (
-                                            <common-table-column
-                                                key={x.key}
-                                                width={props.width}
-                                                minWidth={x.minWidth}
-                                                title={x.title}
-                                            ></common-table-column>
-                                        ))}
-                                    </common-table>
-                                )}
-                            </div>
+                            {props.header && (
+                                <div class="common-source__header" style={cameStyle.value}>
+                                    {props.dataColumn.length > 0 && (
+                                        <common-table width={props.width}>
+                                            {props.dataColumn.map(x => (
+                                                <common-table-column
+                                                    key={x.key}
+                                                    width={props.width}
+                                                    minWidth={x.minWidth}
+                                                    title={x.title}
+                                                ></common-table-column>
+                                            ))}
+                                        </common-table>
+                                    )}
+                                </div>
+                            )}
                             <div class="common-source__container" style={cameStyle.value}>
-                                {props.dataSource.map(x => slots.default?.(x))}
+                                {props.dataSource.map(item => slots.default?.(item))}
                             </div>
                         </Fragment>
                     )}
@@ -82,6 +86,12 @@ export default defineComponent({
     display: flex;
     flex-direction: column;
     overflow: hidden;
-    padding: 0 8px;
+    padding: 0 16px;
+    &__container {
+        position: relative;
+        display: flex;
+        flex-direction: column;
+        row-gap: 12px;
+    }
 }
 </style>

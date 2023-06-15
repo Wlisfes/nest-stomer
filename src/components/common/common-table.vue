@@ -10,7 +10,11 @@ export default defineComponent({
         }
     },
     setup(props, { slots }) {
-        return () => <div class="common-table">{slots.default?.()}</div>
+        return () => (
+            <n-el tag="div" class="common-table">
+                {slots.default?.()}
+            </n-el>
+        )
     }
 })
 </script>
@@ -19,5 +23,6 @@ export default defineComponent({
 .common-table {
     position: relative;
     display: flex;
+    background-color: var(--card-color);
 }
 </style>
