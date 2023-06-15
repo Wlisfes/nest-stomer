@@ -46,7 +46,7 @@ export default defineComponent({
         function onCompute(e: { done: Function }) {
             e.done(true).finally(async () => {
                 await setState({
-                    URL: `${baseURL}/api/core/fetch-captcha?width=120&height=50&fontSize=50&t=${Math.random()}`
+                    URL: `${baseURL}/api/basic/captcha?width=120&height=50&fontSize=50&t=${Math.random()}`
                 })
                 await e.done(false)
             })
