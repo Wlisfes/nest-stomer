@@ -68,7 +68,9 @@ export default defineComponent({
                                 </div>
                             )}
                             <div class="common-source__container" style={cameStyle.value}>
-                                {props.dataSource.map(item => slots.default?.(item))}
+                                {props.dataSource.map(item => (
+                                    <common-source-column></common-source-column>
+                                ))}
                             </div>
                         </Fragment>
                     )}

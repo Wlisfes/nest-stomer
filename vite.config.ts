@@ -1,6 +1,8 @@
 import { defineConfig, loadEnv, ConfigEnv, UserConfig } from 'vite'
 import { fileURLToPath, URL } from 'node:url'
 import { NaiveUiResolver } from 'unplugin-vue-components/resolvers'
+import Icons from 'unplugin-icons/vite'
+import IconsResolver from 'unplugin-icons/resolver'
 import AutoImport from 'unplugin-auto-import/vite'
 import Components from 'unplugin-vue-components/vite'
 import vue from '@vitejs/plugin-vue'
@@ -17,11 +19,17 @@ export default defineConfig(({ command, mode }: ConfigEnv): UserConfig => {
             AutoImport({
                 resolvers: [NaiveUiResolver()]
             }),
+            Icons({
+                autoInstall: true,
+                compiler: 'vue3'
+            }),
             Components({
                 dts: true,
+                deep: true,
+                extensions: ['vue', 'tsx'],
+                include: [/\.vue$/, /\.vue\?vue/, /\.tsx$/, /\.tsx\?tsx/],
                 dirs: ['src/components'],
-                resolvers: [NaiveUiResolver()],
-                include: [/\.vue$/, /\.vue\?vue/, /\.tsx$/, /\.tsx\?tsx/]
+                resolvers: [NaiveUiResolver(), IconsResolver()]
             })
         ],
         resolve: {

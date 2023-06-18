@@ -12,6 +12,7 @@
         "format": "prettier --write src/"
     },
     "dependencies": {
+        "@iconify/json": "^2.2.79",
         "@ivanv/vue-collapse-transition": "^1.0.2",
         "axios": "^1.4.0",
         "class-validator": "^0.13.2",
@@ -40,6 +41,7 @@
         "sass": "^1.59.2",
         "typescript": "~5.0.4",
         "unplugin-auto-import": "^0.16.2",
+        "unplugin-icons": "^0.16.3",
         "unplugin-vue-components": "^0.24.1",
         "vite": "^4.3.5",
         "vue-tsc": "^1.6.4"
