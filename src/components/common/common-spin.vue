@@ -1,6 +1,7 @@
 <script lang="tsx">
-import { defineComponent, onMounted, type CSSProperties, type PropType } from 'vue'
+import { defineComponent, onMounted, toRefs, Fragment } from 'vue'
 import { useState } from '@/hooks/hook-state'
+import { divineDelay } from '@/utils/utils-common'
 
 export default defineComponent({
     name: 'CommonSpin',
@@ -18,12 +19,15 @@ export default defineComponent({
             }
         })
 
+        async function done(value: boolean, delay: number = 0) {
+            await divineDelay(delay)
+            return await setState({ loading: value })
+        }
+
         /**开启loading**/
         function onCompute() {
             if (!state.loading && !props.disabled) {
-                emit('compute', {
-                    done: (value: boolean) => setState({ loading: value })
-                })
+                emit('compute', { done })
             }
         }
 
@@ -34,7 +38,7 @@ export default defineComponent({
                 size={props.size}
                 onClick={(e: Event) => onCompute()}
             >
-                {{ default: slots.default }}
+                {{ default: () => <Fragment>{slots.default?.({ ...toRefs(state), done })}</Fragment> }}
             </n-spin>
         )
     }

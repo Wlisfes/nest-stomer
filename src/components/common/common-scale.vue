@@ -83,9 +83,16 @@ export default defineComponent({
             display: flex;
             flex-direction: column;
             overflow: hidden;
+            :deep(.common-spin),
+            :deep(.common-spin) .n-spin-content {
+                flex: 1;
+                display: flex;
+                flex-direction: column;
+            }
         }
         :deep(.n-image),
-        :deep(.n-image) img {
+        :deep(.n-image) img,
+        :deep(.n-image) .n-skeleton {
             width: 100%;
             height: 100%;
             display: block;

@@ -1,5 +1,5 @@
 <script lang="tsx">
-import { defineComponent, onMounted } from 'vue'
+import { defineComponent, onMounted, h } from 'vue'
 import { useRouter, RouterLink } from 'vue-router'
 import { useCustomizeForm } from '@/hooks/hook-form'
 import { useLocale } from '@/locale/instance'
@@ -44,11 +44,10 @@ export default defineComponent({
 
         /**重载验证码**/
         function onCompute(e: { done: Function }) {
-            e.done(true).finally(async () => {
-                await setState({
+            e.done(true).finally(() => {
+                setState({
                     URL: `${baseURL}/api/basic/captcha?width=120&height=50&fontSize=50&t=${Math.random()}`
                 })
-                await e.done(false)
             })
         }
 
@@ -123,19 +122,22 @@ export default defineComponent({
                             input-props={{ autocomplete: 'off' }}
                             placeholder={t('middle.code.placeholder')}
                         ></n-input>
-                        <common-scale max-width={120} scale={120 / 50} style={{ marginLeft: '10px', cursor: 'pointer' }}>
+                        <common-scale max-width={120} scale={120 / 50} flex-box style={{ marginLeft: '10px', cursor: 'pointer' }}>
                             <common-spin runtime onCompute={onCompute}>
-                                <n-image src={state.URL} preview-disabled style={{ borderRadius: '2px' }}>
-                                    {{
-                                        placeholder: () => (
-                                            <n-skeleton
-                                                width="100%"
-                                                height="100%"
-                                                style={{ borderRadius: '4px', backgroundColor: '#E8F0FE' }}
-                                            />
-                                        )
-                                    }}
-                                </n-image>
+                                {{
+                                    default: (scope: { done: Function }) => (
+                                        <n-image
+                                            src={state.URL}
+                                            preview-disabled
+                                            style={{ borderRadius: '2px' }}
+                                            on-error={(e: Event) => scope.done(false, 200)}
+                                            on-load={(e: Event) => scope.done(false, 200)}
+                                            v-slots={{
+                                                placeholder: () => <n-skeleton width="100%" height="100%" sharp={false}></n-skeleton>
+                                            }}
+                                        ></n-image>
+                                    )
+                                }}
                             </common-spin>
                         </common-scale>
                     </n-form-item>
