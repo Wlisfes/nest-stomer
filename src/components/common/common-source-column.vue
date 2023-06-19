@@ -16,16 +16,14 @@ export default defineComponent({
 
         return () => (
             <n-el class="common-source__column">
-                <div class="source-header">
+                <div class="source-header n-pointer" onClick={() => setState({ visible: !visible.value })}>
                     <div class="source-header__content n-display">
-                        <n-h3 prefix="bar" style={{ marginBottom: 0 }}>
-                            {props.node?.title}
-                        </n-h3>
+                        <n-icon size={28} style={{ marginRight: '10px' }}>
+                            <Icon-HomeOutlined />
+                        </n-icon>
+                        <n-h3 style={{ flex: 1, margin: 0 }}>{props.node?.title}</n-h3>
                     </div>
-                    <div
-                        class="source-header__extra n-display n-center n-middle n-pointer"
-                        onClick={() => setState({ visible: !visible.value })}
-                    >
+                    <div class="source-header__extra n-display n-center n-middle">
                         <n-icon size={16} class={{ 'is-visible': visible.value }}>
                             <Icon-ArrowRightBold />
                         </n-icon>

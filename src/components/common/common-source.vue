@@ -33,31 +33,13 @@ export default defineComponent({
                             }}
                         </n-empty>
                     ) : (
-                        <Fragment>
-                            {props.header && (
-                                <div class="common-source__header" style={cameStyle.value}>
-                                    {props.dataColumn.length > 0 && (
-                                        <common-table width={props.width}>
-                                            {props.dataColumn.map(x => (
-                                                <common-table-column
-                                                    key={x.key}
-                                                    width={props.width}
-                                                    minWidth={x.minWidth}
-                                                    title={x.title}
-                                                ></common-table-column>
-                                            ))}
-                                        </common-table>
-                                    )}
-                                </div>
-                            )}
-                            <div class="common-source__container" style={cameStyle.value}>
-                                {props.dataSource.map(item => (
-                                    <common-source-column key={item.id} node={item}>
-                                        {{ default: (scope: Record<string, unknown>) => slots.column?.({ ...item, ...scope }) }}
-                                    </common-source-column>
-                                ))}
-                            </div>
-                        </Fragment>
+                        <div class="common-source__container" style={cameStyle.value}>
+                            {props.dataSource.map(item => (
+                                <common-source-column key={item.id} node={item}>
+                                    {{ default: (scope: Record<string, unknown>) => slots.column?.({ ...item, ...scope }) }}
+                                </common-source-column>
+                            ))}
+                        </div>
                     )}
                 </n-scrollbar>
             </section>
@@ -73,21 +55,14 @@ export default defineComponent({
     display: flex;
     flex-direction: column;
     overflow: hidden;
-    padding: 0 16px;
-    &.is-mobile {
-        padding: 0;
-        .common-source__header,
-        .common-source__container {
-            box-sizing: border-box;
-            padding: 0 16px;
-        }
-    }
     &__container {
+        box-sizing: border-box;
         position: relative;
         display: flex;
         flex-direction: column;
         row-gap: 12px;
         box-sizing: border-box;
+        padding: 16px 16px 48px;
     }
 }
 </style>

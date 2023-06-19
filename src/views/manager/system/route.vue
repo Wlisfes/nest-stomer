@@ -24,6 +24,7 @@ export default defineComponent({
         return () => (
             <common-container>
                 <common-source
+                    width={840}
                     device={store.device}
                     loading={state.loading}
                     total={state.total}
