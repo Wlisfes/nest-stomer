@@ -1,5 +1,5 @@
 <script lang="tsx">
-import { defineComponent, computed, type CSSProperties } from 'vue'
+import { defineComponent, computed, type CSSProperties, type PropType } from 'vue'
 
 export default defineComponent({
     name: 'CommonTableColumn',
@@ -13,10 +13,15 @@ export default defineComponent({
         minWidth: {
             type: Number,
             default: 0
+        },
+        columnStyle: {
+            type: Object as PropType<CSSProperties>,
+            default: () => ({})
         }
     },
     setup(props, { slots }) {
         const cameStyle = computed<CSSProperties>(() => ({
+            ...props.columnStyle,
             minWidth: props.minWidth + 'px',
             width: Math.floor((props.minWidth / props.width) * 1000000) / 10000 + '%'
         }))

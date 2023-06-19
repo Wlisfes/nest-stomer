@@ -1,5 +1,5 @@
 <script lang="tsx">
-import { defineComponent } from 'vue'
+import { defineComponent, Fragment } from 'vue'
 import { httpColumnRoute, type IRoute } from '@/api/http-route'
 import { useSource } from '@/hooks/hook-source'
 import { useManager } from '@/store/manager'
@@ -35,15 +35,40 @@ export default defineComponent({
                         column: (scope: IRoute & { visible: boolean; done: Function }) => {
                             console.log(scope)
                             return (
-                                <div>
-                                    1111111111111
+                                <Fragment>
+                                    <section style={{ padding: '0 16px' }}>
+                                        <n-grid cols={4} x-gap={12} y-gap={12} item-responsive style={{ padding: '0' }}>
+                                            <n-grid-item span="2 775:2 775:1" style={{ backgroundColor: 'rgba(0, 128, 0, 0.24)' }}>
+                                                <div>节点类型</div>
+                                                <div class="n-display">
+                                                    <n-tag bordered={false} size="small" type="success">
+                                                        已启用
+                                                    </n-tag>
+                                                </div>
+                                            </n-grid-item>
+                                            <n-grid-item span="2 775:2 775:1" style={{ backgroundColor: 'rgba(0, 128, 0, 0.24)' }}>
+                                                <div>页面路径</div>
+                                                <div class="n-display">{scope.path}</div>
+                                            </n-grid-item>
+                                            <n-grid-item span="2 775:2 775:1" style={{ backgroundColor: 'rgba(0, 128, 0, 0.24)' }}>
+                                                <div>重定向地址</div>
+                                                <div class="n-display">{scope.redirect}</div>
+                                            </n-grid-item>
+                                            <n-grid-item span="2 775:2 775:1" style={{ backgroundColor: 'rgba(0, 128, 0, 0.24)' }}>
+                                                <div>状态</div>
+                                                <div class="n-display">
+                                                    <common-mode value={scope.status}></common-mode>
+                                                </div>
+                                            </n-grid-item>
+                                        </n-grid>
+                                    </section>
                                     <common-collapse visible={scope.visible}>
                                         <div>
                                             如果你年轻的时候不 996，你什么时候可以 996？你一辈子没有
                                             996，你觉得你就很骄傲了？这个世界上，我们每一个人都希望成功，都希望美好生活，都希望被尊重，我请问大家，你不付出超越别人的努力和时间，你怎么能够实现你想要的成功？
                                         </div>
                                     </common-collapse>
-                                </div>
+                                </Fragment>
                             )
                         }
                     }}
