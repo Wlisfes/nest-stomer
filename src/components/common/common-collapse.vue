@@ -1,25 +1,22 @@
 <script lang="tsx">
 import { defineComponent } from 'vue'
-import CollapseTransition from '@ivanv/vue-collapse-transition/src/CollapseTransition.vue'
 
 export default defineComponent({
     name: 'CommonCollapse',
-    components: { CollapseTransition },
     props: {
         visible: {
             type: Boolean,
             default: false
+        },
+        appear: {
+            type: Boolean
         }
     },
     setup(props, { slots }) {
         return () => (
-            <collapse-transition>
-                {{
-                    default: () => {
-                        return props.visible && slots.default ? slots.default(props) : null
-                    }
-                }}
-            </collapse-transition>
+            <n-collapse-transition appear={props.appear} show={props.visible}>
+                {{ default: slots.default }}
+            </n-collapse-transition>
         )
     }
 })

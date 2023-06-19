@@ -31,22 +31,20 @@ export default defineComponent({
                     data-source={state.dataSource}
                 >
                     {{
-                        column: (scope: IRoute & { done: Function }) => {
+                        column: (scope: IRoute & { visible: boolean; done: Function }) => {
                             console.log(scope)
-                            return <div>1111111111111</div>
-                        },
-                        default: (e: IRoute) => (
-                            <common-table width={1080}>
-                                {state.dataColumn.map(x => (
-                                    <common-table-column
-                                        key={x.key}
-                                        width={1080}
-                                        minWidth={x.minWidth}
-                                        title={e[x.key as keyof IRoute]}
-                                    ></common-table-column>
-                                ))}
-                            </common-table>
-                        )
+                            return (
+                                <div>
+                                    1111111111111
+                                    <common-collapse visible={scope.visible}>
+                                        <div>
+                                            如果你年轻的时候不 996，你什么时候可以 996？你一辈子没有
+                                            996，你觉得你就很骄傲了？这个世界上，我们每一个人都希望成功，都希望美好生活，都希望被尊重，我请问大家，你不付出超越别人的努力和时间，你怎么能够实现你想要的成功？
+                                        </div>
+                                    </common-collapse>
+                                </div>
+                            )
+                        }
                     }}
                 </common-source>
             </common-container>
