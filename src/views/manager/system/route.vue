@@ -24,7 +24,7 @@ export default defineComponent({
         return () => (
             <common-container>
                 <common-source
-                    width={840}
+                    width={375}
                     device={store.device}
                     loading={state.loading}
                     total={state.total}
@@ -38,7 +38,7 @@ export default defineComponent({
                                 <Fragment>
                                     <section style={{ padding: '0 16px' }}>
                                         <n-grid cols={4} x-gap={12} y-gap={12} item-responsive style={{ padding: '0' }}>
-                                            <n-grid-item span="2 775:2 775:1" style={{ backgroundColor: 'rgba(0, 128, 0, 0.24)' }}>
+                                            <n-grid-item span="1:4 520:2 840:2 841:1" style={{ backgroundColor: 'rgba(0, 128, 0, 0.24)' }}>
                                                 <div>节点类型</div>
                                                 <div class="n-display">
                                                     <n-tag bordered={false} size="small" type="success">
@@ -46,15 +46,15 @@ export default defineComponent({
                                                     </n-tag>
                                                 </div>
                                             </n-grid-item>
-                                            <n-grid-item span="2 775:2 775:1" style={{ backgroundColor: 'rgba(0, 128, 0, 0.24)' }}>
+                                            <n-grid-item span="1:4 520:2 840:2 841:1" style={{ backgroundColor: 'rgba(0, 128, 0, 0.24)' }}>
                                                 <div>页面路径</div>
                                                 <div class="n-display">{scope.path}</div>
                                             </n-grid-item>
-                                            <n-grid-item span="2 775:2 775:1" style={{ backgroundColor: 'rgba(0, 128, 0, 0.24)' }}>
+                                            <n-grid-item span="1:4 520:2 840:2 841:1" style={{ backgroundColor: 'rgba(0, 128, 0, 0.24)' }}>
                                                 <div>重定向地址</div>
                                                 <div class="n-display">{scope.redirect}</div>
                                             </n-grid-item>
-                                            <n-grid-item span="2 775:2 775:1" style={{ backgroundColor: 'rgba(0, 128, 0, 0.24)' }}>
+                                            <n-grid-item span="1:4 520:2 840:2 841:1" style={{ backgroundColor: 'rgba(0, 128, 0, 0.24)' }}>
                                                 <div>状态</div>
                                                 <div class="n-display">
                                                     <common-mode value={scope.status}></common-mode>
