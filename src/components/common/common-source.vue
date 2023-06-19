@@ -1,41 +1,24 @@
 <script lang="tsx">
-import { defineComponent, Fragment, computed, type PropType, type CSSProperties } from 'vue'
+import { defineComponent, Fragment, computed, toRefs, type PropType, type CSSProperties } from 'vue'
 import { type DataTableBaseColumn } from 'naive-ui'
 
 export default defineComponent({
     name: 'CommonSource',
     props: {
-        dataColumn: {
-            type: Array as PropType<Array<DataTableBaseColumn>>,
-            default: () => []
-        },
-        dataSource: {
-            type: Array as PropType<Array<Record<string, unknown>>>,
-            default: () => []
-        },
-        total: {
-            type: Number,
-            default: 0
-        },
-        loading: {
-            type: Boolean,
-            default: true
-        },
-        width: {
-            type: Number,
-            default: 640
-        },
-        header: {
-            type: Boolean,
-            default: false
-        }
+        dataColumn: { type: Array as PropType<Array<DataTableBaseColumn>>, default: () => [] },
+        dataSource: { type: Array as PropType<Array<Record<string, unknown>>>, default: () => [] },
+        total: { type: Number, default: 0 },
+        loading: { type: Boolean, default: true },
+        width: { type: Number, default: 640 },
+        header: { type: Boolean, default: false },
+        device: { type: String as PropType<'PC' | 'IPAD' | 'MOBILE'>, default: 'PC' }
     },
     setup(props, { slots }) {
         const cameStyle = computed<CSSProperties>(() => ({
             minWidth: props.width + 'px'
         }))
         return () => (
-            <section class="common-source">
+            <section class={{ 'common-source': true, 'is-mobile': props.device === 'MOBILE' }}>
                 <n-scrollbar x-scrollable>
                     {props.loading && props.total === 0 ? (
                         <n-spin stroke-width={12} size={60} style={{ minHeight: '240px' }}></n-spin>
@@ -69,7 +52,9 @@ export default defineComponent({
                             )}
                             <div class="common-source__container" style={cameStyle.value}>
                                 {props.dataSource.map(item => (
-                                    <common-source-column></common-source-column>
+                                    <common-source-column key={item.id} node={item}>
+                                        {{ default: (scope: Record<string, unknown>) => slots.column?.({ ...item, ...scope }) }}
+                                    </common-source-column>
                                 ))}
                             </div>
                         </Fragment>
@@ -89,11 +74,20 @@ export default defineComponent({
     flex-direction: column;
     overflow: hidden;
     padding: 0 16px;
+    &.is-mobile {
+        padding: 0;
+        .common-source__header,
+        .common-source__container {
+            box-sizing: border-box;
+            padding: 0 16px;
+        }
+    }
     &__container {
         position: relative;
         display: flex;
         flex-direction: column;
         row-gap: 12px;
+        box-sizing: border-box;
     }
 }
 </style>

@@ -1,10 +1,17 @@
 <script lang="tsx">
-import { defineComponent, Fragment, computed, type CSSProperties } from 'vue'
+import { defineComponent, Fragment, computed, type CSSProperties, type PropType } from 'vue'
 import { useState } from '@/hooks/hook-state'
+import { type Scheme } from '@/api/http-interface'
+interface NodeProps extends Scheme, Record<string, unknown> {
+    title: string
+}
 
 export default defineComponent({
     name: 'CommonSourceColumn',
-    setup() {
+    props: {
+        node: { type: Object as PropType<NodeProps> }
+    },
+    setup(props, { slots }) {
         const { visible, setState } = useState({ visible: false })
         const headerStyle = computed<CSSProperties>(() => ({
             padding: 0
@@ -13,15 +20,23 @@ export default defineComponent({
         return () => (
             <div>
                 <n-el class="common-source__column n-card">
-                    <div class="column-header">
-                        <div class="column-header__content">
-                            可以被分段。分段分割线会在区域的上方出现可以被分段。分段分割线会在区域的上方出现可以被分段可以被分段。分段分割线会在区域的上方出现可以被分段。分段分割线会在区域的上方出现可以被分段
+                    <div class="source-header">
+                        <div class="source-header__content">
+                            <n-h3 prefix="bar" style={{ marginBottom: 0 }}>
+                                {props.node?.title}
+                            </n-h3>
                         </div>
-                        <div class="column-header__extra">
-                            <n-icon>
-                                <i-ep-arrow-right-bold></i-ep-arrow-right-bold>
+                        <div
+                            class="source-header__extra n-display n-center n-middle n-pointer"
+                            onClick={() => setState({ visible: !visible.value })}
+                        >
+                            <n-icon size={16} class={{ 'is-visible': visible.value }}>
+                                <Icon-ArrowRightBold />
                             </n-icon>
                         </div>
+                    </div>
+                    <div class="source-container">
+                        <Fragment>{slots.default?.({ visible, done: setState })}</Fragment>
                     </div>
                 </n-el>
                 <n-card
@@ -56,16 +71,23 @@ export default defineComponent({
     position: relative;
     border: 1px solid var(--divider-color);
     margin-bottom: 10px;
-    .column-header {
+    .source-header {
         display: flex;
-        color: var(--text-color-1);
+        padding: 12px 0 12px 14px;
         &__extra {
-            display: flex;
-            align-items: center;
+            width: 28px;
+            height: 28px;
+            margin-right: 6px;
+            .n-icon {
+                color: var(--text-color-1);
+                transition: transform 0.3s var(--cubic-bezier-ease-in-out);
+                &.is-visible {
+                    transform: rotateZ(90deg);
+                }
+            }
         }
         &__content {
             flex: 1;
-            font-size: 18px;
             line-height: var(--height-small);
         }
     }
