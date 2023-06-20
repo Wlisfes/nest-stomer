@@ -1,5 +1,5 @@
 <script lang="tsx">
-import { defineComponent, Fragment, computed, toRefs, type PropType, type CSSProperties } from 'vue'
+import { defineComponent, computed, type PropType, type CSSProperties } from 'vue'
 import { type DataTableBaseColumn } from 'naive-ui'
 
 export default defineComponent({
@@ -34,11 +34,9 @@ export default defineComponent({
                         </n-empty>
                     ) : (
                         <div class="common-source__container" style={cameStyle.value}>
-                            {props.dataSource.map(item => (
-                                <common-source-column key={item.id} node={item}>
-                                    {{ default: (scope: Record<string, unknown>) => slots.column?.({ ...item, ...scope }) }}
-                                </common-source-column>
-                            ))}
+                            {props.dataSource.map(item => {
+                                return slots.default ? slots.default(item) : null
+                            })}
                         </div>
                     )}
                 </n-scrollbar>

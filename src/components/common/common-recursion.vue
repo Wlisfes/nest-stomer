@@ -16,13 +16,8 @@ export default defineComponent({
     setup(props, { slots }) {
         return () => (
             <div class="common-recursion">
-                {props.dataSource.map(item => {
-                    return (
-                        <Fragment>
-                            {slots.default ? slots.default(item) : null}
-                            {item.children.length > 0 && <common-recursion data-source={item.children}>{slots}</common-recursion>}
-                        </Fragment>
-                    )
+                {props.dataSource.map((item, index) => {
+                    return <Fragment>{slots.default ? slots.default(item) : null}</Fragment>
                 })}
             </div>
         )
