@@ -36,29 +36,25 @@ export default defineComponent({
                             console.log(scope)
                             return (
                                 <Fragment>
-                                    <section style={{ padding: '0 16px' }}>
-                                        <n-grid cols={4} x-gap={12} y-gap={12} item-responsive style={{ padding: '0' }}>
-                                            <n-grid-item span="1:4 520:2 840:2 841:1" style={{ backgroundColor: 'rgba(0, 128, 0, 0.24)' }}>
-                                                <div>节点类型</div>
-                                                <div class="n-display">
+                                    <section style={{ padding: '0 16px 16px' }}>
+                                        <n-grid cols={4} x-gap={14} y-gap={14} item-responsive style={{ padding: '0' }}>
+                                            <n-grid-item span="1:4 520:2 840:2 841:1">
+                                                <common-reactive y-gap={3} label="节点类型">
                                                     <n-tag bordered={false} size="small" type="success">
                                                         已启用
                                                     </n-tag>
-                                                </div>
+                                                </common-reactive>
                                             </n-grid-item>
-                                            <n-grid-item span="1:4 520:2 840:2 841:1" style={{ backgroundColor: 'rgba(0, 128, 0, 0.24)' }}>
-                                                <div>页面路径</div>
-                                                <div class="n-display">{scope.path}</div>
+                                            <n-grid-item span="1:4 520:2 840:2 841:1">
+                                                <common-reactive y-gap={3} label="页面路径" content={scope.path}></common-reactive>
                                             </n-grid-item>
-                                            <n-grid-item span="1:4 520:2 840:2 841:1" style={{ backgroundColor: 'rgba(0, 128, 0, 0.24)' }}>
-                                                <div>重定向地址</div>
-                                                <div class="n-display">{scope.redirect}</div>
+                                            <n-grid-item span="1:4 520:2 840:2 841:1">
+                                                <common-reactive y-gap={3} label="重定向地址" content={scope.redirect}></common-reactive>
                                             </n-grid-item>
-                                            <n-grid-item span="1:4 520:2 840:2 841:1" style={{ backgroundColor: 'rgba(0, 128, 0, 0.24)' }}>
-                                                <div>状态</div>
-                                                <div class="n-display">
+                                            <n-grid-item span="1:4 520:2 840:2 841:1">
+                                                <common-reactive y-gap={3} label="状态">
                                                     <common-mode value={scope.status}></common-mode>
-                                                </div>
+                                                </common-reactive>
                                             </n-grid-item>
                                         </n-grid>
                                     </section>
