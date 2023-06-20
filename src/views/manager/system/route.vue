@@ -32,41 +32,79 @@ export default defineComponent({
                     data-source={state.dataSource}
                 >
                     {{
-                        column: (scope: IRoute & { visible: boolean; done: Function }) => {
-                            console.log(scope)
-                            return (
-                                <Fragment>
-                                    <section style={{ padding: '0 16px 16px' }}>
-                                        <n-grid cols={4} x-gap={14} y-gap={14} item-responsive style={{ padding: '0' }}>
-                                            <n-grid-item span="1:4 520:2 840:2 841:1">
-                                                <common-reactive y-gap={3} label="节点类型">
-                                                    <n-tag bordered={false} size="small" type="success">
-                                                        已启用
-                                                    </n-tag>
-                                                </common-reactive>
-                                            </n-grid-item>
-                                            <n-grid-item span="1:4 520:2 840:2 841:1">
-                                                <common-reactive y-gap={3} label="页面路径" content={scope.path}></common-reactive>
-                                            </n-grid-item>
-                                            <n-grid-item span="1:4 520:2 840:2 841:1">
-                                                <common-reactive y-gap={3} label="重定向地址" content={scope.redirect}></common-reactive>
-                                            </n-grid-item>
-                                            <n-grid-item span="1:4 520:2 840:2 841:1">
-                                                <common-reactive y-gap={3} label="状态">
-                                                    <common-mode value={scope.status}></common-mode>
-                                                </common-reactive>
-                                            </n-grid-item>
-                                        </n-grid>
-                                    </section>
-                                    <common-collapse visible={scope.visible}>
-                                        <div>
-                                            如果你年轻的时候不 996，你什么时候可以 996？你一辈子没有
-                                            996，你觉得你就很骄傲了？这个世界上，我们每一个人都希望成功，都希望美好生活，都希望被尊重，我请问大家，你不付出超越别人的努力和时间，你怎么能够实现你想要的成功？
-                                        </div>
-                                    </common-collapse>
-                                </Fragment>
-                            )
-                        }
+                        column: (scope: IRoute & { visible: boolean; done: Function }) => (
+                            <Fragment>
+                                <section style={{ padding: '0 16px 16px' }}>
+                                    <n-grid cols={4} x-gap={14} y-gap={14} item-responsive style={{ padding: '0' }}>
+                                        <n-grid-item span="1:4 520:2 840:2 841:1">
+                                            <common-reactive y-gap={3} label="节点类型">
+                                                <n-tag bordered={false} size="small" type="success">
+                                                    已启用
+                                                </n-tag>
+                                            </common-reactive>
+                                        </n-grid-item>
+                                        <n-grid-item span="1:4 520:2 840:2 841:1">
+                                            <common-reactive y-gap={3} label="页面路径" content={scope.path}></common-reactive>
+                                        </n-grid-item>
+                                        <n-grid-item span="1:4 520:2 840:2 841:1">
+                                            <common-reactive y-gap={3} label="重定向地址" content={scope.redirect}></common-reactive>
+                                        </n-grid-item>
+                                        <n-grid-item span="1:4 520:2 840:2 841:1">
+                                            <common-reactive y-gap={3} label="状态">
+                                                <common-mode value={scope.status}></common-mode>
+                                            </common-reactive>
+                                        </n-grid-item>
+                                    </n-grid>
+                                </section>
+                                <common-collapse visible={scope.visible}>
+                                    <common-recursion data-source={scope.children}>
+                                        {{
+                                            default: (recur: IRoute & { visible: boolean; done: Function }) => (
+                                                <Fragment>
+                                                    <common-source-column
+                                                        bordered={false}
+                                                        collapse={recur.children.length > 0}
+                                                        node={recur}
+                                                    >
+                                                        <section style={{ padding: '0 16px 16px' }}>
+                                                            <n-grid cols={4} x-gap={14} y-gap={14} item-responsive style={{ padding: '0' }}>
+                                                                <n-grid-item span="1:4 520:2 840:2 841:1">
+                                                                    <common-reactive y-gap={3} label="节点类型">
+                                                                        <n-tag bordered={false} size="small" type="success">
+                                                                            已启用
+                                                                        </n-tag>
+                                                                    </common-reactive>
+                                                                </n-grid-item>
+                                                                <n-grid-item span="1:4 520:2 840:2 841:1">
+                                                                    <common-reactive
+                                                                        y-gap={3}
+                                                                        label="页面路径"
+                                                                        content={recur.path}
+                                                                    ></common-reactive>
+                                                                </n-grid-item>
+                                                                <n-grid-item span="1:4 520:2 840:2 841:1">
+                                                                    <common-reactive
+                                                                        y-gap={3}
+                                                                        label="重定向地址"
+                                                                        content={recur.redirect}
+                                                                    ></common-reactive>
+                                                                </n-grid-item>
+                                                                <n-grid-item span="1:4 520:2 840:2 841:1">
+                                                                    <common-reactive y-gap={3} label="状态">
+                                                                        <common-mode value={recur.status}></common-mode>
+                                                                    </common-reactive>
+                                                                </n-grid-item>
+                                                            </n-grid>
+                                                        </section>
+                                                    </common-source-column>
+                                                    <n-divider style={{ width: 'calc(100% - 32px)', margin: '0 16px' }} />
+                                                </Fragment>
+                                            )
+                                        }}
+                                    </common-recursion>
+                                </common-collapse>
+                            </Fragment>
+                        )
                     }}
                 </common-source>
             </common-container>
