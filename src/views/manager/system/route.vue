@@ -1,18 +1,11 @@
 <script lang="tsx">
-import { defineComponent, Fragment } from 'vue'
+import { defineComponent, Fragment, type SetupContext } from 'vue'
 import { httpColumnRoute, type IRoute } from '@/api/http-route'
 import { useSource } from '@/hooks/hook-source'
-import { useManager } from '@/store/manager'
-interface IRecur extends IRoute {
-    index: number
-    visible: boolean
-    done: Function
-}
 
 export default defineComponent({
     name: 'Route',
     setup() {
-        const store = useManager()
         const { state } = useSource<IRoute, Record<string, unknown>>({
             immediate: true,
             dataColumn: [
@@ -26,7 +19,7 @@ export default defineComponent({
             request: () => httpColumnRoute()
         })
 
-        const RouteColumn = (data: IRecur) => {
+        const RouteColumn = (data: IRoute) => {
             return (
                 <n-grid cols={4} x-gap={14} y-gap={14} item-responsive style={{ padding: '0' }}>
                     <n-grid-item span="1:4 520:2 840:2 841:1">
@@ -51,60 +44,57 @@ export default defineComponent({
             )
         }
 
-        const RouteRecursion = (data: IRecur) => {
-            return (
-                <common-recursion
-                    space={16}
-                    data-source={data.children}
-                    v-slots={{
-                        default: (recur: IRecur) => (
-                            <Fragment>
-                                <div style={{ margin: '0 16px', overflow: 'hidden' }}>
-                                    <n-divider style={{ margin: 0 }} />
-                                </div>
-                                <common-source-column bordered={false} collapse={recur.children.length > 0} node={recur}>
-                                    {{
-                                        default: (e: Pick<IRecur, 'visible' | 'done'>) => {
-                                            return (
-                                                <Fragment>
-                                                    <section style={{ padding: '0 16px 16px' }}>
-                                                        <RouteColumn {...recur}></RouteColumn>
-                                                    </section>
-                                                    <common-collapse visible={e.visible}>
-                                                        <RouteRecursion {...recur}></RouteRecursion>
-                                                    </common-collapse>
-                                                </Fragment>
-                                            )
-                                        }
-                                    }}
-                                </common-source-column>
-                            </Fragment>
-                        )
-                    }}
-                ></common-recursion>
-            )
-        }
-
         return () => (
             <common-container>
                 <common-source
                     width={375}
-                    device={store.device}
                     loading={state.loading}
                     total={state.total}
                     data-column={state.dataColumn}
                     data-source={state.dataSource}
                     v-slots={{
-                        default: (data: IRecur) => (
+                        default: (data: IRoute) => (
                             <common-source-column key={data.id} node={data} collapse={data.children.length > 0}>
                                 {{
-                                    default: (scope: IRecur) => (
+                                    default: (model: { visible: boolean }) => (
                                         <Fragment>
                                             <section style={{ padding: '0 16px 16px' }}>
                                                 <RouteColumn {...data}></RouteColumn>
                                             </section>
-                                            <common-collapse visible={scope.visible}>
-                                                <RouteRecursion {...data}></RouteRecursion>
+                                            <common-collapse visible={model.visible}>
+                                                <common-recursion
+                                                    style={{ paddingLeft: '16px' }}
+                                                    data-source={data.children}
+                                                    v-slots={{
+                                                        default: (scope: IRoute, slots: SetupContext['slots']) => (
+                                                            <Fragment>
+                                                                <n-divider style={{ margin: '0 16px 0 0', width: 'calc(100% - 32px)' }} />
+                                                                <common-source-column
+                                                                    bordered={false}
+                                                                    collapse={scope.children.length > 0}
+                                                                    node={scope}
+                                                                    v-slots={{
+                                                                        default: (e: { visible: boolean }) => (
+                                                                            <Fragment>
+                                                                                <section style={{ padding: '0 16px 16px' }}>
+                                                                                    <RouteColumn {...scope}></RouteColumn>
+                                                                                </section>
+                                                                                <common-collapse visible={e.visible}>
+                                                                                    <common-recursion
+                                                                                        style={{ paddingLeft: '16px' }}
+                                                                                        data-source={scope.children}
+                                                                                    >
+                                                                                        {slots}
+                                                                                    </common-recursion>
+                                                                                </common-collapse>
+                                                                            </Fragment>
+                                                                        )
+                                                                    }}
+                                                                ></common-source-column>
+                                                            </Fragment>
+                                                        )
+                                                    }}
+                                                ></common-recursion>
                                             </common-collapse>
                                         </Fragment>
                                     )

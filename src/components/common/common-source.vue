@@ -9,16 +9,14 @@ export default defineComponent({
         dataSource: { type: Array as PropType<Array<Record<string, unknown>>>, default: () => [] },
         total: { type: Number, default: 0 },
         loading: { type: Boolean, default: true },
-        width: { type: Number, default: 640 },
-        header: { type: Boolean, default: false },
-        device: { type: String as PropType<'PC' | 'IPAD' | 'MOBILE'>, default: 'PC' }
+        width: { type: Number, default: 640 }
     },
     setup(props, { slots }) {
         const cameStyle = computed<CSSProperties>(() => ({
             minWidth: props.width + 'px'
         }))
         return () => (
-            <section class={{ 'common-source': true, 'is-mobile': props.device === 'MOBILE' }}>
+            <section class={{ 'common-source': true }}>
                 <n-scrollbar x-scrollable>
                     {props.loading && props.total === 0 ? (
                         <n-spin stroke-width={12} size={60} style={{ minHeight: '240px' }}></n-spin>

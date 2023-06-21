@@ -17,7 +17,7 @@ export default defineComponent({
         return () => (
             <div class="common-recursion">
                 {props.dataSource.map((item, index) => {
-                    return <Fragment>{slots.default ? slots.default(item) : null}</Fragment>
+                    return <Fragment>{slots.default ? slots.default(item, slots) : null}</Fragment>
                 })}
             </div>
         )
