@@ -1,5 +1,10 @@
 import { request } from '@/utils/utils-request'
 import type { Scheme, Result } from '@/api/http-interface'
+export interface IRule extends Scheme {
+    path: string
+    name: string
+    method: string
+}
 export interface IRoute extends Scheme {
     type: string
     title: string
@@ -8,6 +13,7 @@ export interface IRoute extends Scheme {
     icon: string
     parent: string
     children: Array<IRoute>
+    rule: Array<IRule>
 }
 
 /**动态路由菜单**/

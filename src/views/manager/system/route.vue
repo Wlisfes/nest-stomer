@@ -21,26 +21,37 @@ export default defineComponent({
 
         const RouteColumn = (data: IRoute) => {
             return (
-                <n-grid cols={4} x-gap={14} y-gap={14} item-responsive style={{ padding: '0' }}>
-                    <n-grid-item span="1:4 520:2 840:2 841:1">
-                        <common-reactive y-gap={3} label="节点类型">
-                            <n-tag bordered={false} size="small" type="success">
-                                已启用
-                            </n-tag>
-                        </common-reactive>
-                    </n-grid-item>
-                    <n-grid-item span="1:4 520:2 840:2 841:1">
-                        <common-reactive y-gap={3} label="页面路径" content={data.path}></common-reactive>
-                    </n-grid-item>
-                    <n-grid-item span="1:4 520:2 840:2 841:1">
-                        <common-reactive y-gap={3} label="重定向地址" content={data.redirect}></common-reactive>
-                    </n-grid-item>
-                    <n-grid-item span="1:4 520:2 840:2 841:1">
-                        <common-reactive y-gap={3} label="状态">
-                            <common-mode value={data.status}></common-mode>
-                        </common-reactive>
-                    </n-grid-item>
-                </n-grid>
+                <Fragment>
+                    <n-grid cols={4} x-gap={14} y-gap={14} item-responsive style={{ padding: '0' }}>
+                        <n-grid-item span="1:4 520:2 840:2 841:1">
+                            <common-reactive y-gap={3} label="节点类型">
+                                <n-tag bordered={false} size="small" type="success">
+                                    已启用
+                                </n-tag>
+                            </common-reactive>
+                        </n-grid-item>
+                        <n-grid-item span="1:4 520:2 840:2 841:1">
+                            <common-reactive y-gap={3} label="页面路径" content={data.path}></common-reactive>
+                        </n-grid-item>
+                        <n-grid-item span="1:4 520:2 840:2 841:1">
+                            <common-reactive y-gap={3} label="重定向地址" content={data.redirect}></common-reactive>
+                        </n-grid-item>
+                        <n-grid-item span="1:4 520:2 840:2 841:1">
+                            <common-reactive y-gap={3} label="状态">
+                                <common-mode value={data.status}></common-mode>
+                            </common-reactive>
+                        </n-grid-item>
+                    </n-grid>
+                    {data.rule.length > 0 && (
+                        <n-grid cols={2} x-gap={14} y-gap={10} item-responsive style={{ padding: '0', marginTop: '20px' }}>
+                            {data.rule.map(item => (
+                                <n-grid-item span="1:2 520:2 960:1">
+                                    <common-rule key={item.id} node={item}></common-rule>
+                                </n-grid-item>
+                            ))}
+                        </n-grid>
+                    )}
+                </Fragment>
             )
         }
 
@@ -63,12 +74,11 @@ export default defineComponent({
                                             </section>
                                             <common-collapse visible={model.visible}>
                                                 <common-recursion
-                                                    style={{ paddingLeft: '16px' }}
                                                     data-source={data.children}
                                                     v-slots={{
                                                         default: (scope: IRoute, slots: SetupContext['slots']) => (
                                                             <Fragment>
-                                                                <n-divider style={{ margin: '0 16px 0 0', width: 'calc(100% - 32px)' }} />
+                                                                <n-divider style={{ margin: '0 16px', width: 'calc(100% - 32px)' }} />
                                                                 <common-source-column
                                                                     bordered={false}
                                                                     collapse={scope.children.length > 0}
@@ -81,11 +91,9 @@ export default defineComponent({
                                                                                 </section>
                                                                                 <common-collapse visible={e.visible}>
                                                                                     <common-recursion
-                                                                                        style={{ paddingLeft: '16px' }}
                                                                                         data-source={scope.children}
-                                                                                    >
-                                                                                        {slots}
-                                                                                    </common-recursion>
+                                                                                        v-slots={slots}
+                                                                                    ></common-recursion>
                                                                                 </common-collapse>
                                                                             </Fragment>
                                                                         )
