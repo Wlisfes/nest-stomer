@@ -1,8 +1,8 @@
 <script lang="tsx">
-import { defineComponent, computed, type PropType } from 'vue'
+import { defineComponent, computed, Fragment, type PropType } from 'vue'
 import { useClipboard } from '@vueuse/core'
 import { type IRule, IMethod } from '@/api/http-route'
-import {} from '@/locale/instance'
+import { useCurrent } from '@/locale/instance'
 import { divineChained } from '@/utils/utils-common'
 
 export default defineComponent({
@@ -14,6 +14,7 @@ export default defineComponent({
         }
     },
     setup(props) {
+        const { t } = useCurrent()
         const { text, copy, isSupported } = useClipboard()
         const type = computed(() => {
             return IMethod[props.node.method] ?? IMethod.Default
@@ -23,13 +24,13 @@ export default defineComponent({
         async function onClipboar() {
             try {
                 await divineChained(
-                    () => isSupported.value || new Error('当前浏览器不支持剪贴板API'),
+                    () => isSupported.value || new Error(t('common.copy.supported')),
                     () => copy(props.node.path).then(() => text.value === props.node.path)
                 ).then(() => {
-                    window.$notification.success({ title: '复制成功', duration: 2000 })
+                    window.$notification.success({ title: t('common.copy.notice'), duration: 2000 })
                 })
             } catch (e) {
-                window.$notification.error({ title: e.message || '复制失败', duration: 2500 })
+                window.$notification.error({ title: e.message || t('common.copy.fail'), duration: 2500 })
             }
         }
 
@@ -47,12 +48,16 @@ export default defineComponent({
                 <div class="n-display" style={{ columnGap: '5px' }}>
                     <common-remix
                         size={18}
+                        title={t('common.copy.title')}
                         icon={<n-icon component={<Icon-RadixCircleCopy />}></n-icon>}
                         onTrigger={onClipboar}
                     ></common-remix>
-                    <n-dropdown show-arrow trigger="click" placement="top" options={[{ label: '用户资料', key: 'profile' }]}>
-                        <common-remix icon={<n-icon size={18} component={<Icon-RadixMore />}></n-icon>}></common-remix>
-                    </n-dropdown>
+
+                    <common-remix icon={<n-icon size={18} component={<Icon-EditRegular />}></n-icon>}></common-remix>
+                    <common-remix icon={<n-icon size={18} component={<Icon-AntDesignEditOutlined />}></n-icon>}></common-remix>
+                    <common-remix icon={<n-icon size={18} component={<Icon-EditRegular />}></n-icon>}></common-remix>
+                    <common-remix icon={<n-icon size={18} component={<Icon-AddBold />}></n-icon>}></common-remix>
+                    <common-remix icon={<n-icon size={18} component={<Icon-RadixMore />}></n-icon>}></common-remix>
                 </div>
             </n-alert>
         )

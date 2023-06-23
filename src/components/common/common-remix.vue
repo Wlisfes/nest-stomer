@@ -18,6 +18,9 @@ export default defineComponent({
         size: {
             type: Number,
             default: 16
+        },
+        title: {
+            type: String
         }
     },
     emits: ['trigger'],
@@ -50,7 +53,15 @@ export default defineComponent({
         }
 
         return () => (
-            <n-button class="common-remix" quaternary size="small" disabled={state.loading} style={remixStyle.value} onClick={onTrigger}>
+            <n-button
+                class="common-remix"
+                quaternary
+                size="small"
+                title={props.title}
+                disabled={state.loading}
+                style={remixStyle.value}
+                onClick={onTrigger}
+            >
                 {{ icon: RemixUI }}
             </n-button>
         )

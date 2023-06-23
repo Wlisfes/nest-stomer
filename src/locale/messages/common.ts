@@ -2,6 +2,7 @@ export default {
     cn: {
         create: {
             title: '新增',
+            enter: '新增{name}',
             notice: '新增成功'
         },
         update: {
