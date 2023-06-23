@@ -13,7 +13,7 @@ export default defineComponent({
         }
     },
     setup(props) {
-        const { copy, isSupported } = useClipboard()
+        const { text, copy, isSupported } = useClipboard()
         const type = computed(() => {
             return IMethod[props.node.method] ?? IMethod.Default
         })
