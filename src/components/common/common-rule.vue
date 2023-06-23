@@ -1,35 +1,49 @@
 <script lang="tsx">
-import { defineComponent, computed, Fragment, type PropType } from 'vue'
-import { type IRule } from '@/api/http-route'
+import { defineComponent, computed, type PropType } from 'vue'
+import { useClipboard } from '@vueuse/core'
+import { type IRule, IMethod } from '@/api/http-route'
+import { divineChained } from '@/utils/utils-common'
 
 export default defineComponent({
     name: 'CommonRule',
     props: {
         node: {
-            type: Object as PropType<IRule>
+            type: Object as PropType<IRule>,
+            required: true
         }
     },
     setup(props) {
+        const { copy, isSupported } = useClipboard()
         const type = computed(() => {
-            switch (props.node?.method) {
-                case 'GET':
-                    return 'info'
-                case 'POST':
-                    return 'success'
-                case 'PUT':
-                    return 'warning'
-                case 'DELETE':
-                    return 'error'
-                default:
-                    return 'info'
-            }
+            return IMethod[props.node.method] ?? IMethod.Default
         })
+
+        async function onClipboar() {
+            try {
+                await divineChained(
+                    () => isSupported.value || new Error('当前浏览器不支持剪贴板API'),
+                    () => copy(props.node.path)
+                ).then(() => {
+                    window.$notification.success({ title: '复制成功', duration: 2000 })
+                })
+            } catch (e) {
+                window.$notification.error({ title: e.message || '复制失败', duration: 2500 })
+            }
+        }
+
         return () => (
-            <n-button class="common-rule" tag="div" focusable={false} secondary size="large" type={type.value} bordered>
-                <n-button type={type.value} size="small" strong>
-                    {props.node?.method}
+            <n-button class="common-rule" tag="div" size="large" type={type.value} focusable={false} secondary bordered>
+                <n-button type={type.value} size="small" strong style={{ minWidth: '80px' }}>
+                    {props.node.method}
                 </n-button>
-                <n-h4 class="rule-path">{props.node?.path}</n-h4>
+                <n-h4 class="common-rule__content">
+                    <n-ellipsis tooltip={false}>{props.node.path + props.node.path + props.node.path + props.node.path}</n-ellipsis>
+                </n-h4>
+                <common-remix size={18} icon={<n-icon component={<Icon-RadixCircleCopy />}></n-icon>} onTrigger={onClipboar}></common-remix>
+                <common-remix
+                    icon={<n-icon size={18} component={<Icon-RadixMore />}></n-icon>}
+                    style={{ marginLeft: '4px' }}
+                ></common-remix>
             </n-button>
         )
     }
@@ -37,16 +51,14 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
-.n-button.common-rule {
+.common-rule {
     position: relative;
     display: flex;
     justify-content: flex-start;
     box-sizing: border-box;
     padding: 5px;
-
-    &:hover {
-        background-color: var(--n-color);
-    }
+    overflow: hidden;
+    background-color: var(--n-color) !important;
     &.n-button--info-type {
         border: 1px solid var(--info-color);
     }
@@ -59,9 +71,15 @@ export default defineComponent({
     &.n-button--error-type {
         border: 1px solid var(--error-color);
     }
+    :deep(> .n-button__content) {
+        flex: 1;
+        text-align: left;
+    }
 
-    .rule-path {
-        margin: 0 0 0 10px;
+    &__content {
+        flex: 1;
+        overflow: hidden;
+        margin: 0 30px 0 10px;
         line-height: var(--height-small);
     }
 }

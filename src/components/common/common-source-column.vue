@@ -32,9 +32,7 @@ export default defineComponent({
             <n-el class={{ 'common-source__column': true, 'is-bordered': props.bordered, 'is-collapse': props.collapse }}>
                 <div class={{ 'source-header': true, 'n-pointer': props.collapse }} onClick={() => props.collapse && onCollapse()}>
                     <div class="source-header__content n-display">
-                        <n-icon size={28} style={{ marginRight: '10px' }}>
-                            <Icon-HomeOutlined />
-                        </n-icon>
+                        <n-icon size={28} style={{ marginRight: '10px' }} component={<Icon-HomeOutlined />}></n-icon>
                         <n-h3 style={{ flex: 1, margin: 0 }}>{props.node?.title}</n-h3>
                     </div>
                     {props.collapse && (
@@ -46,7 +44,7 @@ export default defineComponent({
                     )}
                 </div>
                 <div class="source-container">
-                    <Fragment>{slots.default?.({ visible: visible.value, done: onCollapse })}</Fragment>
+                    <Fragment>{slots.default?.({ visible: visible.value, done: () => props.collapse && onCollapse() })}</Fragment>
                 </div>
             </n-el>
         )

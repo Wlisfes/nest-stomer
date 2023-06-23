@@ -15,3 +15,19 @@ export function divineDelay(delay = 100, handler?: Function) {
         }, delay)
     })
 }
+
+/**链式调用函数**/
+export async function divineChained<T>(...args: Function[]): Promise<T> {
+    try {
+        const handler = args.shift()
+        const value = await handler?.()
+        if (Object.getPrototypeOf(value)) {
+            throw new Error(value.message)
+        } else if (value && args.length > 0) {
+            return await divineChained(...args)
+        }
+        return value
+    } catch (e) {
+        throw new Error(e.message)
+    }
+}

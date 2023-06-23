@@ -25,16 +25,26 @@ export default defineComponent({
                 <Fragment>
                     {!props.labelNone && (
                         <div class="common-reactive__label">
-                            {slots.label ? slots.label(props.label) : props.label ?? <span style={{ display: 'inline-block' }}>--</span>}
+                            {slots.label ? (
+                                <Fragment>{slots.label(props.label)}</Fragment>
+                            ) : props.label ? (
+                                <n-ellipsis tooltip={false}>{props.label}</n-ellipsis>
+                            ) : (
+                                <span style={{ display: 'inline-block' }}>--</span>
+                            )}
                         </div>
                     )}
                 </Fragment>
                 <Fragment>
                     {!props.contentNone && (
                         <div class="common-reactive__content">
-                            {slots.default
-                                ? slots.default(props.content)
-                                : props.content ?? <span style={{ display: 'inline-block' }}>--</span>}
+                            {slots.default ? (
+                                <Fragment>{slots.default(props.content)}</Fragment>
+                            ) : props.content ? (
+                                <n-ellipsis tooltip={false}>{props.content}</n-ellipsis>
+                            ) : (
+                                <span style={{ display: 'inline-block' }}>--</span>
+                            )}
                         </div>
                     )}
                 </Fragment>

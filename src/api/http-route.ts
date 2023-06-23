@@ -1,9 +1,16 @@
 import { request } from '@/utils/utils-request'
 import type { Scheme, Result } from '@/api/http-interface'
+export enum IMethod {
+    Default = 'default',
+    GET = 'info',
+    POST = 'success',
+    PUT = 'warning',
+    DELETE = 'error'
+}
 export interface IRule extends Scheme {
     path: string
     name: string
-    method: string
+    method: keyof typeof IMethod
 }
 export interface IRoute extends Scheme {
     type: string
