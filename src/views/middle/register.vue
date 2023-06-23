@@ -3,7 +3,7 @@ import type { FormInst, FormRules, FormItemRule } from 'naive-ui'
 import { defineComponent, ref } from 'vue'
 import { RouterLink } from 'vue-router'
 import { useState } from '@/hooks/hook-state'
-import { useLocale } from '@/locale/instance'
+import { useCurrent } from '@/locale/instance'
 import { loadFile } from '@/utils/utils-common'
 interface FormState {
     loading: boolean
@@ -21,7 +21,7 @@ export default defineComponent({
     name: 'Register',
     setup() {
         const formRef = ref<FormInst>()
-        const { t } = useLocale()
+        const { t } = useCurrent()
         const { state, setState } = useState<FormState>({
             loading: false,
             duration: 0,

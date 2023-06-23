@@ -29,19 +29,22 @@ export default defineComponent({
         }
 
         return () => (
-            <n-el class={{ 'common-source__column': true, 'is-bordered': props.bordered, 'is-collapse': props.collapse }}>
+            <n-el class={{ 'common-source__column': true, 'is-bordered': props.bordered }}>
                 <div class={{ 'source-header': true, 'n-pointer': props.collapse }} onClick={() => props.collapse && onCollapse()}>
                     <div class="source-header__content n-display">
                         <n-icon size={28} style={{ marginRight: '10px' }} component={<Icon-HomeOutlined />}></n-icon>
                         <n-h3 style={{ flex: 1, margin: 0 }}>{props.node?.title}</n-h3>
                     </div>
-                    {props.collapse && (
-                        <div class="source-header__extra n-display n-center n-middle">
-                            <n-icon size={16} class={{ 'is-visible': visible.value }}>
-                                <Icon-ArrowRightBold />
-                            </n-icon>
-                        </div>
-                    )}
+                    <div class="n-display n-center" style={{ paddingRight: props.collapse ? 0 : '4px' }}>
+                        <common-remix space={4} size={20} icon={<n-icon component={<Icon-RadixSetting />}></n-icon>}></common-remix>
+                        {props.collapse && (
+                            <div class="source-header__extra n-display n-center n-middle">
+                                <n-icon size={18} class={{ 'is-visible': visible.value }}>
+                                    <Icon-ArrowRightBold />
+                                </n-icon>
+                            </div>
+                        )}
+                    </div>
                 </div>
                 <div class="source-container">
                     <Fragment>{slots.default?.({ visible: visible.value, done: () => props.collapse && onCollapse() })}</Fragment>
@@ -63,9 +66,6 @@ export default defineComponent({
     &.is-bordered {
         border: 1px solid var(--divider-color);
     }
-    &.is-collapse > .source-header {
-        padding-right: 0;
-    }
     .source-container {
         color: var(--text-color-2);
         font-size: var(--font-size);
@@ -73,12 +73,11 @@ export default defineComponent({
     }
     .source-header {
         display: flex;
-        padding: 12px 14px;
+        padding: 12px 10px 12px 14px;
         color: var(--text-color-1);
         &__extra {
-            width: 28px;
-            height: 28px;
-            margin-right: 6px;
+            width: 26px;
+            height: 26px;
             .n-icon {
                 transition: transform 0.3s var(--cubic-bezier-ease-in-out);
                 color: var(--text-color-2);

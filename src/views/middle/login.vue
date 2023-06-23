@@ -2,7 +2,7 @@
 import { defineComponent, onMounted, h } from 'vue'
 import { useRouter, RouterLink } from 'vue-router'
 import { useCustomizeForm } from '@/hooks/hook-form'
-import { useLocale } from '@/locale/instance'
+import { useCurrent } from '@/locale/instance'
 import { loadFile } from '@/utils/utils-common'
 import { httpAuthorize } from '@/api/http-user'
 import { baseURL } from '@/utils/utils-request'
@@ -20,7 +20,7 @@ export default defineComponent({
     name: 'Login',
     setup() {
         const router = useRouter()
-        const { t } = useLocale()
+        const { t } = useCurrent()
         const { formRef, state, setState, divineFormValidater } = useCustomizeForm<FormState>({
             loading: false,
             URL: undefined,

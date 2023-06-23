@@ -24,7 +24,8 @@ export default defineComponent({
     setup(props, { slots, emit }) {
         const { state, setState } = useState({ loading: false })
         const remixStyle = computed<CSSProperties>(() => ({
-            padding: props.space + 'px'
+            padding: props.space + 'px',
+            '--icon-space': props.size + 'px'
         }))
 
         const onTrigger = (event: Event) => {
@@ -61,5 +62,16 @@ export default defineComponent({
 .n-button.common-remix {
     position: relative;
     height: initial;
+    :deep(.n-button__icon) {
+        position: relative;
+        height: var(--icon-space);
+        width: var(--icon-space);
+        max-width: var(--icon-space);
+        overflow: hidden;
+    }
+    :deep(.n-icon-slot) {
+        height: var(--icon-space);
+        width: var(--icon-space);
+    }
 }
 </style>

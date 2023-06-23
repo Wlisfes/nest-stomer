@@ -2,6 +2,7 @@
 import { defineComponent, computed, type PropType } from 'vue'
 import { useClipboard } from '@vueuse/core'
 import { type IRule, IMethod } from '@/api/http-route'
+import {} from '@/locale/instance'
 import { divineChained } from '@/utils/utils-common'
 
 export default defineComponent({
@@ -18,11 +19,12 @@ export default defineComponent({
             return IMethod[props.node.method] ?? IMethod.Default
         })
 
+        /**复制规则接口**/
         async function onClipboar() {
             try {
                 await divineChained(
                     () => isSupported.value || new Error('当前浏览器不支持剪贴板API'),
-                    () => copy(props.node.path)
+                    () => copy(props.node.path).then(() => text.value === props.node.path)
                 ).then(() => {
                     window.$notification.success({ title: '复制成功', duration: 2000 })
                 })
@@ -32,19 +34,27 @@ export default defineComponent({
         }
 
         return () => (
-            <n-button class="common-rule" tag="div" size="large" type={type.value} focusable={false} secondary bordered>
+            <n-alert class="common-rule" show-icon={false} type={type.value}>
                 <n-button type={type.value} size="small" strong style={{ minWidth: '80px' }}>
                     {props.node.method}
                 </n-button>
                 <n-h4 class="common-rule__content">
-                    <n-ellipsis tooltip={false}>{props.node.path + props.node.path + props.node.path + props.node.path}</n-ellipsis>
+                    <div style={{ overflow: 'hidden', marginRight: '12px' }}>
+                        <n-ellipsis tooltip={false}>{props.node.path}</n-ellipsis>
+                    </div>
+                    <common-mode value={props.node.status}></common-mode>
                 </n-h4>
-                <common-remix size={18} icon={<n-icon component={<Icon-RadixCircleCopy />}></n-icon>} onTrigger={onClipboar}></common-remix>
-                <common-remix
-                    icon={<n-icon size={18} component={<Icon-RadixMore />}></n-icon>}
-                    style={{ marginLeft: '4px' }}
-                ></common-remix>
-            </n-button>
+                <div class="n-display" style={{ columnGap: '5px' }}>
+                    <common-remix
+                        size={18}
+                        icon={<n-icon component={<Icon-RadixCircleCopy />}></n-icon>}
+                        onTrigger={onClipboar}
+                    ></common-remix>
+                    <n-dropdown show-arrow trigger="click" placement="top" options={[{ label: '用户资料', key: 'profile' }]}>
+                        <common-remix icon={<n-icon size={18} component={<Icon-RadixMore />}></n-icon>}></common-remix>
+                    </n-dropdown>
+                </div>
+            </n-alert>
         )
     }
 })
@@ -52,35 +62,24 @@ export default defineComponent({
 
 <style lang="scss" scoped>
 .common-rule {
-    position: relative;
-    display: flex;
-    justify-content: flex-start;
     box-sizing: border-box;
-    padding: 5px;
+    padding: 6px;
     overflow: hidden;
-    background-color: var(--n-color) !important;
-    &.n-button--info-type {
-        border: 1px solid var(--info-color);
+    :deep(.n-alert-body) {
+        padding: 0;
     }
-    &.n-button--success-type {
-        border: 1px solid var(--success-color);
+    :deep(.n-alert-body__content) {
+        display: flex;
+        align-items: center;
+        line-height: var(--height-small);
+        overflow: hidden;
     }
-    &.n-button--warning-type {
-        border: 1px solid var(--warning-color);
-    }
-    &.n-button--error-type {
-        border: 1px solid var(--error-color);
-    }
-    :deep(> .n-button__content) {
-        flex: 1;
-        text-align: left;
-    }
-
     &__content {
         flex: 1;
+        display: flex;
+        align-items: center;
         overflow: hidden;
         margin: 0 30px 0 10px;
-        line-height: var(--height-small);
     }
 }
 </style>

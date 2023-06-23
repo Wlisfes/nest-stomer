@@ -6,7 +6,7 @@ import { loadFile } from '@/utils/utils-common'
 export default defineComponent({
     name: 'Compute',
     setup() {
-        // const { locale, setLocale } = useLocale()
+        // const { locale, setLocale } = useCurrent()
 
         return () => (
             <div class="compute-container">

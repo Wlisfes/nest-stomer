@@ -14,7 +14,7 @@ export function setupI18n(app: App<Element>) {
     app.use(i18n)
 }
 
-export function useLocale() {
+export function useCurrent() {
     const context = useI18n()
     const locale = computed(() => i18n.global.locale.value)
     const Locale = computed(() => {
