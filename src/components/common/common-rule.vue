@@ -4,6 +4,7 @@ import { useClipboard } from '@vueuse/core'
 import { type IRule, IMethod } from '@/api/http-route'
 import { useCurrent } from '@/locale/instance'
 import { divineChained } from '@/utils/utils-common'
+import { fetchRule } from '@/views/manager/hooks/auto-compute'
 
 export default defineComponent({
     name: 'CommonRule',
@@ -34,6 +35,13 @@ export default defineComponent({
             }
         }
 
+        /**规则弹窗表单**/
+        function fetchUseRule() {
+            fetchRule().then(e => {
+                console.log(111111)
+            })
+        }
+
         return () => (
             <n-alert class="common-rule" show-icon={false} type={type.value}>
                 <n-button type={type.value} size="small" strong style={{ minWidth: '80px' }}>
@@ -52,10 +60,7 @@ export default defineComponent({
                         icon={<n-icon component={<Icon-RadixCircleCopy />}></n-icon>}
                         onTrigger={onClipboar}
                     ></common-remix>
-
-                    <common-remix icon={<n-icon size={18} component={<Icon-EditRegular />}></n-icon>}></common-remix>
-                    <common-remix icon={<n-icon size={18} component={<Icon-AntDesignEditOutlined />}></n-icon>}></common-remix>
-                    <common-remix icon={<n-icon size={18} component={<Icon-EditRegular />}></n-icon>}></common-remix>
+                    <common-remix icon={<n-icon size={18} component={<Icon-RadixEdit />}></n-icon>} onTrigger={fetchUseRule}></common-remix>
                     <common-remix icon={<n-icon size={18} component={<Icon-AddBold />}></n-icon>}></common-remix>
                     <common-remix icon={<n-icon size={18} component={<Icon-RadixMore />}></n-icon>}></common-remix>
                 </div>

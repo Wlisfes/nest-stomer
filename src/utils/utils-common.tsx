@@ -29,3 +29,16 @@ export async function divineChained<T>(...args: Function[]): Promise<T> {
         throw new Error(e.message)
     }
 }
+
+/**条件函数执行**/
+export async function divineHandler(value: boolean | Function, handler: Function) {
+    if ((typeof handler === 'boolean' && value) || (typeof value === 'function' && value())) {
+        return await handler()
+    }
+    return undefined
+}
+
+/**参数组合函数**/
+export async function divineParameter<T>(data: T) {
+    return data
+}
