@@ -46,6 +46,15 @@ export default {
             notice: '复制成功',
             fail: '复制失败',
             supported: '当前浏览器不支持剪贴板API'
+        },
+        status: {
+            value: '状态',
+            placeholder: '请选择状态',
+            column: [
+                { label: '启用', enter: '已启用', value: 'enable' },
+                { label: '禁用', enter: '已禁用', value: 'disable' },
+                { label: '删除', enter: '已删除', value: 'delete' }
+            ]
         }
     },
     en: {}

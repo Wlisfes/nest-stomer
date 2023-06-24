@@ -1,10 +1,22 @@
 import type { FormInst, FormRules, FormItemRule } from 'naive-ui'
-import { ref, toRefs } from 'vue'
+import { ref, toRefs, onMounted } from 'vue'
 import { useState } from '@/hooks/hook-state'
+import { divineHandler } from '@/utils/utils-common'
+export interface IOption {
+    immediate?: boolean
+    rules?: FormRules
+}
 
-export function useCustomizeForm<T extends Object>(option: T & { rules?: FormRules }) {
+export function useCustomize<T extends Object>(option: T & IOption, handler?: Function) {
     const formRef = ref<FormInst>()
     const { state, setState } = useState<typeof option>(option)
+
+    onMounted(async () => {
+        await divineHandler(
+            () => option.immediate && typeof handler === 'function',
+            () => handler?.(state)
+        )
+    })
 
     /**验证表单**/
     function divineFormValidater(callback: Function, factorRule?: (e: FormItemRule) => boolean) {

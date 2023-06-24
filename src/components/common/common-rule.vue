@@ -37,8 +37,10 @@ export default defineComponent({
 
         /**规则弹窗表单**/
         function fetchUseRule() {
-            fetchRule().then(e => {
-                console.log(e)
+            fetchRule().then(({ observer }) => {
+                observer.on('submit', () => {
+                    console.log(1111111)
+                })
             })
         }
 
@@ -60,8 +62,8 @@ export default defineComponent({
                         icon={<n-icon component={<Icon-RadixCircleCopy />}></n-icon>}
                         onTrigger={onClipboar}
                     ></common-remix>
-                    <common-remix size={18} icon={<n-icon component={<Icon-RadixEdit />}></n-icon>}></common-remix>
-                    <common-remix size={18} icon={<n-icon component={<Icon-AddBold />}></n-icon>} onTrigger={fetchUseRule}></common-remix>
+                    <common-remix size={18} icon={<n-icon component={<Icon-RadixEdit />}></n-icon>} onTrigger={fetchUseRule}></common-remix>
+                    <common-remix size={18} icon={<n-icon component={<Icon-AddBold />}></n-icon>}></common-remix>
                     <common-remix size={18} icon={<n-icon component={<Icon-RadixMore />}></n-icon>}></common-remix>
                 </n-space>
             </n-alert>

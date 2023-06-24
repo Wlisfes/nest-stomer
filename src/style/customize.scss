@@ -5,3 +5,10 @@
     flex-direction: column;
     overflow: hidden;
 }
+
+.n-button.el-customize {
+    position: relative;
+    &.el-medium {
+        min-width: 88px;
+    }
+}

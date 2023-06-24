@@ -1,7 +1,7 @@
 <script lang="tsx">
 import { defineComponent, onMounted, h } from 'vue'
 import { useRouter, RouterLink } from 'vue-router'
-import { useCustomizeForm } from '@/hooks/hook-form'
+import { useCustomize } from '@/hooks/hook-customize'
 import { useCurrent } from '@/locale/instance'
 import { loadFile } from '@/utils/utils-common'
 import { httpAuthorize } from '@/api/http-user'
@@ -21,7 +21,7 @@ export default defineComponent({
     setup() {
         const router = useRouter()
         const { t } = useCurrent()
-        const { formRef, state, setState, divineFormValidater } = useCustomizeForm<FormState>({
+        const { formRef, state, setState, divineFormValidater } = useCustomize<FormState>({
             loading: false,
             URL: undefined,
             form: {
@@ -175,3 +175,4 @@ export default defineComponent({
     }
 })
 </script>
+@/hooks/hook-customize
