@@ -1,9 +1,9 @@
 import '@/style/index.scss'
 import App from '@/App.vue'
-import { createComponent } from '@/utils/utils-app'
+import { createBootstrap } from '@/utils/utils-app'
 
 async function bootstrap() {
-    const { app } = createComponent(App)
+    const { app } = createBootstrap(App)
 
     app.mount('#app')
 }

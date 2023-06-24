@@ -38,7 +38,7 @@ export default defineComponent({
         /**规则弹窗表单**/
         function fetchUseRule() {
             fetchRule().then(e => {
-                console.log(111111)
+                console.log(e)
             })
         }
 

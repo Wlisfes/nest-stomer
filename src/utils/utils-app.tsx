@@ -3,7 +3,7 @@ import { setupI18n } from '@/locale/instance'
 import { setupStore } from '@/store'
 import { setupRouter } from '@/router'
 
-export function createComponent(RootComponent: Component) {
+export function createBootstrap(RootComponent: Component) {
     const app = createApp(<common-provider>{createVNode(RootComponent)}</common-provider>)
 
     setupI18n(app)
