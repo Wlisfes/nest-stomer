@@ -53,17 +53,17 @@ export default defineComponent({
                     </div>
                     <common-mode value={props.node.status}></common-mode>
                 </n-h4>
-                <div class="n-display" style={{ columnGap: '5px' }}>
+                <n-space align="center" wrap-item={false} size={4}>
                     <common-remix
                         size={18}
                         title={t('common.copy.value')}
                         icon={<n-icon component={<Icon-RadixCircleCopy />}></n-icon>}
                         onTrigger={onClipboar}
                     ></common-remix>
-                    <common-remix icon={<n-icon size={18} component={<Icon-RadixEdit />}></n-icon>} onTrigger={fetchUseRule}></common-remix>
-                    <common-remix icon={<n-icon size={18} component={<Icon-AddBold />}></n-icon>}></common-remix>
-                    <common-remix icon={<n-icon size={18} component={<Icon-RadixMore />}></n-icon>}></common-remix>
-                </div>
+                    <common-remix size={18} icon={<n-icon component={<Icon-RadixEdit />}></n-icon>}></common-remix>
+                    <common-remix size={18} icon={<n-icon component={<Icon-AddBold />}></n-icon>} onTrigger={fetchUseRule}></common-remix>
+                    <common-remix size={18} icon={<n-icon component={<Icon-RadixMore />}></n-icon>}></common-remix>
+                </n-space>
             </n-alert>
         )
     }

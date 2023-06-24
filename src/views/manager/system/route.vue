@@ -49,7 +49,7 @@ export default defineComponent({
                             </n-grid-item>
                         ))}
                         <n-grid-item span="1:2 520:2 960:1" style={{ display: 'flex' }}>
-                            <common-remix space={6} size={28} icon={<n-icon component={<Icon-RedixAdd />}></n-icon>}></common-remix>
+                            <common-remix space={6} size={28} icon={<n-icon component={<Icon-AddBold />}></n-icon>}></common-remix>
                         </n-grid-item>
                     </n-grid>
                 </Fragment>

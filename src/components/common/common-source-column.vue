@@ -36,7 +36,7 @@ export default defineComponent({
                         <n-h3 style={{ flex: 1, margin: 0 }}>{props.node?.title}</n-h3>
                     </div>
                     <div class="n-display n-center" style={{ paddingRight: props.collapse ? 0 : '4px' }}>
-                        <common-remix space={4} size={20} icon={<n-icon component={<Icon-RadixSetting />}></n-icon>}></common-remix>
+                        <common-remix space={4} size={20} icon={<n-icon component={<Icon-RadixMore />}></n-icon>}></common-remix>
                         {props.collapse && (
                             <div class="source-header__extra n-display n-center n-middle">
                                 <n-icon size={18} class={{ 'is-visible': visible.value }}>
