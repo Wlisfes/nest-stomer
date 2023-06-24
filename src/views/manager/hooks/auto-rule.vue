@@ -8,23 +8,41 @@ export default defineComponent({
     name: 'AutoRule',
     props: {
         observer: { type: Object as PropType<Observer<Record<string, unknown>>>, required: true },
-        title: { type: Boolean }
+        title: { type: String, required: true },
+        command: { type: String as PropType<'CREATE' | 'UPDATE'>, default: 'CREATE' }
     },
     emits: ['unmount'],
     setup(props, { emit }) {
-        const { t } = useCurrent()
-        const { formRef, state, setState } = useCustomize(
+        const { t, tm } = useCurrent()
+        const { formRef, state, setState, divineFormValidater } = useCustomize(
             {
                 immediate: true,
-                loading: true,
+                loading: false,
                 visible: false,
-                form: {},
-                rules: {}
+                form: {
+                    method: undefined,
+                    name: undefined,
+                    path: undefined,
+                    status: undefined
+                },
+                rules: {
+                    method: { required: true, message: t('rule.method.placeholder'), trigger: 'change' },
+                    name: { required: true, message: t('rule.name.placeholder'), trigger: 'blur' },
+                    path: { required: true, message: t('rule.path.placeholder'), trigger: 'blur' },
+                    status: { required: true, message: t('common.status.placeholder'), trigger: 'change' }
+                }
             },
-            () => setState({ visible: true })
+            () => {
+                setState({ visible: true })
+            }
         )
 
-        function onSubmit() {}
+        /**表单验证**/
+        function onSubmit() {
+            divineFormValidater(async () => {
+                console.log(111111)
+            }).catch(e => {})
+        }
 
         return () => (
             <n-modal
@@ -32,8 +50,9 @@ export default defineComponent({
                 auto-focus={false}
                 show-icon={false}
                 mask-closable={false}
-                title={t('common.update.enter', { name: '1111111' })}
+                title={props.title}
                 preset="dialog"
+                class="el-customize"
                 style={{ width: '640px' }}
                 onAfterLeave={() => emit('unmount')}
                 action={() => (
@@ -58,10 +77,30 @@ export default defineComponent({
                     model={state.form}
                     rules={state.rules}
                     disabled={state.loading}
-                    label-placement="left"
+                    label-placement="top"
                     require-mark-placement="left"
-                    label-width="120px"
-                ></n-form>
+                >
+                    <n-form-item label={t('rule.method.value')} path="method">
+                        <n-select
+                            v-model:value={state.form.method}
+                            placeholder={t('rule.method.placeholder')}
+                            options={tm('rule.method.column')}
+                        />
+                    </n-form-item>
+                    <n-form-item label={t('rule.name.value')} path="name">
+                        <n-input v-model:value={state.form.name} clearable placeholder={t('rule.name.placeholder')}></n-input>
+                    </n-form-item>
+                    <n-form-item label={t('rule.path.value')} path="path">
+                        <n-input v-model:value={state.form.path} clearable placeholder={t('rule.path.placeholder')}></n-input>
+                    </n-form-item>
+                    <n-form-item label={t('common.status.value')} path="status">
+                        <n-select
+                            v-model:value={state.form.status}
+                            placeholder={t('common.status.placeholder')}
+                            options={tm('common.status.column')}
+                        />
+                    </n-form-item>
+                </n-form>
             </n-modal>
         )
     }

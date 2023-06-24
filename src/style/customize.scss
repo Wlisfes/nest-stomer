@@ -12,3 +12,9 @@
         min-width: 88px;
     }
 }
+
+.n-dialog.el-customize {
+    > .n-dialog__content {
+        margin: 20px 0;
+    }
+}
