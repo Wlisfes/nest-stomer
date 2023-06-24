@@ -56,7 +56,7 @@ export default defineComponent({
                 <div class="n-display" style={{ columnGap: '5px' }}>
                     <common-remix
                         size={18}
-                        title={t('common.copy.title')}
+                        title={t('common.copy.value')}
                         icon={<n-icon component={<Icon-RadixCircleCopy />}></n-icon>}
                         onTrigger={onClipboar}
                     ></common-remix>

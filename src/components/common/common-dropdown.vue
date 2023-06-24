@@ -14,9 +14,9 @@ export default defineComponent({
     setup(props, { slots }) {
         const { t } = useCurrent()
         const dataSource = computed<Array<DropdownOption>>(() => [
-            { label: t('common.create.title'), key: 'create' },
-            { label: t('common.update.title'), key: 'update' },
-            { label: t('common.delete.title'), key: 'delete' }
+            { label: t('common.create.value'), key: 'create' },
+            { label: t('common.update.value'), key: 'update' },
+            { label: t('common.delete.value'), key: 'delete' }
         ])
         const dataColumn = computed(() => dataSource.value.filter(x => props.command.includes(x.key as never)))
 
