@@ -83,7 +83,11 @@ export default defineComponent({
                 preset="dialog"
                 class="el-customize"
                 style={{ width: '640px' }}
-                onAfterLeave={() => emit('unmount')}
+                onAfterLeave={() => {
+                    emit('unmount')
+                    console.log('onAfterLeave')
+                }}
+                onClose={() => console.log('onClose')}
                 action={() => (
                     <n-space justify="center" style={{ flex: 'auto' }}>
                         <n-button class="el-customize el-medium" onClick={() => setState({ visible: false })}>
