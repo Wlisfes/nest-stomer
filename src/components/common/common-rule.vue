@@ -37,9 +37,14 @@ export default defineComponent({
 
         /**规则弹窗表单**/
         function fetchUseRule() {
-            fetchRule({ title: t('common.update.enter', { name: t('rule.common.name') }) }).then(({ observer }) => {
-                observer.on('submit', () => {
-                    console.log(1111111)
+            fetchRule({
+                title: t('common.update.enter', { name: t('rule.common.name') }),
+                command: 'UPDATE',
+                node: props.node
+            }).then(({ observer }) => {
+                observer.on('submit', (e: any) => {
+                    e.done()
+                    console.log(e)
                 })
             })
         }

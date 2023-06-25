@@ -5,23 +5,12 @@ import { useState } from '@/hooks/hook-state'
 export default defineComponent({
     name: 'CommonRemix',
     props: {
-        icon: {
-            type: Object as PropType<Component>
-        },
-        spin: {
-            type: Object as PropType<Component>
-        },
-        space: {
-            type: Number,
-            default: 3
-        },
-        size: {
-            type: Number,
-            default: 16
-        },
-        title: {
-            type: String
-        }
+        icon: { type: Object as PropType<Component> },
+        spin: { type: Object as PropType<Component> },
+        space: { type: Number, default: 3 },
+        size: { type: Number, default: 16 },
+        title: { type: String },
+        focusable: { type: Boolean, default: false }
     },
     emits: ['trigger'],
     setup(props, { slots, emit }) {
@@ -57,6 +46,7 @@ export default defineComponent({
                 class="common-remix"
                 quaternary
                 size="small"
+                focusable={props.focusable}
                 title={props.title}
                 disabled={state.loading}
                 style={remixStyle.value}

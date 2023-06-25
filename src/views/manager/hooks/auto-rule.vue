@@ -3,13 +3,16 @@ import { defineComponent, type PropType } from 'vue'
 import { Observer } from '@/utils/utils-observer'
 import { useCustomize } from '@/hooks/hook-customize'
 import { useCurrent } from '@/locale/instance'
+import { httpUpdateRule, type IRule } from '@/api/http-route'
 
 export default defineComponent({
     name: 'AutoRule',
     props: {
         observer: { type: Object as PropType<Observer<Record<string, unknown>>>, required: true },
         title: { type: String, required: true },
-        command: { type: String as PropType<'CREATE' | 'UPDATE'>, default: 'CREATE' }
+        command: { type: String as PropType<'CREATE' | 'UPDATE'>, default: 'CREATE' },
+        id: { type: Number },
+        node: { type: Object as PropType<IRule> }
     },
     emits: ['unmount'],
     setup(props, { emit }) {
@@ -20,10 +23,10 @@ export default defineComponent({
                 loading: false,
                 visible: false,
                 form: {
-                    method: undefined,
-                    name: undefined,
-                    path: undefined,
-                    status: undefined
+                    method: props.node?.method,
+                    name: props.node?.name,
+                    path: props.node?.path,
+                    status: props.node?.status
                 },
                 rules: {
                     method: { required: true, message: t('rule.method.placeholder'), trigger: 'change' },
@@ -39,8 +42,34 @@ export default defineComponent({
 
         /**表单验证**/
         function onSubmit() {
-            divineFormValidater(async () => {
-                console.log(111111)
+            divineFormValidater(() => {
+                setState({ loading: true }).finally(async () => {
+                    try {
+                        const { data } = await httpUpdateRule({
+                            id: props.node?.id,
+                            status: state.form.status,
+                            name: state.form.name,
+                            path: state.form.path,
+                            method: state.form.method,
+                            parent: 3
+                        })
+                        window.$notification.success({
+                            title: data.message,
+                            duration: 2500,
+                            onAfterEnter: () => {
+                                setState({ loading: false }).finally(() => {
+                                    props.observer.emit('submit', {
+                                        done: () => setState({ visible: false })
+                                    })
+                                })
+                            }
+                        })
+                    } catch (e) {
+                        setState({ loading: false }).finally(() => {
+                            window.$notification.error({ title: e.message, duration: 2500 })
+                        })
+                    }
+                })
             }).catch(e => {})
         }
 

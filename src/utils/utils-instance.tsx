@@ -7,7 +7,7 @@ import { setupRouter } from '@/router'
 
 export async function createComponent<T>(RootComponent: Parameters<typeof createApp>['0'], option?: { immediate?: boolean; props?: T }) {
     const el = document.createElement('div')
-    const observer = new Observer<Record<string, unknown>>()
+    const observer = new Observer()
     const props = await divineParameter(option?.props ?? {}).then(data => {
         return { ...data, observer, onUnmount: unmount }
     })

@@ -25,10 +25,25 @@ export interface IRoute extends Scheme {
 
 /**动态路由菜单**/
 export function httpDynamicRoute() {
-    return request<Result<IRoute>>({ url: `/api/route/dynamic`, method: 'GET' })
+    return request<Result<IRoute>>({
+        url: `/api/route/dynamic`,
+        method: 'GET'
+    })
 }
 
 /**路由菜单列表**/
 export function httpColumnRoute() {
-    return request<Result<IRoute>>({ url: `/api/route/column`, method: 'GET' })
+    return request<Result<IRoute>>({
+        url: `/api/route/column`,
+        method: 'GET'
+    })
+}
+
+/**编辑接口规则**/
+export function httpUpdateRule(data: { id?: number; status?: string; path?: string; name?: string; method?: string; parent?: number }) {
+    return request<{ message: string }>({
+        url: `/api/route/update/rule`,
+        method: 'PUT',
+        data
+    })
 }
