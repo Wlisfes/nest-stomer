@@ -14,7 +14,7 @@ export default defineComponent({
         id: { type: Number },
         node: { type: Object as PropType<IRule> }
     },
-    emits: ['unmount'],
+    emits: ['close'],
     setup(props, { emit }) {
         const { t, tm } = useCurrent()
         const { formRef, state, setState, divineFormValidater } = useCustomize(
@@ -42,34 +42,33 @@ export default defineComponent({
 
         /**表单验证**/
         function onSubmit() {
-            divineFormValidater(() => {
-                setState({ loading: true }).finally(async () => {
-                    try {
-                        const { data } = await httpUpdateRule({
-                            id: props.node?.id,
-                            status: state.form.status,
-                            name: state.form.name,
-                            path: state.form.path,
-                            method: state.form.method,
-                            parent: 3
-                        })
-                        window.$notification.success({
-                            title: data.message,
-                            duration: 2500,
-                            onAfterEnter: () => {
-                                setState({ loading: false }).finally(() => {
-                                    props.observer.emit('submit', {
-                                        done: () => setState({ visible: false })
-                                    })
+            divineFormValidater(async () => {
+                try {
+                    await setState({ loading: true })
+                    const { data } = await httpUpdateRule({
+                        id: props.node?.id,
+                        status: state.form.status,
+                        name: state.form.name,
+                        path: state.form.path,
+                        method: state.form.method,
+                        parent: 3
+                    })
+                    window.$notification.success({
+                        title: data.message,
+                        duration: 2500,
+                        onAfterEnter: () => {
+                            setState({ loading: false }).finally(() => {
+                                props.observer.emit('submit', {
+                                    done: () => setState({ visible: false })
                                 })
-                            }
-                        })
-                    } catch (e) {
-                        setState({ loading: false }).finally(() => {
-                            window.$notification.error({ title: e.message, duration: 2500 })
-                        })
-                    }
-                })
+                            })
+                        }
+                    })
+                } catch (e) {
+                    setState({ loading: false }).finally(() => {
+                        window.$notification.error({ title: e.message, duration: 2500 })
+                    })
+                }
             }).catch(e => {})
         }
 
@@ -83,11 +82,7 @@ export default defineComponent({
                 preset="dialog"
                 class="el-customize"
                 style={{ width: '640px' }}
-                onAfterLeave={() => {
-                    emit('unmount')
-                    console.log('onAfterLeave')
-                }}
-                onClose={() => console.log('onClose')}
+                onAfterLeave={() => emit('close')}
                 action={() => (
                     <n-space justify="center" style={{ flex: 'auto' }}>
                         <n-button class="el-customize el-medium" onClick={() => setState({ visible: false })}>

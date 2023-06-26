@@ -1,9 +1,11 @@
-import { createApp, createVNode, nextTick } from 'vue'
+import { createApp, defineComponent, createVNode, nextTick } from 'vue'
 import { divineParameter, divineHandler } from '@/utils/utils-common'
 import { Observer } from '@/utils/utils-observer'
 import { setupI18n } from '@/locale/instance'
 import { setupStore } from '@/store'
 import { setupRouter } from '@/router'
+
+// export
 
 export async function createComponent<T>(RootComponent: Parameters<typeof createApp>['0'], option?: { immediate?: boolean; props?: T }) {
     const el = document.createElement('div')
@@ -12,9 +14,8 @@ export async function createComponent<T>(RootComponent: Parameters<typeof create
         return {
             ...data,
             observer,
-            onUnmount: unmount,
-            onCancel: cancel,
-            onConfirm: confirm
+            onClose: unmount,
+            onSubmit: submit
         }
     })
     const app = createApp(<common-provider>{createVNode(RootComponent, props)}</common-provider>)
@@ -26,17 +27,13 @@ export async function createComponent<T>(RootComponent: Parameters<typeof create
 
     /**组件销毁**/
     async function unmount(e: unknown) {
-        observer.emit('unmount', e)
+        observer.emit('close', e)
         app.unmount()
         return el.remove()
     }
 
-    async function cancel(e: unknown) {
-        observer.emit('cancel', e)
-    }
-
-    async function confirm(e: unknown) {
-        observer.emit('confirm', e)
+    async function submit(e: unknown) {
+        observer.emit('submit', e)
     }
 
     setupI18n(app)
