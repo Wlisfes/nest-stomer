@@ -4,12 +4,13 @@ import { Observer } from '@/utils/utils-observer'
 import { setupI18n } from '@/locale/instance'
 import { setupStore } from '@/store'
 import { setupRouter } from '@/router'
-
-// export
+export type Event = 'close' | 'submit' | 'cancel' | 'confirm' | 'refresh'
+export type IOnspector = { done: () => Promise<void> }
+export type IObserver = Record<Event, IOnspector>
 
 export async function createComponent<T>(RootComponent: Parameters<typeof createApp>['0'], option?: { immediate?: boolean; props?: T }) {
     const el = document.createElement('div')
-    const observer = new Observer()
+    const observer = new Observer<IObserver>()
     const props = await divineParameter(option?.props ?? {}).then(data => {
         return {
             ...data,
@@ -26,13 +27,13 @@ export async function createComponent<T>(RootComponent: Parameters<typeof create
     }
 
     /**组件销毁**/
-    async function unmount(e: unknown) {
+    async function unmount(e: IOnspector) {
         observer.emit('close', e)
         app.unmount()
         return el.remove()
     }
 
-    async function submit(e: unknown) {
+    async function submit(e: IOnspector) {
         observer.emit('submit', e)
     }
 

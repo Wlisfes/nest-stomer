@@ -2,6 +2,7 @@
 import { defineComponent, computed, Fragment, type PropType } from 'vue'
 import { useClipboard } from '@vueuse/core'
 import { type IRule, IMethod } from '@/api/http-route'
+import { type IOnspector } from '@/utils/utils-instance'
 import { useCurrent } from '@/locale/instance'
 import { divineChained } from '@/utils/utils-common'
 import { fetchRule } from '@/views/manager/hooks/auto-compute'
@@ -42,9 +43,10 @@ export default defineComponent({
                 command: 'UPDATE',
                 node: props.node
             }).then(({ observer }) => {
-                observer.on('submit', (e: any) => {
-                    e.done()
-                    console.log(e)
+                observer.on('submit', e => {
+                    // e.done()
+                    console.log(e?.done)
+                    return e
                 })
             })
         }
