@@ -84,20 +84,11 @@ export default defineComponent({
                 style={{ width: '640px' }}
                 onAfterLeave={() => emit('close')}
                 action={() => (
-                    <n-space justify="center" style={{ flex: 'auto' }}>
-                        <n-button class="el-customize el-medium" onClick={() => setState({ visible: false })}>
-                            {t('common.cancel.value')}
-                        </n-button>
-                        <n-button
-                            class="el-customize el-medium"
-                            type="primary"
-                            disabled={state.loading}
-                            loading={state.loading}
-                            onClick={onSubmit}
-                        >
-                            {t('common.submit.value')}
-                        </n-button>
-                    </n-space>
+                    <common-inspector
+                        loading={state.loading}
+                        onCancel={() => setState({ visible: false })}
+                        onSubmit={onSubmit}
+                    ></common-inspector>
                 )}
             >
                 <n-form
