@@ -6,7 +6,7 @@ import { useCurrent } from '@/locale/instance'
 import { httpUpdateRule, type IRule } from '@/api/http-route'
 
 export default defineComponent({
-    name: 'AutoRule',
+    name: 'FetchRule',
     props: {
         observer: { type: Object as PropType<Observer<Record<string, unknown>>>, required: true },
         title: { type: String, required: true },

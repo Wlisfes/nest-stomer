@@ -1,11 +1,10 @@
 <script lang="tsx">
-import { defineComponent, computed, Fragment, type PropType } from 'vue'
+import { defineComponent, computed, type PropType } from 'vue'
 import { useClipboard } from '@vueuse/core'
 import { type IRule, IMethod } from '@/api/http-route'
-import { type IOnspector } from '@/utils/utils-instance'
 import { useCurrent } from '@/locale/instance'
 import { divineChained } from '@/utils/utils-common'
-import { fetchRule } from '@/views/manager/hooks/auto-compute'
+import { fetchRule } from '@/views/manager/hooks/fetch-instance'
 
 export default defineComponent({
     name: 'CommonRule',
