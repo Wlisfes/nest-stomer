@@ -1,5 +1,5 @@
 <script lang="tsx">
-import { defineComponent, computed, type PropType, type CSSProperties } from 'vue'
+import { defineComponent, computed, type PropType, type CSSProperties, type VNodeChild } from 'vue'
 import { type DataTableBaseColumn } from 'naive-ui'
 
 export default defineComponent({
@@ -9,7 +9,8 @@ export default defineComponent({
         dataSource: { type: Array as PropType<Array<Record<string, unknown>>>, default: () => [] },
         total: { type: Number, default: 0 },
         loading: { type: Boolean, default: true },
-        width: { type: Number, default: 640 }
+        width: { type: Number, default: 640 },
+        dataRender: { type: Function as PropType<(e: Record<string, unknown>) => VNodeChild> }
     },
     setup(props, { slots }) {
         const cameStyle = computed<CSSProperties>(() => ({
@@ -33,7 +34,7 @@ export default defineComponent({
                     ) : (
                         <div class="common-source__container" style={cameStyle.value}>
                             {props.dataSource.map(item => {
-                                return slots.default ? slots.default(item) : null
+                                return slots.default ? slots.default(item) : props.dataRender ? props.dataRender(item) : null
                             })}
                         </div>
                     )}

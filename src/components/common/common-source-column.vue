@@ -1,5 +1,5 @@
 <script lang="tsx">
-import { defineComponent, Fragment, type PropType } from 'vue'
+import { defineComponent, Fragment, type PropType, type VNodeChild } from 'vue'
 import { useState } from '@/hooks/hook-state'
 import { type Scheme } from '@/api/http-interface'
 interface NodeProps extends Scheme, Record<string, unknown> {
@@ -9,17 +9,10 @@ interface NodeProps extends Scheme, Record<string, unknown> {
 export default defineComponent({
     name: 'CommonSourceColumn',
     props: {
-        node: {
-            type: Object as PropType<NodeProps>
-        },
-        bordered: {
-            type: Boolean,
-            default: true
-        },
-        collapse: {
-            type: Boolean,
-            default: true
-        }
+        node: { type: Object as PropType<NodeProps> },
+        bordered: { type: Boolean, default: true },
+        collapse: { type: Boolean, default: true },
+        dataRender: { type: Function as PropType<(e: Record<string, unknown>) => VNodeChild> }
     },
     setup(props, { slots }) {
         const { visible, setState } = useState({ visible: false })
@@ -47,7 +40,11 @@ export default defineComponent({
                     </div>
                 </div>
                 <div class="source-container">
-                    <Fragment>{slots.default?.({ visible: visible.value, done: () => props.collapse && onCollapse() })}</Fragment>
+                    {slots.default ? (
+                        <Fragment>{slots.default({ visible: visible.value, done: () => props.collapse && onCollapse() })}</Fragment>
+                    ) : props.dataRender ? (
+                        <Fragment>{props.dataRender({ visible: visible.value, done: () => props.collapse && onCollapse() })}</Fragment>
+                    ) : null}
                 </div>
             </n-el>
         )
