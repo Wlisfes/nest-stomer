@@ -1,12 +1,15 @@
 <script lang="tsx">
 import { defineComponent, Fragment, type SetupContext } from 'vue'
-import { httpColumnRoute, type IRoute } from '@/api/http-route'
+import { httpColumnRoute, type IRoute, type IRule } from '@/api/http-route'
+import { useCurrent } from '@/locale/instance'
 import { useSource } from '@/hooks/hook-source'
+import { fetchRule } from '@/views/manager/hooks/fetch-instance'
 
 export default defineComponent({
     name: 'Route',
     setup() {
-        const { state } = useSource<IRoute, Record<string, unknown>>({
+        const { t } = useCurrent()
+        const { state, fetchUpdate } = useSource<IRoute, Record<string, unknown>>({
             immediate: true,
             dataColumn: [
                 { key: 'title', title: '节点名称', minWidth: 150 },
@@ -18,6 +21,21 @@ export default defineComponent({
             ],
             request: () => httpColumnRoute()
         })
+
+        /**选中规则回调**/
+        function onSelecter(key: string, option: IRule) {
+            if (key === 'update') {
+                return fetchRule({
+                    title: t('common.update.enter', { name: t('rule.common.name') }),
+                    command: 'UPDATE',
+                    node: option
+                }).then(({ observer }) => {
+                    observer.on('submit', ({ done }) => {
+                        fetchUpdate().finally(() => done({ visible: false }))
+                    })
+                })
+            }
+        }
 
         const RouteColumn = (data: IRoute) => {
             return (
@@ -45,7 +63,7 @@ export default defineComponent({
                     <n-grid cols={2} x-gap={14} y-gap={14} item-responsive style={{ padding: '0', marginTop: '20px' }}>
                         {data.rule.map(item => (
                             <n-grid-item span="1:2 520:2 960:1">
-                                <common-rule key={item.id} node={item}></common-rule>
+                                <common-rule key={item.id} node={item} onSelecter={onSelecter}></common-rule>
                             </n-grid-item>
                         ))}
                         <n-grid-item span="1:2 520:2 960:1" style={{ display: 'flex' }}>

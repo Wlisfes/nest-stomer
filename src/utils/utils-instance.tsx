@@ -1,11 +1,11 @@
-import { createApp, defineComponent, createVNode, nextTick } from 'vue'
+import { createApp, createVNode, nextTick } from 'vue'
 import { divineParameter, divineHandler } from '@/utils/utils-common'
 import { Observer } from '@/utils/utils-observer'
 import { setupI18n } from '@/locale/instance'
 import { setupStore } from '@/store'
 import { setupRouter } from '@/router'
 export type Event = 'close' | 'submit' | 'cancel' | 'confirm' | 'refresh'
-export type IOnspector = { done: () => Promise<void> }
+export type IOnspector = { done: (e?: Partial<{ loading: false; visible: false }>) => Promise<void> }
 export type IObserver = Record<Event, IOnspector>
 
 export async function createComponent<T>(RootComponent: Parameters<typeof createApp>['0'], option?: { immediate?: boolean; props?: T }) {
@@ -33,6 +33,7 @@ export async function createComponent<T>(RootComponent: Parameters<typeof create
         return el.remove()
     }
 
+    /**确定、表单提交**/
     async function submit(e: IOnspector) {
         observer.emit('submit', e)
     }

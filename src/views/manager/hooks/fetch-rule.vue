@@ -57,11 +57,7 @@ export default defineComponent({
                         title: data.message,
                         duration: 2500,
                         onAfterEnter: () => {
-                            setState({ loading: false }).finally(() => {
-                                props.observer.emit('submit', {
-                                    done: () => setState({ visible: false })
-                                })
-                            })
+                            props.observer.emit('submit', { done: setState })
                         }
                     })
                 } catch (e) {

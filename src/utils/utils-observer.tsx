@@ -1,4 +1,4 @@
-export type Handler<T = any> = (event?: T) => void
+export type Handler<T = any> = (event: T) => void
 export type Handlers<T> = Array<Handler<T>>
 export type MapHandler<Event extends Record<string, Handlers<any>>> = Map<keyof Event, Handlers<Event[keyof Event]>>
 
