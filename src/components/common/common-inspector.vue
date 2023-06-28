@@ -28,7 +28,7 @@ export default defineComponent({
                         loading={props.loading}
                         onClick={(e: Event) => emit('submit', e)}
                     >
-                        {typeof props.submit === 'boolean' ? t('common.cancel.value') : props.submit}
+                        {typeof props.submit === 'boolean' ? t('common.submit.value') : props.submit}
                     </n-button>
                 )}
             </n-space>
