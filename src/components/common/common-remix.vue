@@ -5,14 +5,39 @@ import { useState } from '@/hooks/hook-state'
 export default defineComponent({
     name: 'CommonRemix',
     props: {
-        icon: { type: Object as PropType<Component> },
-        spin: { type: Object as PropType<Component> },
-        space: { type: Number, default: 3 },
-        size: { type: Number, default: 16 },
-        title: { type: String },
-        focusable: { type: Boolean, default: false },
-        hover: { type: Boolean, default: true },
-        stop: { type: Boolean, default: false }
+        icon: {
+            type: Object as PropType<Component>
+        },
+        spin: {
+            type: Object as PropType<Component>
+        },
+        space: {
+            type: Number,
+            default: 3
+        },
+        size: {
+            type: Number,
+            default: 16
+        },
+        title: {
+            type: String
+        },
+        focusable: {
+            type: Boolean,
+            default: false
+        },
+        hover: {
+            type: Boolean,
+            default: true
+        },
+        stop: {
+            type: Boolean,
+            default: false
+        },
+        type: {
+            type: String as PropType<'default' | 'tertiary' | 'primary' | 'info' | 'warning' | 'error'>,
+            default: 'default'
+        }
     },
     emits: ['trigger'],
     setup(props, { slots, emit }) {
@@ -51,6 +76,7 @@ export default defineComponent({
             <n-button
                 class={{ 'common-remix': true, 'not-hover': !props.hover }}
                 quaternary
+                type={props.type}
                 size="small"
                 focusable={props.focusable}
                 title={props.title}

@@ -25,11 +25,17 @@ export default defineComponent({
         function createRemix(option: DropdownOption) {
             switch (option.key) {
                 case 'create':
-                    return createVNode(<n-icon component={<Icon-AddBold />}></n-icon>)
+                    return createVNode(
+                        <common-remix type="primary" hover={false} icon={<n-icon component={<Icon-AddBold />}></n-icon>}></common-remix>
+                    )
                 case 'update':
-                    return createVNode(<n-icon component={<Icon-RadixEdit />}></n-icon>)
+                    return createVNode(
+                        <common-remix type="info" hover={false} icon={<n-icon component={<Icon-RadixEdit />}></n-icon>}></common-remix>
+                    )
                 case 'delete':
-                    return createVNode(<n-icon component={<Icon-CloseBold />}></n-icon>)
+                    return createVNode(
+                        <common-remix type="error" hover={false} icon={<n-icon component={<Icon-DeleteBold />}></n-icon>}></common-remix>
+                    )
             }
         }
 

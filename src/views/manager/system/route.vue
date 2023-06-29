@@ -74,8 +74,8 @@ export default defineComponent({
 
         const RouteSuffix = (data: IRoute) => (
             <n-space align="center" wrap-item={false} size={5}>
-                <common-remix stop space={4} size={18} icon={<n-icon component={<Icon-AddBold />}></n-icon>}></common-remix>
-                <common-remix stop space={4} size={18} icon={<n-icon component={<Icon-DeleteBlod />}></n-icon>}></common-remix>
+                <common-remix type="primary" stop space={4} size={18} icon={<n-icon component={<Icon-AddBold />}></n-icon>}></common-remix>
+                <common-remix type="error" stop space={4} size={18} icon={<n-icon component={<Icon-DeleteBold />}></n-icon>}></common-remix>
             </n-space>
         )
 

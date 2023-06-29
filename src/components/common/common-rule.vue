@@ -53,7 +53,10 @@ export default defineComponent({
                         icon={<n-icon component={<Icon-RadixCircleCopy />}></n-icon>}
                         onTrigger={onClipboar}
                     ></common-remix>
-                    <common-dropdown command={['update', 'delete']} onSelecter={(key: string) => emit('selecter', key, props.node)}>
+                    <common-dropdown
+                        command={['create', 'update', 'delete']}
+                        onSelecter={(key: string) => emit('selecter', key, props.node)}
+                    >
                         <common-remix size={18} icon={<n-icon component={<Icon-RadixMore />}></n-icon>}></common-remix>
                     </common-dropdown>
                 </n-space>
