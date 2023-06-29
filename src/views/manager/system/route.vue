@@ -30,48 +30,54 @@ export default defineComponent({
                     command: 'UPDATE',
                     node: option
                 }).then(({ observer }) => {
-                    observer.on('submit', ({ done }) => {
-                        fetchUpdate().finally(() => done({ visible: false }))
+                    observer.on('submit', async ({ done }) => {
+                        await done({ visible: false })
+                        await fetchUpdate()
                     })
                 })
             }
         }
 
-        const RouteColumn = (data: IRoute) => {
-            return (
-                <Fragment>
-                    <n-grid cols={4} x-gap={14} y-gap={14} item-responsive style={{ padding: '0' }}>
-                        <n-grid-item span="1:4 520:2 840:2 960:1">
-                            <common-reactive y-gap={3} label="节点类型">
-                                <n-tag bordered={false} size="small" type="success">
-                                    已启用
-                                </n-tag>
-                            </common-reactive>
-                        </n-grid-item>
-                        <n-grid-item span="1:4 520:2 840:2 960:1">
-                            <common-reactive y-gap={3} label="页面路径" content={data.path}></common-reactive>
-                        </n-grid-item>
-                        <n-grid-item span="1:4 520:2 840:2 960:1">
-                            <common-reactive y-gap={3} label="重定向地址" content={data.redirect}></common-reactive>
-                        </n-grid-item>
-                        <n-grid-item span="1:4 520:2 840:2 960:1">
-                            <common-reactive y-gap={3} label="状态">
-                                <common-mode value={data.status}></common-mode>
-                            </common-reactive>
-                        </n-grid-item>
+        const RouteColumn = (data: IRoute) => (
+            <Fragment>
+                <n-grid cols={4} x-gap={14} y-gap={14} item-responsive style={{ padding: '0' }}>
+                    <n-grid-item span="1:4 520:2 840:2 960:1">
+                        <common-reactive y-gap={3} label="节点类型">
+                            <n-tag bordered={false} size="small" type="success">
+                                已启用
+                            </n-tag>
+                        </common-reactive>
+                    </n-grid-item>
+                    <n-grid-item span="1:4 520:2 840:2 960:1">
+                        <common-reactive y-gap={3} label="页面路径" content={data.path}></common-reactive>
+                    </n-grid-item>
+                    <n-grid-item span="1:4 520:2 840:2 960:1">
+                        <common-reactive y-gap={3} label="重定向地址" content={data.redirect}></common-reactive>
+                    </n-grid-item>
+                    <n-grid-item span="1:4 520:2 840:2 960:1">
+                        <common-reactive y-gap={3} label="状态">
+                            <common-mode value={data.status}></common-mode>
+                        </common-reactive>
+                    </n-grid-item>
+                </n-grid>
+                {data.rule.length > 0 && (
+                    <n-grid cols={2} x-gap={14} y-gap={14} item-responsive style={{ padding: '0', marginTop: '20px' }}>
+                        {data.rule.map(item => (
+                            <n-grid-item span="1:2 520:2 960:1">
+                                <common-rule key={item.id} node={item} onSelecter={onRuleSelecter}></common-rule>
+                            </n-grid-item>
+                        ))}
                     </n-grid>
-                    {data.rule.length > 0 && (
-                        <n-grid cols={2} x-gap={14} y-gap={14} item-responsive style={{ padding: '0', marginTop: '20px' }}>
-                            {data.rule.map(item => (
-                                <n-grid-item span="1:2 520:2 960:1">
-                                    <common-rule key={item.id} node={item} onSelecter={onRuleSelecter}></common-rule>
-                                </n-grid-item>
-                            ))}
-                        </n-grid>
-                    )}
-                </Fragment>
-            )
-        }
+                )}
+            </Fragment>
+        )
+
+        const RouteSuffix = (data: IRoute) => (
+            <n-space align="center" wrap-item={false} size={5}>
+                <common-remix stop space={4} size={18} icon={<n-icon component={<Icon-AddBold />}></n-icon>}></common-remix>
+                <common-remix stop space={4} size={18} icon={<n-icon component={<Icon-DeleteBlod />}></n-icon>}></common-remix>
+            </n-space>
+        )
 
         return () => (
             <common-container>
@@ -86,6 +92,7 @@ export default defineComponent({
                             key={data.id}
                             node={data}
                             collapse={data.children.length > 0}
+                            v-slots={{ suffix: RouteSuffix }}
                             data-render={(model: { visible: boolean }) => (
                                 <Fragment>
                                     <section style={{ padding: '0 16px 16px' }}>
@@ -102,21 +109,20 @@ export default defineComponent({
                                                             bordered={false}
                                                             collapse={scope.children.length > 0}
                                                             node={scope}
-                                                            v-slots={{
-                                                                default: (e: { visible: boolean }) => (
-                                                                    <Fragment>
-                                                                        <section style={{ padding: '0 16px 16px' }}>
-                                                                            <RouteColumn {...scope}></RouteColumn>
-                                                                        </section>
-                                                                        <common-collapse visible={e.visible}>
-                                                                            <common-recursion
-                                                                                data-source={scope.children}
-                                                                                v-slots={slots}
-                                                                            ></common-recursion>
-                                                                        </common-collapse>
-                                                                    </Fragment>
-                                                                )
-                                                            }}
+                                                            v-slots={{ suffix: RouteSuffix }}
+                                                            data-render={(e: { visible: boolean }) => (
+                                                                <Fragment>
+                                                                    <section style={{ padding: '0 16px 16px' }}>
+                                                                        <RouteColumn {...scope}></RouteColumn>
+                                                                    </section>
+                                                                    <common-collapse visible={e.visible}>
+                                                                        <common-recursion
+                                                                            data-source={scope.children}
+                                                                            v-slots={slots}
+                                                                        ></common-recursion>
+                                                                    </common-collapse>
+                                                                </Fragment>
+                                                            )}
                                                         ></common-source-column>
                                                     </Fragment>
                                                 )

@@ -10,7 +10,9 @@ export default defineComponent({
         space: { type: Number, default: 3 },
         size: { type: Number, default: 16 },
         title: { type: String },
-        focusable: { type: Boolean, default: false }
+        focusable: { type: Boolean, default: false },
+        hover: { type: Boolean, default: true },
+        stop: { type: Boolean, default: false }
     },
     emits: ['trigger'],
     setup(props, { slots, emit }) {
@@ -21,6 +23,10 @@ export default defineComponent({
         }))
 
         const onTrigger = (event: Event) => {
+            if (props.stop) {
+                event.preventDefault()
+                event.stopPropagation()
+            }
             emit('trigger', {
                 event,
                 loading: state.loading,
@@ -43,7 +49,7 @@ export default defineComponent({
 
         return () => (
             <n-button
-                class="common-remix"
+                class={{ 'common-remix': true, 'not-hover': !props.hover }}
                 quaternary
                 size="small"
                 focusable={props.focusable}
@@ -63,6 +69,9 @@ export default defineComponent({
 .n-button.common-remix {
     position: relative;
     height: initial;
+    &.not-hover {
+        background-color: transparent;
+    }
     :deep(.n-button__icon) {
         position: relative;
         height: var(--icon-space);

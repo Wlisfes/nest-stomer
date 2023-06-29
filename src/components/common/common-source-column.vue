@@ -29,12 +29,15 @@ export default defineComponent({
                         <n-h3 style={{ flex: 1, margin: 0 }}>{props.node?.title}</n-h3>
                     </div>
                     <div class="n-display n-center" style={{ paddingRight: props.collapse ? 0 : '4px' }}>
-                        <common-remix space={4} size={20} icon={<n-icon component={<Icon-RadixMore />}></n-icon>}></common-remix>
+                        {slots.suffix && slots.suffix(props.node)}
                         {props.collapse && (
                             <div class="source-header__extra n-display n-center n-middle">
-                                <n-icon size={18} class={{ 'is-visible': visible.value }}>
-                                    <Icon-ArrowRightBold />
-                                </n-icon>
+                                <common-remix
+                                    hover={false}
+                                    space={4}
+                                    size={18}
+                                    icon={<n-icon class={{ 'is-visible': visible.value }} component={<Icon-ArrowRightBold />}></n-icon>}
+                                ></common-remix>
                             </div>
                         )}
                     </div>
@@ -75,7 +78,7 @@ export default defineComponent({
         &__extra {
             width: 26px;
             height: 26px;
-            .n-icon {
+            .common-remix :deep(.n-icon) {
                 transition: transform 0.3s var(--cubic-bezier-ease-in-out);
                 color: var(--text-color-2);
                 &.is-visible {
