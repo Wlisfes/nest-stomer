@@ -31,7 +31,7 @@ export default defineComponent({
                     <div class="n-display n-center" style={{ paddingRight: props.collapse ? 0 : '4px' }}>
                         {slots.suffix && slots.suffix(props.node)}
                         {props.collapse && (
-                            <div class="source-header__extra n-display n-center n-middle">
+                            <div class="source-header__extra n-display n-center n-middle" style={{ marginLeft: '5px' }}>
                                 <common-remix
                                     hover={false}
                                     space={4}
