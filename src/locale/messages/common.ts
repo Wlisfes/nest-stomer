@@ -57,5 +57,62 @@ export default {
             ]
         }
     },
-    en: {}
+    en: {
+        create: {
+            value: 'Add',
+            enter: 'Add {name}',
+            notice: 'added successfully'
+        },
+        update: {
+            value: 'Edit',
+            enter: 'Edit {name}',
+            notice: 'edited successfully'
+        },
+        delete: {
+            value: 'Delete',
+            enter: 'Delete {name}',
+            notice: 'successfully deleted'
+        },
+        submit: {
+            value: 'Submit',
+            enter: 'Submit {name}',
+            notice: 'Submitted successfully'
+        },
+        operate: {
+            value: 'Operate',
+            enter: 'Operate {name}',
+            notice: 'Successful operation'
+        },
+        refresh: {
+            value: 'Refresh',
+            enter: 'Refresh {name}'
+        },
+        confirm: {
+            value: 'Confirm'
+        },
+        cancel: {
+            value: 'Cancel'
+        },
+        createTime: {
+            value: 'Create time'
+        },
+        updateTime: {
+            valeu: 'Update time'
+        },
+        copy: {
+            value: 'Copy',
+            notice: 'copy successfully',
+            fail: 'copy failed',
+            supported: 'The current browser does not support the clipboard API'
+        },
+        status: {
+            value: 'status',
+            placeholder: 'Please select a status',
+            column: [
+                { label: 'Enable', enter: 'Activated', value: 'enable' },
+                { label: 'Disable', enter: 'Disabled', value: 'disable' },
+                { label: 'Delete', enter: 'Deleted', value: 'delete' }
+            ]
+        }
+    }
 }

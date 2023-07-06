@@ -26,5 +26,31 @@ export default {
             placeholder: '请选择接口归属节点'
         }
     },
-    en: {}
+    en: {
+        common: {
+            name: 'Rule'
+        },
+        path: {
+            value: 'Interface address',
+            placeholder: 'Please enter the interface address'
+        },
+        name: {
+            value: 'Interface name',
+            placeholder: 'Please enter the interface name'
+        },
+        method: {
+            value: 'Interface type',
+            placeholder: 'Please select interface type',
+            column: [
+                { label: 'GET', value: 'GET' },
+                { label: 'POST', value: 'POST' },
+                { label: 'PUT', value: 'PUT' },
+                { label: 'DELETE', value: 'DELETE' }
+            ]
+        },
+        parent: {
+            value: 'Interface home node',
+            placeholder: 'Please select the node to which the interface belongs'
+        }
+    }
 }
