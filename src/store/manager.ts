@@ -1,7 +1,7 @@
 import type { MenuOption } from 'naive-ui'
 import { defineStore } from 'pinia'
 import { httpDynamicRoute, type IRoute } from '@/api/http-route'
-import { formatter, formaterTree } from '@/utils/utils-route'
+import { formatter } from '@/utils/utils-route'
 
 export interface IManager {
     device: string
@@ -73,7 +73,7 @@ export const useManager = defineStore({
         httpRouter(): Promise<Array<IRoute>> {
             return httpDynamicRoute().then(({ data }) => {
                 //@ts-ignore
-                this.menu = formatter(formaterTree(data.list))
+                this.menu = formatter(data.list)
                 this.router = data.list
                 return this.router
             })
