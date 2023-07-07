@@ -1,6 +1,7 @@
 import type { MenuOption } from 'naive-ui'
 import type { IRoute } from '@/api/http-route'
-import { h } from 'vue'
+import { RemixUI, type INodeUI } from '@/utils/utils-remix'
+import { h, Fragment } from 'vue'
 import { RouterLink } from 'vue-router'
 
 /**动态路由树菜单**/
@@ -11,11 +12,17 @@ export function formatter<T extends IRoute>(data: Array<T>) {
                 meta: {},
                 key: node.path,
                 label: () => {
-                    if (node.type === 'directory') {
-                        return node.title
-                    } else {
-                        return h(RouterLink, { to: node.path }, { default: () => node.title })
-                    }
+                    return node.type === 'directory' ? (
+                        <Fragment>{node.title}</Fragment>
+                    ) : (
+                        <Fragment>{h(RouterLink, { to: node.path }, { default: () => node.title })}</Fragment>
+                    )
+                }
+            }
+
+            if (node.icon) {
+                option.icon = () => {
+                    return h(<n-icon size={20} component={RemixUI[node.icon as INodeUI]}></n-icon>)
                 }
             }
 
