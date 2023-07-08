@@ -1,6 +1,7 @@
 <script lang="tsx">
 import { defineComponent, Fragment, type PropType, type VNodeChild } from 'vue'
 import { useState } from '@/hooks/hook-state'
+import { compute } from '@/utils/utils-remix'
 import { type Scheme } from '@/api/http-interface'
 interface NodeProps extends Scheme, Record<string, unknown> {
     title: string
@@ -12,7 +13,8 @@ export default defineComponent({
         node: { type: Object as PropType<NodeProps> },
         bordered: { type: Boolean, default: true },
         collapse: { type: Boolean, default: true },
-        dataRender: { type: Function as PropType<(e: Record<string, unknown>) => VNodeChild> }
+        dataRender: { type: Function as PropType<(e: Record<string, unknown>) => VNodeChild> },
+        extraSize: { type: Number, default: 4 }
     },
     setup(props, { slots }) {
         const { visible, setState } = useState({ visible: false })
@@ -28,19 +30,20 @@ export default defineComponent({
                         <n-icon size={28} style={{ marginRight: '10px' }} component={<Icon-HomeOutlined />}></n-icon>
                         <n-h3 style={{ flex: 1, margin: 0 }}>{props.node?.title}</n-h3>
                     </div>
-                    <div class="n-display n-center" style={{ paddingRight: props.collapse ? 0 : '4px' }}>
-                        {slots.suffix && slots.suffix(props.node)}
-                        {props.collapse && (
-                            <div class="source-header__extra n-display n-center n-middle" style={{ marginLeft: '5px' }}>
+                    {slots.suffix || props.collapse ? (
+                        <n-space align="center" justify="center" wrap-item={false} size={props.extraSize} style={{ margin: '0 10px 0' }}>
+                            {slots.suffix && slots.suffix(props.node)}
+                            {props.collapse && (
                                 <common-remix
                                     hover={false}
-                                    space={4}
                                     size={18}
-                                    icon={<n-icon class={{ 'is-visible': visible.value }} component={<Icon-ArrowRightBold />}></n-icon>}
+                                    icon={<n-icon class={{ 'is-visible': visible.value }} component={compute('ArrowRightBold')}></n-icon>}
                                 ></common-remix>
-                            </div>
-                        )}
-                    </div>
+                            )}
+                        </n-space>
+                    ) : (
+                        <div style={{ paddingRight: '14px' }} />
+                    )}
                 </div>
                 <div class="source-container">
                     {slots.default ? (
@@ -73,7 +76,7 @@ export default defineComponent({
     }
     .source-header {
         display: flex;
-        padding: 12px 10px 12px 14px;
+        padding: 12px 0 12px 14px;
         color: var(--text-color-1);
         &__extra {
             width: 26px;

@@ -1,8 +1,9 @@
 <script lang="tsx">
-import { defineComponent, Fragment, type SetupContext } from 'vue'
+import { defineComponent, Fragment, type SetupContext, type VNode } from 'vue'
 import { httpColumnRoute, type IRoute, type IRule } from '@/api/http-route'
 import { useCurrent } from '@/locale/instance'
 import { useSource } from '@/hooks/hook-source'
+import { sompute } from '@/utils/utils-remix'
 import { fetchRule } from '@/views/manager/hooks/fetch-instance'
 
 export default defineComponent({
@@ -73,10 +74,12 @@ export default defineComponent({
         )
 
         const RouteSuffix = (data: IRoute) => (
-            <n-space align="center" wrap-item={false} size={5}>
-                <common-remix type="primary" stop space={4} size={18} icon={<n-icon component={<Icon-AddBold />}></n-icon>}></common-remix>
-                <common-remix type="error" stop space={4} size={18} icon={<n-icon component={<Icon-DeleteBold />}></n-icon>}></common-remix>
-            </n-space>
+            <Fragment>
+                <common-remix stop size={18} type="primary" icon={sompute('AddBold')}></common-remix>
+                <common-remix stop size={18} type="primary" icon={sompute('SlackBold')}></common-remix>
+                <common-remix stop size={18} type="info" icon={sompute('RadixEdit')}></common-remix>
+                <common-remix stop size={18} type="error" icon={sompute('DeleteBold')}></common-remix>
+            </Fragment>
         )
 
         return () => (
