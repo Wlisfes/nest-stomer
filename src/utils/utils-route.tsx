@@ -1,6 +1,6 @@
 import type { MenuOption } from 'naive-ui'
 import type { IRoute } from '@/api/http-route'
-import { RemixUI, type INodeUI } from '@/utils/utils-remix'
+import { RemixUI, type INameUI } from '@/utils/utils-remix'
 import { h, Fragment } from 'vue'
 import { RouterLink } from 'vue-router'
 
@@ -22,7 +22,7 @@ export function formatter<T extends IRoute>(data: Array<T>) {
 
             if (node.icon) {
                 option.icon = () => {
-                    return h(<n-icon size={20} component={RemixUI[node.icon as INodeUI]}></n-icon>)
+                    return h(<n-icon size={20} component={RemixUI[node.icon as INameUI]}></n-icon>)
                 }
             }
 

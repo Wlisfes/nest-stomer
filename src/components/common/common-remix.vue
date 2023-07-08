@@ -7,7 +7,7 @@ export default defineComponent({
     props: {
         icon: { type: Object as PropType<Component> },
         spin: { type: Object as PropType<Component> },
-        space: { type: Number, default: 3 },
+        space: { type: Number, default: 4 },
         size: { type: Number, default: 16 },
         title: { type: String },
         focusable: { type: Boolean, default: false },
