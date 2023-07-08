@@ -1,5 +1,5 @@
 import { request } from '@/utils/utils-request'
-import type { Scheme, Result } from '@/api/http-interface'
+import type { Scheme, Result, Notice } from '@/api/http-interface'
 export enum IMethod {
     Default = 'default',
     GET = 'info',
@@ -39,9 +39,18 @@ export function httpColumnRoute() {
     })
 }
 
+/**编辑路由状态**/
+export function httpRouteTransfer(data: { id: number; status: string }) {
+    return request<Notice>({
+        url: `/api/route/transfer`,
+        method: 'PUT',
+        data
+    })
+}
+
 /**编辑接口规则**/
 export function httpUpdateRule(data: { id?: number; status?: string; path?: string; name?: string; method?: string; parent?: number }) {
-    return request<{ message: string }>({
+    return request<Notice>({
         url: `/api/route/update/rule`,
         method: 'PUT',
         data

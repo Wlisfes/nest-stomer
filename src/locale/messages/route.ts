@@ -1,5 +1,8 @@
 export default {
     cn: {
+        common: {
+            name: '路由'
+        },
         title: {
             value: '节点名称',
             placeholder: '请输入节点名称'

@@ -13,7 +13,8 @@ export default {
         delete: {
             value: '删除',
             enter: '删除{name}',
-            notice: '删除成功'
+            notice: '删除成功',
+            hint: '确定要删除{name}吗？'
         },
         submit: {
             value: '提交',
@@ -24,6 +25,9 @@ export default {
             value: '操作',
             enter: '操作{name}',
             notice: '操作成功'
+        },
+        hint: {
+            value: '提示'
         },
         refresh: {
             value: '刷新',
@@ -71,7 +75,8 @@ export default {
         delete: {
             value: 'Delete',
             enter: 'Delete {name}',
-            notice: 'successfully deleted'
+            notice: 'successfully deleted',
+            hint: 'Are you sure you want to delete {name}?'
         },
         submit: {
             value: 'Submit',
@@ -82,6 +87,9 @@ export default {
             value: 'Operate',
             enter: 'Operate {name}',
             notice: 'Successful operation'
+        },
+        hint: {
+            value: 'Hint'
         },
         refresh: {
             value: 'Refresh',

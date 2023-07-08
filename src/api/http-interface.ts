@@ -4,6 +4,9 @@ export interface Scheme {
     updateTime: string
     status: string
 }
+export interface Notice {
+    message: string
+}
 export interface Result<T = Object> {
     page: number
     size: number

@@ -14,6 +14,10 @@ export function createDiscover(
     return new Promise(resolve => {
         const vm = window.$dialog.create({
             ...option,
+            negativeButtonProps: { size: 'medium', ...option.negativeButtonProps },
+            positiveButtonProps: { size: 'medium', ...option.positiveButtonProps },
+            maskClosable: option.maskClosable ?? false,
+            autoFocus: option.autoFocus ?? false,
             onAfterEnter: (e: HTMLElement) => {
                 return option.onAfterEnter ? option.onAfterEnter(e, vm) : undefined
             },

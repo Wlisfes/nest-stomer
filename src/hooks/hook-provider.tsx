@@ -20,7 +20,7 @@ export function useProvider() {
     const vars = useThemeVars() as ThemeVars
     const lightThemeOverrides = computed<GlobalThemeOverrides>(() => ({
         common: {
-            fontWeightStrong: '500',
+            fontWeightStrong: '600',
             backColor: 'rgb(244, 246, 248)',
             primaryColor: store.primaryColor,
             /**代码编辑器*******************************/
@@ -37,7 +37,7 @@ export function useProvider() {
     }))
     const darkThemeOverrides = computed<GlobalThemeOverrides>(() => ({
         common: {
-            fontWeightStrong: '500',
+            fontWeightStrong: '600',
             backColor: 'rgb(16,16,20)',
             primaryColor: store.primaryColor,
             primaryColorSuppl: store.primaryColor,

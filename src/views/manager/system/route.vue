@@ -1,9 +1,12 @@
 <script lang="tsx">
-import { defineComponent, Fragment, type SetupContext, type VNode } from 'vue'
-import { httpColumnRoute, type IRoute, type IRule } from '@/api/http-route'
+import { defineComponent, Fragment, type SetupContext } from 'vue'
+import { httpColumnRoute, httpRouteTransfer, type IRoute, type IRule } from '@/api/http-route'
 import { useCurrent } from '@/locale/instance'
 import { useSource } from '@/hooks/hook-source'
+import { divineDelay } from '@/utils/utils-common'
 import { sompute } from '@/utils/utils-remix'
+import { createDiscover } from '@/utils/utils-naive'
+import { createElement } from '@/utils/utils-instance'
 import { fetchRule } from '@/views/manager/hooks/fetch-instance'
 
 export default defineComponent({
@@ -35,6 +38,38 @@ export default defineComponent({
                         await done({ visible: false })
                         await fetchUpdate()
                     })
+                })
+            }
+        }
+
+        /**选中路由回调**/
+        async function onRouteSelecter(key: string, option: IRoute, app: unknown) {
+            if (key === 'delete') {
+                const { element } = await createElement(<n-text type="error" strong v-slots={{ default: () => option.title }} />, {
+                    style: { margin: '0 5px' }
+                })
+                return await createDiscover({
+                    type: 'error',
+                    title: t('common.hint.value'),
+                    content: () => <n-text style={{ fontSize: '18px' }} v-html={t('common.delete.hint', { name: element })}></n-text>,
+                    negativeText: t('common.cancel.value'),
+                    positiveText: t('common.confirm.value'),
+                    positiveButtonProps: { type: 'success' },
+                    maskClosable: false,
+                    autoFocus: false,
+                    onPositiveClick: async (evt, vm) => {
+                        try {
+                            vm.loading = true
+                            await divineDelay(500)
+                            return await httpRouteTransfer({ id: option.id, status: 'enable' }).then(({ data }) => {
+                                window.$notification.error({ title: data.message, duration: 2500, onAfterEnter: fetchUpdate })
+                                return true
+                            })
+                        } catch (e) {
+                            window.$notification.error({ title: e.message, duration: 2500 })
+                            return (vm.loading = false)
+                        }
+                    }
                 })
             }
         }
@@ -75,10 +110,34 @@ export default defineComponent({
 
         const RouteSuffix = (data: IRoute) => (
             <Fragment>
-                <common-remix stop size={18} type="primary" icon={sompute('AddBold')}></common-remix>
-                <common-remix stop size={18} type="primary" icon={sompute('SlackBold')}></common-remix>
-                <common-remix stop size={18} type="info" icon={sompute('RadixEdit')}></common-remix>
-                <common-remix stop size={18} type="error" icon={sompute('DeleteBold')}></common-remix>
+                <common-remix
+                    stop
+                    size={18}
+                    type="primary"
+                    icon={sompute('AddBold')}
+                    onTrigger={(app: unknown) => onRouteSelecter('create-route', data, app)}
+                />
+                <common-remix
+                    stop
+                    size={18}
+                    type="primary"
+                    icon={sompute('SlackBold')}
+                    onTrigger={(app: unknown) => onRouteSelecter('create-rule', data, app)}
+                />
+                <common-remix
+                    stop
+                    size={18}
+                    type="info"
+                    icon={sompute('RadixEdit')}
+                    onTrigger={(app: unknown) => onRouteSelecter('update', data, app)}
+                />
+                <common-remix
+                    stop
+                    size={18}
+                    type="error"
+                    icon={sompute('DeleteBold')}
+                    onTrigger={(app: unknown) => onRouteSelecter('delete', data, app)}
+                />
             </Fragment>
         )
 

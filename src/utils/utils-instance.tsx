@@ -1,4 +1,4 @@
-import { createApp, createVNode, nextTick } from 'vue'
+import { createApp, createVNode, nextTick, render, type CSSProperties } from 'vue'
 import { divineParameter, divineHandler } from '@/utils/utils-common'
 import { Observer } from '@/utils/utils-observer'
 import { setupI18n } from '@/locale/instance'
@@ -8,7 +8,7 @@ export type Event = 'close' | 'submit' | 'cancel' | 'confirm' | 'refresh'
 export type IOnspector = { done: (e?: Partial<{ loading: false; visible: false }>) => Promise<void> }
 export type IObserver = Record<Event, IOnspector>
 
-export async function createComponent<T>(RootComponent: Parameters<typeof createApp>['0'], option?: { immediate?: boolean; props?: T }) {
+export async function createComponent<T>(Component: Parameters<typeof createApp>['0'], option?: { immediate?: boolean; props?: T }) {
     const el = document.createElement('div')
     const observer = new Observer<IObserver>()
     const props = await divineParameter(option?.props ?? {}).then(data => {
@@ -19,7 +19,7 @@ export async function createComponent<T>(RootComponent: Parameters<typeof create
             onSubmit: submit
         }
     })
-    const app = createApp(<common-provider>{createVNode(RootComponent, props)}</common-provider>)
+    const app = createApp(<common-provider>{createVNode(Component, props)}</common-provider>)
 
     /**组件挂载**/
     async function mounte() {
@@ -50,4 +50,17 @@ export async function createComponent<T>(RootComponent: Parameters<typeof create
     })
 
     return { el, app, observer, mounte, unmount }
+}
+
+/**DOM生成函数**/
+export async function createElement<T extends Record<string, unknown> & { style: CSSProperties }>(
+    Component: Parameters<typeof createApp>['0'],
+    parameter?: T,
+    isSVG?: boolean
+) {
+    const node = document.createElement('section')
+    const component = createVNode(<common-provider>{createVNode(Component, parameter)}</common-provider>)
+    await render(component, node, isSVG)
+    const element = Array.from(node.children).reduce((str: string, el) => (str += el.outerHTML), '')
+    return { node, element, component }
 }
