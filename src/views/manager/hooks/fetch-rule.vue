@@ -66,11 +66,10 @@ export default defineComponent({
         /**表单验证**/
         function onSubmit() {
             divineFormValidater(async () => {
-                return await createRequest({
-                    execute: async () => {
-                        await setState({ loading: true })
-                        if (props.command === 'CREATE') {
-                            /**创建接口规则**/
+                if (props.command === 'CREATE') {
+                    await setState({ loading: true })
+                    return await createRequest({
+                        execute: async () => {
                             return await httpCreateRule(
                                 await divineParameter({
                                     status: state.form.status,
@@ -86,9 +85,16 @@ export default defineComponent({
                                     onAfterEnter: () => emit('submit', { done: setState })
                                 })
                             })
-                        } else if (props.command === 'UPDATE') {
-                            /**编辑接口规则**/
-                            await httpUpdateRule(
+                        },
+                        catch: async e => await createNotice({ type: 'error', title: e.message })
+                    })
+                }
+
+                if (props.command === 'UPDATE') {
+                    await setState({ loading: true })
+                    return await createRequest({
+                        execute: async () => {
+                            return await httpUpdateRule(
                                 await divineParameter({
                                     id: props.id,
                                     status: state.form.status,
@@ -104,11 +110,10 @@ export default defineComponent({
                                     onAfterEnter: () => emit('submit', { done: setState })
                                 })
                             })
-                        }
-                        return state
-                    },
-                    catch: async e => await createNotice({ type: 'error', title: e.message })
-                })
+                        },
+                        catch: async e => await createNotice({ type: 'error', title: e.message })
+                    })
+                }
             })
         }
 
