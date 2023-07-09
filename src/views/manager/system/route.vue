@@ -131,6 +131,20 @@ export default defineComponent({
                     }
                 })
             }
+
+            if (key === 'create-rule') {
+                /**新增规则**/
+                return fetchRule({
+                    title: t('common.create.enter', { name: t('rule.common.name') }),
+                    command: 'CREATE'
+                }).then(({ observer }) => {
+                    observer.on('submit', async ({ done }) => {
+                        await done({ visible: false })
+                        await fetchUpdate()
+                    })
+                })
+            }
+            console.log(key)
         }
 
         /**路由列插槽**/
@@ -173,8 +187,8 @@ export default defineComponent({
             return (
                 <Fragment>
                     {[
-                        { command: 'create-route', type: 'primary', icon: 'AddBold', visible: true },
-                        { command: 'create-rule', type: 'success', icon: 'SlackBold', visible: data.type === 'directory' }
+                        { command: 'create-route', type: 'primary', icon: 'AddBold', visible: data.type === 'directory' },
+                        { command: 'create-rule', type: 'success', icon: 'SlackBold', visible: data.type === 'menu' }
                     ].map(item => {
                         return item.visible ? (
                             <common-remix

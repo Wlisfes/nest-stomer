@@ -3,9 +3,10 @@ import { defineComponent, type PropType } from 'vue'
 import { useCurrent } from '@/locale/instance'
 import { Observer } from '@/utils/utils-observer'
 import { createRequest } from '@/utils/utils-request'
+import { divineParameter } from '@/utils/utils-common'
 import { createNotice } from '@/utils/utils-naive'
 import { useCustomize } from '@/hooks/hook-customize'
-import { httpUpdateRule, httpBasicRule, type IRule, type IMethod } from '@/api/http-route'
+import { httpCreateRule, httpUpdateRule, httpBasicRule } from '@/api/http-route'
 
 export default defineComponent({
     name: 'FetchRule',
@@ -25,11 +26,11 @@ export default defineComponent({
                 loading: false,
                 visible: false,
                 form: {
-                    method: '',
-                    name: '',
-                    path: '',
-                    status: '',
-                    parent: props.parent ?? 0
+                    method: undefined,
+                    name: undefined,
+                    path: undefined,
+                    status: undefined,
+                    parent: props.parent ?? undefined
                 },
                 rules: {
                     method: { required: true, message: t('rule.method.placeholder'), trigger: 'change' },
@@ -47,7 +48,7 @@ export default defineComponent({
                             const { data } = await httpBasicRule({ id: props.id as number })
                             return await setState({
                                 loading: false,
-                                form: Object.assign(state.form, {
+                                form: await divineParameter({
                                     method: data.method,
                                     name: data.name,
                                     path: data.path,
@@ -68,19 +69,43 @@ export default defineComponent({
                 return await createRequest({
                     execute: async () => {
                         await setState({ loading: true })
-                        const { data } = await httpUpdateRule({
-                            id: props.id as number,
-                            status: state.form.status,
-                            name: state.form.name,
-                            path: state.form.path,
-                            method: state.form.method,
-                            parent: state.form.parent
-                        })
-                        return await createNotice({
-                            type: 'success',
-                            title: data.message,
-                            onAfterEnter: () => emit('submit', { done: setState })
-                        })
+                        if (props.command === 'CREATE') {
+                            /**创建接口规则**/
+                            return await httpCreateRule(
+                                await divineParameter({
+                                    status: state.form.status,
+                                    name: state.form.name,
+                                    path: state.form.path,
+                                    method: state.form.method,
+                                    parent: state.form.parent
+                                })
+                            ).then(async ({ data }) => {
+                                return await createNotice({
+                                    type: 'success',
+                                    title: data.message,
+                                    onAfterEnter: () => emit('submit', { done: setState })
+                                })
+                            })
+                        } else if (props.command === 'UPDATE') {
+                            /**编辑接口规则**/
+                            await httpUpdateRule(
+                                await divineParameter({
+                                    id: props.id,
+                                    status: state.form.status,
+                                    name: state.form.name,
+                                    path: state.form.path,
+                                    method: state.form.method,
+                                    parent: state.form.parent
+                                })
+                            ).then(async ({ data }) => {
+                                return await createNotice({
+                                    type: 'success',
+                                    title: data.message,
+                                    onAfterEnter: () => emit('submit', { done: setState })
+                                })
+                            })
+                        }
+                        return state
                     },
                     catch: async e => await createNotice({ type: 'error', title: e.message })
                 })

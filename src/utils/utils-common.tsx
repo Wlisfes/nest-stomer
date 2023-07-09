@@ -40,5 +40,5 @@ export async function divineHandler(value: boolean | Function, handler: Function
 
 /**参数组合函数**/
 export async function divineParameter<T>(data: T) {
-    return data
+    return Object.assign(data as Object)
 }
