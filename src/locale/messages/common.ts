@@ -52,10 +52,14 @@ export default {
             supported: '当前浏览器不支持剪贴板API'
         },
         enable: {
-            value: '启用'
+            value: '启用',
+            enter: '已启用',
+            notice: '启用成功'
         },
         disable: {
-            value: '禁用'
+            value: '禁用',
+            enter: '已禁用',
+            notice: '禁用成功'
         },
         status: {
             value: '状态',
@@ -120,10 +124,14 @@ export default {
             supported: 'The current browser does not support the clipboard API'
         },
         enable: {
-            value: 'Enable'
+            value: 'Enable',
+            enter: 'Activated',
+            notice: 'Enabled successfully'
         },
         disable: {
-            value: 'Disable'
+            value: 'Disable',
+            enter: 'Disabled',
+            notice: 'Disabled successfully'
         },
         status: {
             value: 'status',

@@ -1,11 +1,11 @@
 <script lang="tsx">
 import { defineComponent, Fragment, type SetupContext } from 'vue'
-import { httpColumnRoute, httpRouteTransfer, type IRoute, type IRule } from '@/api/http-route'
+import { httpColumnRoute, httpRouteTransfer, httpRuleTransfer, type IRoute, type IRule } from '@/api/http-route'
 import { useCurrent } from '@/locale/instance'
 import { useSource } from '@/hooks/hook-source'
 import { divineDelay } from '@/utils/utils-common'
 import { sompute, type INameUI } from '@/utils/utils-remix'
-import { createDiscover } from '@/utils/utils-naive'
+import { createDiscover, createNotice } from '@/utils/utils-naive'
 import { createElement } from '@/utils/utils-instance'
 import { fetchRule } from '@/views/manager/hooks/fetch-instance'
 
@@ -14,6 +14,7 @@ export default defineComponent({
     setup() {
         const { t } = useCurrent()
         const { state, fetchUpdate } = useSource<IRoute, Record<string, unknown>>({
+            request: httpColumnRoute,
             immediate: true,
             dataColumn: [
                 { key: 'title', title: '节点名称', minWidth: 150 },
@@ -22,33 +23,45 @@ export default defineComponent({
                 { key: 'path', title: '页面路径', minWidth: 255 },
                 { key: 'redirect', title: '重定向地址', minWidth: 255 },
                 { key: 'status', title: '状态', minWidth: 150 }
-            ],
-            request: () => httpColumnRoute()
+            ]
         })
 
         /**选中规则回调**/
-        function onRuleSelecter(key: IRule['status'], option: IRule) {
-            const FNCallBack: Record<string, Function> = {
+        async function onRuleSelecter(key: string, option: IRule) {
+            if (key === 'update') {
                 /**编辑规则**/
-                update: () => {
-                    return fetchRule({
-                        title: t('common.update.enter', { name: t('rule.common.name') }),
-                        command: 'UPDATE',
-                        node: option
-                    }).then(({ observer }) => {
-                        observer.on('submit', async ({ done }) => {
-                            await done({ visible: false })
-                            await fetchUpdate()
-                        })
+                return fetchRule({
+                    title: t('common.update.enter', { name: t('rule.common.name') }),
+                    command: 'UPDATE',
+                    node: option
+                }).then(({ observer }) => {
+                    observer.on('submit', async ({ done }) => {
+                        await done({ visible: false })
+                        await fetchUpdate()
                     })
-                }
+                })
             }
 
-            return FNCallBack[key] && FNCallBack[key]()
+            if (['disable', 'enable'].includes(key)) {
+                /**启用、禁用规则**/
+                try {
+                    return await httpRuleTransfer({ id: option.id, status: key }).then(() => {
+                        return createNotice({
+                            type: 'success',
+                            title: t(`common.${key}.enter` as Parameters<typeof t>['0']),
+                            onAfterEnter: fetchUpdate
+                        })
+                    })
+                } catch (e) {
+                    return await createNotice({ type: 'error', title: e.message })
+                }
+            }
         }
 
         /**选中路由回调**/
-        async function onRouteSelecter(key: IRoute['status'], option: IRoute, app: unknown) {
+        async function onRouteSelecter(key: string, option: IRoute, app: unknown) {
+            const FNCallBack: Record<string, Function> = {}
+            console.log(key)
             if (key === 'delete') {
                 const { element } = await createElement(<n-text type="error" strong v-slots={{ default: () => option.title }} />, {
                     style: { margin: '0 5px' }
@@ -131,7 +144,7 @@ export default defineComponent({
                                 size={18}
                                 type={item.type}
                                 icon={sompute(item.icon as INameUI)}
-                                onTrigger={(app: unknown) => onRouteSelecter(item.command as IRoute['status'], data, app)}
+                                onTrigger={(app: unknown) => onRouteSelecter(item.command, data, app)}
                             />
                         ) : null
                     })}

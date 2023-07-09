@@ -65,3 +65,12 @@ export function httpUpdateRule(data: { id: number; status: string; path: string;
         data
     })
 }
+
+/**编辑规则状态**/
+export function httpRuleTransfer(data: { id: number; status: string }) {
+    return request<Notice>({
+        url: `/api/route/transfer/rule`,
+        method: 'PUT',
+        data
+    })
+}

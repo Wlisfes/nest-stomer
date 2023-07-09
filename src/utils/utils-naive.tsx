@@ -1,14 +1,14 @@
-import { type DialogOptions, type DialogReactive } from 'naive-ui'
+import type { DialogOptions, DialogReactive, NotificationOptions, NotificationReactive } from 'naive-ui'
 
 /**对话弹窗二次封装**/
 export function createDiscover(
     option: Omit<DialogOptions, 'onAfterEnter' | 'onAfterLeave' | 'onClose' | 'onEsc' | 'onNegativeClick' | 'onPositiveClick'> & {
-        onAfterEnter?: (e: HTMLElement, x: DialogReactive) => void | undefined
-        onAfterLeave?: (x: DialogReactive) => void | undefined
-        onClose?: (x: DialogReactive) => boolean | Promise<boolean> | any
-        onEsc?: (x: DialogReactive) => void | undefined
-        onNegativeClick?: (e: MouseEvent, x: DialogReactive) => boolean | Promise<boolean> | any
-        onPositiveClick?: (e: MouseEvent, x: DialogReactive) => boolean | Promise<boolean> | any
+        onAfterEnter?: (e: HTMLElement, x: DialogReactive) => void | any | undefined
+        onAfterLeave?: (x: DialogReactive) => void | any | undefined
+        onClose?: (x: DialogReactive) => boolean | Promise<boolean>
+        onEsc?: (x: DialogReactive) => void | any | undefined
+        onNegativeClick?: (e: MouseEvent, x: DialogReactive) => boolean | Promise<boolean>
+        onPositiveClick?: (e: MouseEvent, x: DialogReactive) => boolean | Promise<boolean>
     }
 ): Promise<DialogReactive> {
     return new Promise(resolve => {
@@ -35,6 +35,39 @@ export function createDiscover(
             },
             onPositiveClick: (e: MouseEvent) => {
                 return option.onPositiveClick ? option.onPositiveClick(e, vm) : true
+            }
+        })
+        resolve(vm)
+    })
+}
+
+/**通知弹窗二次封装**/
+export function createNotice(
+    option: Omit<NotificationOptions, 'onLeave' | 'onClose' | 'onAfterLeave' | 'onAfterEnter'> & {
+        duration?: number
+        type?: NotificationOptions['type']
+        onAfterEnter?: (x: NotificationReactive) => void | any | undefined
+        onAfterLeave?: (x: NotificationReactive) => void | any | undefined
+        onClose?: (x: NotificationReactive) => boolean | Promise<boolean>
+        onLeave?: (x: NotificationReactive) => void | any | undefined
+    }
+): Promise<NotificationReactive> {
+    return new Promise(resolve => {
+        const vm = window.$notification.create({
+            ...option,
+            type: option.type ?? 'default',
+            duration: option.duration ?? 2500,
+            onAfterEnter: () => {
+                return option.onAfterEnter ? option.onAfterEnter(vm) : undefined
+            },
+            onAfterLeave: () => {
+                return option.onAfterLeave ? option.onAfterLeave(vm) : undefined
+            },
+            onClose: () => {
+                return option.onClose ? option.onClose(vm) : true
+            },
+            onLeave: () => {
+                return option.onLeave ? option.onLeave(vm) : undefined
             }
         })
         resolve(vm)

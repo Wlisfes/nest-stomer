@@ -18,11 +18,11 @@ export default defineComponent({
         const methodType = computed(() => IMethod[props.node.method] ?? IMethod.Default)
         const dataCommand = computed(() => {
             return [
-                { key: 'update', value: true },
-                { key: 'delete', value: true },
-                { key: 'disable', value: props.node.status === 'enable' },
-                { key: 'enable', value: props.node.status === 'disable' }
-            ].reduce((and: string[], next) => (next.value ? and.concat(next.key) : and), [])
+                { key: 'update', visible: true },
+                { key: 'delete', visible: true },
+                { key: 'disable', visible: props.node.status === 'enable' },
+                { key: 'enable', visible: props.node.status === 'disable' }
+            ].reduce((and: string[], next) => (next.visible ? and.concat(next.key) : and), [])
         })
 
         /**复制规则接口**/
