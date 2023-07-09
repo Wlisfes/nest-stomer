@@ -25,6 +25,11 @@ export default defineComponent({
             ].reduce((and: string[], next) => (next.visible ? and.concat(next.key) : and), [])
         })
 
+        /**规则指令**/
+        function onSelecter(key: string, app: unknown) {
+            emit('selecter', key, props.node, app)
+        }
+
         /**复制规则接口**/
         async function onClipboar() {
             try {
@@ -57,7 +62,7 @@ export default defineComponent({
                         icon={sompute('CopyRound')}
                         onTrigger={onClipboar}
                     ></common-remix>
-                    <common-dropdown command={dataCommand.value} onSelecter={(key: string) => emit('selecter', key, props.node)}>
+                    <common-dropdown command={dataCommand.value} onSelecter={onSelecter}>
                         <common-remix size={18} icon={sompute('RadixMore')}></common-remix>
                     </common-dropdown>
                 </n-space>

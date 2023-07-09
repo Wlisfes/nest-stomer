@@ -8,7 +8,7 @@ export function createDiscover(
         onClose?: (x: DialogReactive) => boolean | Promise<boolean>
         onEsc?: (x: DialogReactive) => void | any | undefined
         onNegativeClick?: (e: MouseEvent, x: DialogReactive) => boolean | Promise<boolean>
-        onPositiveClick?: (e: MouseEvent, x: DialogReactive) => boolean | Promise<boolean>
+        onPositiveClick?: (e: MouseEvent, x: DialogReactive, done: (loading: boolean) => Promise<boolean>) => boolean | Promise<boolean>
     }
 ): Promise<DialogReactive> {
     return new Promise(resolve => {
@@ -34,7 +34,7 @@ export function createDiscover(
                 return option.onNegativeClick ? option.onNegativeClick(e, vm) : true
             },
             onPositiveClick: (e: MouseEvent) => {
-                return option.onPositiveClick ? option.onPositiveClick(e, vm) : true
+                return option.onPositiveClick ? option.onPositiveClick(e, vm, async loading => (vm.loading = loading)) : true
             }
         })
         resolve(vm)
@@ -55,7 +55,7 @@ export function createNotice(
     return new Promise(resolve => {
         const vm = window.$notification.create({
             ...option,
-            type: option.type ?? 'default',
+            type: option.type ?? 'success',
             duration: option.duration ?? 2500,
             onAfterEnter: () => {
                 return option.onAfterEnter ? option.onAfterEnter(vm) : undefined

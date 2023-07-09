@@ -1,6 +1,7 @@
 <script lang="tsx">
 import { defineComponent, computed, Fragment, createVNode, type PropType } from 'vue'
 import { type DropdownOption } from 'naive-ui'
+import { useState } from '@/hooks/hook-state'
 import { useCurrent } from '@/locale/instance'
 import { sompute } from '@/utils/utils-remix'
 
@@ -14,6 +15,7 @@ export default defineComponent({
     },
     emits: ['selecter'],
     setup(props, { slots, emit }) {
+        const { state, setState } = useState({ loading: false })
         const { t } = useCurrent()
         const dataSource = computed<Array<DropdownOption>>(() => [
             { label: t('common.create.value'), key: 'create' },
@@ -42,7 +44,10 @@ export default defineComponent({
 
         /**选中时回调**/
         function onSelecter(key: typeof props.command, option: DropdownOption) {
-            emit('selecter', key)
+            emit('selecter', key, {
+                ...option,
+                done: async (loading: boolean) => await setState({ loading })
+            })
         }
 
         return () => (
@@ -54,7 +59,17 @@ export default defineComponent({
                 render-icon={createRemix}
                 on-select={onSelecter}
             >
-                {{ default: () => <Fragment>{slots.default && slots.default()}</Fragment> }}
+                {{
+                    default: () => (
+                        <Fragment>
+                            {state.loading ? (
+                                <common-remix disabled size={18} icon={sompute('RadixSpinWith')}></common-remix>
+                            ) : slots.default ? (
+                                slots.default()
+                            ) : null}
+                        </Fragment>
+                    )
+                }}
             </n-dropdown>
         )
     }

@@ -12,7 +12,7 @@ export default {
         },
         delete: {
             value: '删除',
-            enter: '删除{name}',
+            enter: '已删除',
             notice: '删除成功',
             hint: '确定要删除{name}吗？'
         },
