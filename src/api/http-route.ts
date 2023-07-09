@@ -48,8 +48,17 @@ export function httpRouteTransfer(data: { id: number; status: string }) {
     })
 }
 
+/**新增接口规则**/
+export function httpCreateRule(data: { status: string; path: string; name: string; method: string; parent: number }) {
+    return request<Notice>({
+        url: `/api/route/create/rule`,
+        method: 'POST',
+        data
+    })
+}
+
 /**编辑接口规则**/
-export function httpUpdateRule(data: { id?: number; status?: string; path?: string; name?: string; method?: string; parent?: number }) {
+export function httpUpdateRule(data: { id: number; status: string; path: string; name: string; method: string; parent: number }) {
     return request<Notice>({
         url: `/api/route/update/rule`,
         method: 'PUT',

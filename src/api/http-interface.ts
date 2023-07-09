@@ -2,7 +2,7 @@ export interface Scheme {
     id: number
     createTime: string
     updateTime: string
-    status: string
+    status: 'create' | 'update' | 'delete' | 'disable' | 'enable'
 }
 export interface Notice {
     message: string
