@@ -14,7 +14,7 @@ export default defineComponent({
         bordered: { type: Boolean, default: true },
         collapse: { type: Boolean, default: true },
         dataRender: { type: Function as PropType<(e: Record<string, unknown>) => VNode> },
-        extraSize: { type: Number, default: 4 }
+        extraSize: { type: Number, default: 5 }
     },
     setup(props, { slots }) {
         const { visible, setState } = useState({ visible: false })
