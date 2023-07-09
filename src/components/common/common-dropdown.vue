@@ -34,9 +34,9 @@ export default defineComponent({
                 case 'delete':
                     return createVNode(<common-remix type="error" hover={false} icon={sompute('DeleteBold')}></common-remix>)
                 case 'disable':
-                    return createVNode(<common-remix type="warning" hover={false} icon={sompute('DisableBold')}></common-remix>)
+                    return createVNode(<common-remix type="warning" hover={false} icon={sompute('DisableRound')}></common-remix>)
                 case 'enable':
-                    return createVNode(<common-remix type="success" hover={false} icon={sompute('EnableBold')}></common-remix>)
+                    return createVNode(<common-remix type="success" hover={false} icon={sompute('EnableRound')}></common-remix>)
             }
         }
 
@@ -54,7 +54,7 @@ export default defineComponent({
                 render-icon={createRemix}
                 on-select={onSelecter}
             >
-                {{ default: () => <Fragment>{slots.default?.()}</Fragment> }}
+                {{ default: () => <Fragment>{slots.default && slots.default()}</Fragment> }}
             </n-dropdown>
         )
     }

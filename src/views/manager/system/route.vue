@@ -4,7 +4,7 @@ import { httpColumnRoute, httpRouteTransfer, type IRoute, type IRule } from '@/a
 import { useCurrent } from '@/locale/instance'
 import { useSource } from '@/hooks/hook-source'
 import { divineDelay } from '@/utils/utils-common'
-import { sompute } from '@/utils/utils-remix'
+import { sompute, type INameUI } from '@/utils/utils-remix'
 import { createDiscover } from '@/utils/utils-naive'
 import { createElement } from '@/utils/utils-instance'
 import { fetchRule } from '@/views/manager/hooks/fetch-instance'
@@ -27,23 +27,28 @@ export default defineComponent({
         })
 
         /**选中规则回调**/
-        function onRuleSelecter(key: string, option: IRule) {
-            if (key === 'update') {
-                return fetchRule({
-                    title: t('common.update.enter', { name: t('rule.common.name') }),
-                    command: 'UPDATE',
-                    node: option
-                }).then(({ observer }) => {
-                    observer.on('submit', async ({ done }) => {
-                        await done({ visible: false })
-                        await fetchUpdate()
+        function onRuleSelecter(key: IRule['status'], option: IRule) {
+            const FNCallBack: Record<string, Function> = {
+                /**编辑规则**/
+                update: () => {
+                    return fetchRule({
+                        title: t('common.update.enter', { name: t('rule.common.name') }),
+                        command: 'UPDATE',
+                        node: option
+                    }).then(({ observer }) => {
+                        observer.on('submit', async ({ done }) => {
+                            await done({ visible: false })
+                            await fetchUpdate()
+                        })
                     })
-                })
+                }
             }
+
+            return FNCallBack[key] && FNCallBack[key]()
         }
 
         /**选中路由回调**/
-        async function onRouteSelecter(key: string, option: IRoute, app: unknown) {
+        async function onRouteSelecter(key: IRoute['status'], option: IRoute, app: unknown) {
             if (key === 'delete') {
                 const { element } = await createElement(<n-text type="error" strong v-slots={{ default: () => option.title }} />, {
                     style: { margin: '0 5px' }
@@ -61,7 +66,7 @@ export default defineComponent({
                         try {
                             vm.loading = true
                             await divineDelay(500)
-                            return await httpRouteTransfer({ id: option.id, status: 'enable' }).then(({ data }) => {
+                            return await httpRouteTransfer({ id: option.id, status: 'disable' }).then(({ data }) => {
                                 window.$notification.error({ title: data.message, duration: 2500, onAfterEnter: fetchUpdate })
                                 return true
                             })
@@ -74,7 +79,8 @@ export default defineComponent({
             }
         }
 
-        const RouteColumn = (data: IRoute) => (
+        /**路由列插槽**/
+        const RouteColumnUI = (data: IRoute) => (
             <Fragment>
                 <n-grid cols={4} x-gap={14} y-gap={14} item-responsive style={{ padding: '0' }}>
                     <n-grid-item span="1:4 520:2 840:2 960:1">
@@ -108,38 +114,30 @@ export default defineComponent({
             </Fragment>
         )
 
-        const RouteSuffix = (data: IRoute) => (
-            <Fragment>
-                <common-remix
-                    stop
-                    size={18}
-                    type="primary"
-                    icon={sompute('AddBold')}
-                    onTrigger={(app: unknown) => onRouteSelecter('create-route', data, app)}
-                />
-                <common-remix
-                    stop
-                    size={18}
-                    type="primary"
-                    icon={sompute('SlackBold')}
-                    onTrigger={(app: unknown) => onRouteSelecter('create-rule', data, app)}
-                />
-                <common-remix
-                    stop
-                    size={18}
-                    type="info"
-                    icon={sompute('RadixEdit')}
-                    onTrigger={(app: unknown) => onRouteSelecter('update', data, app)}
-                />
-                <common-remix
-                    stop
-                    size={18}
-                    type="error"
-                    icon={sompute('DeleteBold')}
-                    onTrigger={(app: unknown) => onRouteSelecter('delete', data, app)}
-                />
-            </Fragment>
-        )
+        /**操作栏插槽**/
+        const RouteSuffixUI = (data: IRoute) => {
+            return (
+                <Fragment>
+                    {[
+                        { command: 'create-route', type: 'primary', icon: 'AddBold', visible: true },
+                        { command: 'create-rule', type: 'success', icon: 'SlackBold', visible: true },
+                        { command: 'update', type: 'info', icon: 'RadixEdit', visible: true },
+                        { command: 'delete', type: 'error', icon: 'DeleteBold', visible: true }
+                    ].map((item, index) => {
+                        return item.visible ? (
+                            <common-remix
+                                key={index}
+                                stop
+                                size={18}
+                                type={item.type}
+                                icon={sompute(item.icon as INameUI)}
+                                onTrigger={(app: unknown) => onRouteSelecter(item.command as IRoute['status'], data, app)}
+                            />
+                        ) : null
+                    })}
+                </Fragment>
+            )
+        }
 
         return () => (
             <common-container>
@@ -154,11 +152,11 @@ export default defineComponent({
                             key={data.id}
                             node={data}
                             collapse={data.children.length > 0}
-                            v-slots={{ suffix: RouteSuffix }}
+                            v-slots={{ suffix: RouteSuffixUI }}
                             data-render={(model: { visible: boolean }) => (
                                 <Fragment>
                                     <section style={{ padding: '0 16px 16px' }}>
-                                        <RouteColumn {...data}></RouteColumn>
+                                        <RouteColumnUI {...data} />
                                     </section>
                                     <common-collapse visible={model.visible}>
                                         <common-recursion
@@ -171,11 +169,11 @@ export default defineComponent({
                                                             bordered={false}
                                                             collapse={scope.children.length > 0}
                                                             node={scope}
-                                                            v-slots={{ suffix: RouteSuffix }}
+                                                            v-slots={{ suffix: RouteSuffixUI }}
                                                             data-render={(e: { visible: boolean }) => (
                                                                 <Fragment>
                                                                     <section style={{ padding: '0 16px 16px' }}>
-                                                                        <RouteColumn {...scope}></RouteColumn>
+                                                                        <RouteColumnUI {...scope} />
                                                                     </section>
                                                                     <common-collapse visible={e.visible}>
                                                                         <common-recursion

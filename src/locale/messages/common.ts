@@ -51,6 +51,12 @@ export default {
             fail: '复制失败',
             supported: '当前浏览器不支持剪贴板API'
         },
+        enable: {
+            value: '启用'
+        },
+        disable: {
+            value: '禁用'
+        },
         status: {
             value: '状态',
             placeholder: '请选择状态',
@@ -112,6 +118,12 @@ export default {
             notice: 'copy successfully',
             fail: 'copy failed',
             supported: 'The current browser does not support the clipboard API'
+        },
+        enable: {
+            value: 'Enable'
+        },
+        disable: {
+            value: 'Disable'
         },
         status: {
             value: 'status',

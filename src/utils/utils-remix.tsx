@@ -3,26 +3,26 @@ import { type IconProps, type IconWrapperProps } from 'naive-ui'
 
 export const RemixUI = {
     AddBold: h(<Icon-AddBold />),
+    AddRound: h(<Icon-AddRound />),
     ArrowDownBold: h(<Icon-ArrowDownBold />),
     ArrowLeftBold: h(<Icon-ArrowLeftBold />),
     ArrowRightBold: h(<Icon-ArrowRightBold />),
     ArrowUpBold: h(<Icon-ArrowUpBold />),
     CloseBold: h(<Icon-CloseBold />),
+    CloseRound: h(<Icon-CloseRound />),
+    CopyRound: h(<Icon-CopyRound />),
     DeleteBold: h(<Icon-DeleteBold />),
+    DisableRound: h(<Icon-DisableRound />),
+    EnableRound: h(<Icon-EnableRound />),
     InduceBold: h(<Icon-InduceBold />),
+    IssueRound: h(<Icon-IssueRound />),
     RadixEdit: h(<Icon-RadixEdit />),
     RadixMore: h(<Icon-RadixMore />),
-    RadixCircleCopy: h(<Icon-RadixCircleCopy />),
     RadixSpinWith: h(<Icon-RadixSpinWith />),
     SemiBold: h(<Icon-SemiBold />),
-    HomeOutlined: h(<Icon-HomeOutlined />),
     SlackBold: h(<Icon-SlackBold />),
-    DisableFilled: h(<Icon-DisableFilled />),
-    EnableFilled: h(<Icon-EnableFilled />),
-    AddFilled: h(<Icon-AddFilled />),
-    CloseFilled: h(<Icon-CloseFilled />),
-    IssueFilled: h(<Icon-IssueFilled />),
-    WarningFilled: h(<Icon-WarningFilled />)
+    WarningRound: h(<Icon-WarningRound />),
+    HomeOutlined: h(<Icon-HomeOutlined />)
 }
 
 /**图标类型拆解**/

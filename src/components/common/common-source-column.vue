@@ -1,7 +1,7 @@
 <script lang="tsx">
-import { defineComponent, Fragment, type PropType, type VNodeChild } from 'vue'
+import { defineComponent, computed, Fragment, type PropType, type VNode, type CSSProperties } from 'vue'
 import { useState } from '@/hooks/hook-state'
-import { compute } from '@/utils/utils-remix'
+import { sompute } from '@/utils/utils-remix'
 import { type Scheme } from '@/api/http-interface'
 interface NodeProps extends Scheme, Record<string, unknown> {
     title: string
@@ -13,12 +13,13 @@ export default defineComponent({
         node: { type: Object as PropType<NodeProps> },
         bordered: { type: Boolean, default: true },
         collapse: { type: Boolean, default: true },
-        dataRender: { type: Function as PropType<(e: Record<string, unknown>) => VNodeChild> },
+        dataRender: { type: Function as PropType<(e: Record<string, unknown>) => VNode> },
         extraSize: { type: Number, default: 4 }
     },
     setup(props, { slots }) {
         const { visible, setState } = useState({ visible: false })
 
+        /**切换收缩状态**/
         async function onCollapse() {
             return await setState({ visible: !visible.value })
         }
@@ -37,7 +38,13 @@ export default defineComponent({
                                 <common-remix
                                     hover={false}
                                     size={18}
-                                    icon={<n-icon class={{ 'is-visible': visible.value }} component={compute('ArrowRightBold')}></n-icon>}
+                                    icon={sompute('ArrowRightBold', {
+                                        style: {
+                                            transition: 'transform 0.3s var(--cubic-bezier-ease-in-out)',
+                                            color: 'var(--text-color-2)',
+                                            transform: visible.value ? 'rotateZ(90deg)' : 'rotateZ(0deg)'
+                                        }
+                                    })}
                                 ></common-remix>
                             )}
                         </n-space>
@@ -78,17 +85,6 @@ export default defineComponent({
         display: flex;
         padding: 12px 0 12px 14px;
         color: var(--text-color-1);
-        &__extra {
-            width: 26px;
-            height: 26px;
-            .common-remix :deep(.n-icon) {
-                transition: transform 0.3s var(--cubic-bezier-ease-in-out);
-                color: var(--text-color-2);
-                &.is-visible {
-                    transform: rotateZ(90deg);
-                }
-            }
-        }
         &__content {
             flex: 1;
             overflow: hidden;

@@ -4,21 +4,25 @@ import { useClipboard } from '@vueuse/core'
 import { type IRule, IMethod } from '@/api/http-route'
 import { useCurrent } from '@/locale/instance'
 import { divineChained } from '@/utils/utils-common'
+import { sompute } from '@/utils/utils-remix'
 
 export default defineComponent({
     name: 'CommonRule',
     props: {
-        node: {
-            type: Object as PropType<IRule>,
-            required: true
-        }
+        node: { type: Object as PropType<IRule>, required: true }
     },
     emits: ['selecter'],
     setup(props, { emit }) {
         const { t } = useCurrent()
         const { text, copy, isSupported } = useClipboard()
-        const type = computed(() => {
-            return IMethod[props.node.method] ?? IMethod.Default
+        const methodType = computed(() => IMethod[props.node.method] ?? IMethod.Default)
+        const dataCommand = computed(() => {
+            return [
+                { key: 'update', value: true },
+                { key: 'delete', value: true },
+                { key: 'disable', value: props.node.status === 'enable' },
+                { key: 'enable', value: props.node.status === 'disable' }
+            ].reduce((and: string[], next) => (next.value ? and.concat(next.key) : and), [])
         })
 
         /**复制规则接口**/
@@ -36,25 +40,25 @@ export default defineComponent({
         }
 
         return () => (
-            <n-alert class="common-rule" show-icon={false} type={type.value}>
-                <n-button type={type.value} size="small" strong style={{ minWidth: '80px' }}>
+            <n-alert class="common-rule" show-icon={false} type={methodType.value}>
+                <n-button type={methodType.value} size="small" strong style={{ minWidth: '80px' }}>
                     {props.node.method}
                 </n-button>
-                <n-h4 class="common-rule__content">
+                <n-text class="common-rule__content">
                     <div style={{ overflow: 'hidden', marginRight: '12px' }}>
                         <n-ellipsis tooltip={false}>{props.node.path}</n-ellipsis>
                     </div>
                     <common-mode value={props.node.status}></common-mode>
-                </n-h4>
+                </n-text>
                 <n-space align="center" wrap-item={false} size={5}>
                     <common-remix
                         size={18}
                         title={t('common.copy.value')}
-                        icon={<n-icon component={<Icon-RadixCircleCopy />}></n-icon>}
+                        icon={sompute('CopyRound')}
                         onTrigger={onClipboar}
                     ></common-remix>
-                    <common-dropdown command={['update', 'delete']} onSelecter={(key: string) => emit('selecter', key, props.node)}>
-                        <common-remix size={18} icon={<n-icon component={<Icon-RadixMore />}></n-icon>}></common-remix>
+                    <common-dropdown command={dataCommand.value} onSelecter={(key: string) => emit('selecter', key, props.node)}>
+                        <common-remix size={18} icon={sompute('RadixMore')}></common-remix>
                     </common-dropdown>
                 </n-space>
             </n-alert>
@@ -83,6 +87,7 @@ export default defineComponent({
         align-items: center;
         overflow: hidden;
         margin: 0 30px 0 10px;
+        font-size: 16px;
     }
 }
 </style>
