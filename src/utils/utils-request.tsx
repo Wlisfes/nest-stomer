@@ -43,3 +43,14 @@ request.interceptors.response.use(
     (response: AxiosResponse) => interNotice(response),
     error => Promise.reject(error)
 )
+
+/**请求错误捕获**/
+export function createRequest<T>(httpCallBack: Function, isReject: boolean = true): Promise<T> {
+    return new Promise(async (resolve, reject) => {
+        try {
+            resolve(await httpCallBack())
+        } catch (e) {
+            isReject && reject(e)
+        }
+    })
+}

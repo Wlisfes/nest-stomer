@@ -4,6 +4,7 @@ import { httpColumnRoute, httpRouteTransfer, httpRuleTransfer, type IRoute, type
 import { useCurrent } from '@/locale/instance'
 import { useSource } from '@/hooks/hook-source'
 import { divineDelay } from '@/utils/utils-common'
+import { createRequest } from '@/utils/utils-request'
 import { sompute, type INameUI } from '@/utils/utils-remix'
 import { createDiscover, createNotice } from '@/utils/utils-naive'
 import { createElement } from '@/utils/utils-instance'
@@ -44,17 +45,15 @@ export default defineComponent({
 
             if (['disable', 'enable'].includes(key)) {
                 /**启用、禁用规则**/
-                try {
-                    return await httpRuleTransfer({ id: option.id, status: key }).then(() => {
-                        return createNotice({
+                return await createRequest(() => {
+                    return httpRuleTransfer({ id: option.id, status: key }).then(async () => {
+                        return await createNotice({
                             type: 'success',
                             title: t(`common.${key}.enter` as Parameters<typeof t>['0']),
                             onAfterEnter: fetchUpdate
                         })
                     })
-                } catch (e) {
-                    return await createNotice({ type: 'error', title: e.message })
-                }
+                }).catch(e => createNotice({ type: 'error', title: e.message }))
             }
         }
 
