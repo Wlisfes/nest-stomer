@@ -10,6 +10,7 @@ export enum IMethod {
 export interface IRule extends Scheme {
     path: string
     name: string
+    parent: IRoute
     method: keyof typeof IMethod
 }
 export interface IRoute extends Scheme {
@@ -63,6 +64,15 @@ export function httpUpdateRule(data: { id: number; status: string; path: string;
         url: `/api/route/update/rule`,
         method: 'PUT',
         data
+    })
+}
+
+/**接口规则信息**/
+export function httpBasicRule(params: { id: number }) {
+    return request<IRule>({
+        url: `/api/route/rule/basic`,
+        method: 'GET',
+        params
     })
 }
 

@@ -8,10 +8,10 @@ export type Event = 'close' | 'submit' | 'cancel' | 'confirm' | 'refresh'
 export type IOnspector = { done: (e?: Partial<{ loading: false; visible: false }>) => Promise<void> }
 export type IObserver = Record<Event, IOnspector>
 
-export async function createComponent<T>(Component: Parameters<typeof createApp>['0'], option?: { immediate?: boolean; props?: T }) {
+export async function createComponent<T>(Component: Parameters<typeof createApp>['0'], option: { immediate?: boolean; props?: T } = {}) {
     const el = document.createElement('div')
     const observer = new Observer<IObserver>()
-    const props = await divineParameter(option?.props ?? {}).then(data => {
+    const props = await divineParameter(option.props ?? {}).then(data => {
         return {
             ...data,
             observer,

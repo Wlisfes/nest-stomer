@@ -1,9 +1,11 @@
 <script lang="tsx">
 import { defineComponent, type PropType } from 'vue'
-import { Observer } from '@/utils/utils-observer'
-import { useCustomize } from '@/hooks/hook-customize'
 import { useCurrent } from '@/locale/instance'
-import { httpUpdateRule, type IRule } from '@/api/http-route'
+import { Observer } from '@/utils/utils-observer'
+import { createRequest } from '@/utils/utils-request'
+import { createNotice } from '@/utils/utils-naive'
+import { useCustomize } from '@/hooks/hook-customize'
+import { httpUpdateRule, httpBasicRule, type IRule, type IMethod } from '@/api/http-route'
 
 export default defineComponent({
     name: 'FetchRule',
@@ -12,9 +14,9 @@ export default defineComponent({
         title: { type: String, required: true },
         command: { type: String as PropType<'CREATE' | 'UPDATE'>, default: 'CREATE' },
         id: { type: Number },
-        node: { type: Object as PropType<IRule> }
+        parent: { type: Number }
     },
-    emits: ['close'],
+    emits: ['close', 'submit'],
     setup(props, { emit }) {
         const { t, tm } = useCurrent()
         const { formRef, state, setState, divineFormValidater } = useCustomize(
@@ -23,10 +25,11 @@ export default defineComponent({
                 loading: false,
                 visible: false,
                 form: {
-                    method: props.node?.method,
-                    name: props.node?.name,
-                    path: props.node?.path,
-                    status: props.node?.status
+                    method: '',
+                    name: '',
+                    path: '',
+                    status: '',
+                    parent: props.parent ?? 0
                 },
                 rules: {
                     method: { required: true, message: t('rule.method.placeholder'), trigger: 'change' },
@@ -35,37 +38,53 @@ export default defineComponent({
                     status: { required: true, message: t('common.status.placeholder'), trigger: 'change' }
                 }
             },
-            () => {
-                setState({ visible: true })
+            /**初始化数据**/
+            async function mounte() {
+                await setState({ visible: true, loading: props.command === 'UPDATE' })
+                return await createRequest({
+                    execute: async function () {
+                        if (state.loading) {
+                            const { data } = await httpBasicRule({ id: props.id as number })
+                            return await setState({
+                                loading: false,
+                                form: Object.assign(state.form, {
+                                    method: data.method,
+                                    name: data.name,
+                                    path: data.path,
+                                    status: data.status,
+                                    parent: data.parent.id
+                                })
+                            })
+                        }
+                    },
+                    finally: e => setState({ loading: false })
+                })
             }
         )
 
         /**表单验证**/
         function onSubmit() {
             divineFormValidater(async () => {
-                try {
-                    await setState({ loading: true })
-                    const { data } = await httpUpdateRule({
-                        id: props.node?.id,
-                        status: state.form.status,
-                        name: state.form.name,
-                        path: state.form.path,
-                        method: state.form.method,
-                        parent: 3
-                    })
-                    window.$notification.success({
-                        title: data.message,
-                        duration: 2500,
-                        onAfterEnter: () => {
-                            props.observer.emit('submit', { done: setState })
-                        }
-                    })
-                } catch (e) {
-                    setState({ loading: false }).finally(() => {
-                        window.$notification.error({ title: e.message, duration: 2500 })
-                    })
-                }
-            }).catch(e => {})
+                return await createRequest({
+                    execute: async () => {
+                        await setState({ loading: true })
+                        const { data } = await httpUpdateRule({
+                            id: props.id as number,
+                            status: state.form.status,
+                            name: state.form.name,
+                            path: state.form.path,
+                            method: state.form.method,
+                            parent: state.form.parent
+                        })
+                        return await createNotice({
+                            type: 'success',
+                            title: data.message,
+                            onAfterEnter: () => emit('submit', { done: setState })
+                        })
+                    },
+                    catch: async e => await createNotice({ type: 'error', title: e.message })
+                })
+            })
         }
 
         return () => (

@@ -34,7 +34,7 @@ export default defineComponent({
                 return fetchRule({
                     title: t('common.update.enter', { name: t('rule.common.name') }),
                     command: 'UPDATE',
-                    node: option
+                    id: option.id
                 }).then(({ observer }) => {
                     observer.on('submit', async ({ done }) => {
                         await done({ visible: false })
