@@ -70,21 +70,16 @@ export default defineComponent({
                     await setState({ loading: true })
                     return await createRequest({
                         execute: async () => {
-                            return await httpCreateRule(
-                                await divineParameter({
-                                    status: state.form.status,
-                                    name: state.form.name,
-                                    path: state.form.path,
-                                    method: state.form.method,
-                                    parent: state.form.parent
-                                })
-                            ).then(async ({ data }) => {
-                                return await createNotice({
-                                    type: 'success',
-                                    title: data.message,
-                                    onAfterEnter: () => emit('submit', { done: setState })
-                                })
-                            })
+                            const { status, name, path, method, parent } = state.form
+                            return await httpCreateRule(await divineParameter({ status, name, path, method, parent })).then(
+                                async ({ data }) => {
+                                    return await createNotice({
+                                        type: 'success',
+                                        title: data.message,
+                                        onAfterEnter: () => emit('submit', { done: setState })
+                                    })
+                                }
+                            )
                         },
                         catch: async e => await createNotice({ type: 'error', title: e.message })
                     })
@@ -94,22 +89,16 @@ export default defineComponent({
                     await setState({ loading: true })
                     return await createRequest({
                         execute: async () => {
-                            return await httpUpdateRule(
-                                await divineParameter({
-                                    id: props.id,
-                                    status: state.form.status,
-                                    name: state.form.name,
-                                    path: state.form.path,
-                                    method: state.form.method,
-                                    parent: state.form.parent
-                                })
-                            ).then(async ({ data }) => {
-                                return await createNotice({
-                                    type: 'success',
-                                    title: data.message,
-                                    onAfterEnter: () => emit('submit', { done: setState })
-                                })
-                            })
+                            const { status, name, path, method, parent } = state.form
+                            return await httpUpdateRule(await divineParameter({ id: props.id, status, name, path, method, parent })).then(
+                                async ({ data }) => {
+                                    return await createNotice({
+                                        type: 'success',
+                                        title: data.message,
+                                        onAfterEnter: () => emit('submit', { done: setState })
+                                    })
+                                }
+                            )
                         },
                         catch: async e => await createNotice({ type: 'error', title: e.message })
                     })
