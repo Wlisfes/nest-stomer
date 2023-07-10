@@ -1,5 +1,5 @@
 import { request } from '@/utils/utils-request'
-import type { Scheme, Result } from '@/api/http-interface'
+import type { Scheme, Result } from '@/interface/http-interface'
 export interface IUser extends Scheme {
     uid: number
     nickname: string

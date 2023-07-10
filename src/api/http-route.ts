@@ -1,5 +1,5 @@
 import { request } from '@/utils/utils-request'
-import type { Scheme, Result, Notice } from '@/api/http-interface'
+import type { Scheme, Result, Notice } from '@/interface/http-interface'
 export enum IMethod {
     Default = 'default',
     GET = 'info',

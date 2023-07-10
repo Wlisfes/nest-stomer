@@ -2,7 +2,7 @@
 import { defineComponent, computed, Fragment, type PropType, type VNode, type CSSProperties } from 'vue'
 import { useState } from '@/hooks/hook-state'
 import { sompute } from '@/utils/utils-remix'
-import { type Scheme } from '@/api/http-interface'
+import { type Scheme } from '@/interface/http-interface'
 interface NodeProps extends Scheme, Record<string, unknown> {
     title: string
 }

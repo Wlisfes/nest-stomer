@@ -1,6 +1,6 @@
 import { toRefs, onMounted, nextTick, type UnwrapNestedRefs } from 'vue'
 import { type DataTableBaseColumn } from 'naive-ui'
-import { type IColumn, type Result } from '@/api/http-interface'
+import { type IColumn, type Result } from '@/interface/http-interface'
 import { type Response } from '@/utils/utils-request'
 import { useState } from '@/hooks/hook-state'
 
