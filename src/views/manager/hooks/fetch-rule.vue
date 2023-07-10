@@ -72,10 +72,10 @@ export default defineComponent({
                         execute: async () => {
                             const { status, name, path, method, parent } = state.form
                             return await httpCreateRule(await divineParameter({ status, name, path, method, parent })).then(
-                                async ({ data }) => {
+                                async ({ message }) => {
                                     return await createNotice({
                                         type: 'success',
-                                        title: data.message,
+                                        title: message,
                                         onAfterEnter: () => emit('submit', { done: setState })
                                     })
                                 }
@@ -97,10 +97,10 @@ export default defineComponent({
                         execute: async () => {
                             const { status, name, path, method, parent } = state.form
                             return await httpUpdateRule(await divineParameter({ id: props.id, status, name, path, method, parent })).then(
-                                async ({ data }) => {
+                                async ({ message }) => {
                                     return await createNotice({
                                         type: 'success',
-                                        title: data.message,
+                                        title: message,
                                         onAfterEnter: () => emit('submit', { done: setState })
                                     })
                                 }

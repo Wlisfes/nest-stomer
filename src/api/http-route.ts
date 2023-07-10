@@ -19,6 +19,7 @@ export interface IRoute extends Scheme {
     path: string
     redirect: string
     icon: string
+    order: number
     parent: string
     children: Array<IRoute>
     rule: Array<IRule>
@@ -41,11 +42,22 @@ export function httpColumnRoute() {
 }
 
 /**路由信息**/
-export function httpBasicRoute(params: { id: number }) {
+export function httpBasicRoute(params: Pick<IRoute, 'id'>) {
     return request<IRoute>({
         url: `/api/route/basic`,
         method: 'GET',
         params
+    })
+}
+
+/**编辑路由**/
+export function httpUpdateRoute(
+    data: Pick<IRoute, 'id' | 'status' | 'type' | 'title' | 'order' | 'path'> & Partial<Pick<IRoute, 'redirect' | 'icon' | 'parent'>>
+) {
+    return request<Notice>({
+        url: `/api/route/update`,
+        method: 'PUT',
+        data
     })
 }
 

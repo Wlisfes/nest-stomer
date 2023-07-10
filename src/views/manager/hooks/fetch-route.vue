@@ -8,7 +8,7 @@ import { divineParameter } from '@/utils/utils-common'
 import { createNotice } from '@/utils/utils-naive'
 import { compute, RemixUI, type INameUI } from '@/utils/utils-remix'
 import { useCustomize } from '@/hooks/hook-customize'
-import { httpColumnRoute, httpBasicRoute } from '@/api/http-route'
+import { httpUpdateRoute, httpBasicRoute } from '@/api/http-route'
 
 export default defineComponent({
     name: 'FetchRoute',
@@ -35,7 +35,8 @@ export default defineComponent({
                     redirect: undefined,
                     order: 1,
                     status: undefined,
-                    icon: undefined
+                    icon: undefined,
+                    parent: props.parent
                 },
                 rules: {}
             },
@@ -46,15 +47,16 @@ export default defineComponent({
                     execute: async function () {
                         if (state.loading) {
                             const { data } = await httpBasicRoute({ id: props.id as number })
-                            console.log(data)
                             return await setState({
                                 loading: false,
                                 form: await divineParameter({
-                                    // method: data.method,
-                                    // name: data.name,
-                                    // path: data.path,
-                                    // status: data.status,
-                                    // parent: data.parent.id
+                                    title: data.title,
+                                    type: data.type,
+                                    path: data.path,
+                                    redirect: data.redirect,
+                                    order: data.order,
+                                    status: data.status,
+                                    icon: data.icon
                                 })
                             })
                         }
@@ -65,7 +67,37 @@ export default defineComponent({
         )
 
         /**表单验证**/
-        function onSubmit() {}
+        function onSubmit() {
+            divineFormValidater(async () => {
+                if (props.command === 'UPDATE') {
+                    await setState({ loading: true })
+                    return await createRequest({
+                        execute: async function () {
+                            return await httpUpdateRoute(
+                                await divineParameter({
+                                    id: props.id,
+                                    title: state.form.title,
+                                    type: state.form.type,
+                                    path: state.form.path,
+                                    redirect: state.form.redirect,
+                                    order: state.form.order,
+                                    status: state.form.status,
+                                    icon: state.form.icon,
+                                    parent: state.form.parent
+                                })
+                            ).then(async ({ message }) => {
+                                return await createNotice({
+                                    type: 'success',
+                                    title: message,
+                                    onAfterEnter: () => emit('submit', { done: setState })
+                                })
+                            })
+                        },
+                        catch: async e => await createNotice({ type: 'error', title: e.message })
+                    })
+                }
+            })
+        }
 
         return () => (
             <n-modal
