@@ -40,6 +40,15 @@ export function httpColumnRoute() {
     })
 }
 
+/**路由信息**/
+export function httpBasicRoute(params: { id: number }) {
+    return request<IRoute>({
+        url: `/api/route/basic`,
+        method: 'GET',
+        params
+    })
+}
+
 /**编辑路由状态**/
 export function httpRouteTransfer(data: { id: number; status: string }) {
     return request<Notice>({

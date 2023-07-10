@@ -3,12 +3,12 @@ import { defineComponent, Fragment, type SetupContext } from 'vue'
 import { httpColumnRoute, httpRouteTransfer, httpRuleTransfer, type IRoute, type IRule } from '@/api/http-route'
 import { useCurrent } from '@/locale/instance'
 import { useSource } from '@/hooks/hook-source'
-import { divineDelay } from '@/utils/utils-common'
+import { divineDelay, divineParameter } from '@/utils/utils-common'
 import { createRequest } from '@/utils/utils-request'
 import { sompute, type INameUI } from '@/utils/utils-remix'
 import { createDiscover, createNotice } from '@/utils/utils-naive'
 import { createElement } from '@/utils/utils-instance'
-import { fetchRule } from '@/views/manager/hooks/fetch-instance'
+import { fetchRule, fetchRoute } from '@/views/manager/hooks/fetch-instance'
 
 export default defineComponent({
     name: 'Route',
@@ -89,6 +89,46 @@ export default defineComponent({
 
         /**选中路由回调**/
         async function onRouteSelecter(key: string, option: IRoute, app: { done: Function }) {
+            if (key === 'create-rule') {
+                /**新增规则**/
+                return fetchRule({
+                    title: t('common.create.enter', { name: t('rule.common.name') }),
+                    command: 'CREATE',
+                    parent: option.id
+                }).then(({ observer }) => {
+                    observer.on('submit', async ({ done }) => {
+                        await done({ visible: false })
+                        await fetchUpdate()
+                    })
+                })
+            }
+
+            if (['create-route', 'update'].includes(key)) {
+                /**新增、编辑路由**/
+                const parameter = await divineParameter({ id: option.id }).then(data => {
+                    if (key === 'create-route') {
+                        return {
+                            ...data,
+                            command: 'CREATE',
+                            parent: option.id,
+                            title: t('common.create.enter', { name: t('route.common.name') })
+                        }
+                    }
+                    return {
+                        ...data,
+                        command: 'UPDATE',
+                        parent: option.parent,
+                        title: t('common.update.enter', { name: t('route.common.name') })
+                    }
+                })
+                return fetchRoute(parameter).then(({ observer }) => {
+                    observer.on('submit', async ({ done }) => {
+                        await done({ visible: false })
+                        await fetchUpdate()
+                    })
+                })
+            }
+
             if (['disable', 'enable'].includes(key)) {
                 /**启用、禁用路由**/
                 return await createRequest({
@@ -131,20 +171,6 @@ export default defineComponent({
                     }
                 })
             }
-
-            if (key === 'create-rule') {
-                /**新增规则**/
-                return fetchRule({
-                    title: t('common.create.enter', { name: t('rule.common.name') }),
-                    command: 'CREATE'
-                }).then(({ observer }) => {
-                    observer.on('submit', async ({ done }) => {
-                        await done({ visible: false })
-                        await fetchUpdate()
-                    })
-                })
-            }
-            console.log(key)
         }
 
         /**路由列插槽**/

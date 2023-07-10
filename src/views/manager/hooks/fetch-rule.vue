@@ -81,7 +81,13 @@ export default defineComponent({
                                 }
                             )
                         },
-                        catch: async e => await createNotice({ type: 'error', title: e.message })
+                        catch: async e => {
+                            return await createNotice({
+                                type: 'error',
+                                title: e.message,
+                                onAfterEnter: () => setState({ loading: false })
+                            })
+                        }
                     })
                 }
 

@@ -1,5 +1,5 @@
 import { createApp, createVNode, nextTick, render, type CSSProperties } from 'vue'
-import { divineParameter, divineHandler } from '@/utils/utils-common'
+import { divineParameter } from '@/utils/utils-common'
 import { Observer } from '@/utils/utils-observer'
 import { setupI18n } from '@/locale/instance'
 import { setupStore } from '@/store'
@@ -8,10 +8,10 @@ export type Event = 'close' | 'submit' | 'cancel' | 'confirm' | 'refresh'
 export type IOnspector = { done: (e?: Partial<{ loading: false; visible: false }>) => Promise<void> }
 export type IObserver = Record<Event, IOnspector>
 
-export async function createComponent<T>(Component: Parameters<typeof createApp>['0'], option: { immediate?: boolean; props?: T } = {}) {
+export async function createComponent<T>(Component: Parameters<typeof createApp>['0'], props: T) {
     const el = document.createElement('div')
     const observer = new Observer<IObserver>()
-    const props = await divineParameter(option.props ?? {}).then(data => {
+    const parameter = await divineParameter(props ?? {}).then(data => {
         return {
             ...data,
             observer,
@@ -19,7 +19,7 @@ export async function createComponent<T>(Component: Parameters<typeof createApp>
             onSubmit: submit
         }
     })
-    const app = createApp(<common-provider>{createVNode(Component, props)}</common-provider>)
+    const app = createApp(<common-provider>{createVNode(Component, parameter)}</common-provider>)
 
     /**组件挂载**/
     async function mounte() {
@@ -43,10 +43,7 @@ export async function createComponent<T>(Component: Parameters<typeof createApp>
     setupRouter(app)
 
     nextTick(async () => {
-        await divineHandler(
-            () => (option && option.immediate) ?? false,
-            () => mounte()
-        )
+        await mounte()
     })
 
     return { el, app, observer, mounte, unmount }

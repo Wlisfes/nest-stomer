@@ -27,7 +27,7 @@ export default defineComponent({
         return () => (
             <n-el class={{ 'common-source__column': true, 'is-bordered': props.bordered }}>
                 <div class={{ 'source-header': true, 'n-pointer': props.collapse }} onClick={() => props.collapse && onCollapse()}>
-                    <div class="source-header__content n-display">
+                    <div class="source-header__content n-basic">
                         <n-icon size={28} style={{ marginRight: '10px' }} component={<Icon-HomeOutlined />}></n-icon>
                         <n-h3 style={{ flex: 1, margin: 0 }}>{props.node?.title}</n-h3>
                     </div>
