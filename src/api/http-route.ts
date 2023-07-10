@@ -50,6 +50,17 @@ export function httpBasicRoute(params: Pick<IRoute, 'id'>) {
     })
 }
 
+/**新增路由**/
+export function httpCreateRoute(
+    data: Pick<IRoute, 'status' | 'type' | 'title' | 'order' | 'path'> & Partial<Pick<IRoute, 'redirect' | 'icon' | 'parent'>>
+) {
+    return request<Notice>({
+        url: `/api/route/create`,
+        method: 'POST',
+        data
+    })
+}
+
 /**编辑路由**/
 export function httpUpdateRoute(
     data: Pick<IRoute, 'id' | 'status' | 'type' | 'title' | 'order' | 'path'> & Partial<Pick<IRoute, 'redirect' | 'icon' | 'parent'>>

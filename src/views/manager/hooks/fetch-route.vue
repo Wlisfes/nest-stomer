@@ -8,7 +8,7 @@ import { divineParameter } from '@/utils/utils-common'
 import { createNotice } from '@/utils/utils-naive'
 import { compute, RemixUI, type INameUI } from '@/utils/utils-remix'
 import { useCustomize } from '@/hooks/hook-customize'
-import { httpUpdateRoute, httpBasicRoute } from '@/api/http-route'
+import { httpCreateRoute, httpUpdateRoute, httpBasicRoute } from '@/api/http-route'
 
 export default defineComponent({
     name: 'FetchRoute',
@@ -38,7 +38,13 @@ export default defineComponent({
                     icon: undefined,
                     parent: props.parent
                 },
-                rules: {}
+                rules: {
+                    title: { required: true, message: t('route.title.placeholder'), trigger: 'change' },
+                    type: { required: true, message: t('route.type.placeholder'), trigger: 'change' },
+                    path: { required: true, message: t('route.path.placeholder'), trigger: 'blur' },
+                    order: { required: true, type: 'number', message: t('route.order.placeholder'), trigger: 'blur' },
+                    status: { required: true, message: t('common.status.placeholder'), trigger: 'change' }
+                }
             },
             /**初始化数据**/
             async function mounte() {
@@ -69,6 +75,39 @@ export default defineComponent({
         /**表单验证**/
         function onSubmit() {
             divineFormValidater(async () => {
+                if (props.command === 'CREATE') {
+                    await setState({ loading: true })
+                    return await createRequest({
+                        execute: async function () {
+                            return await httpCreateRoute(
+                                await divineParameter({
+                                    title: state.form.title,
+                                    type: state.form.type,
+                                    path: state.form.path,
+                                    redirect: state.form.redirect,
+                                    order: state.form.order,
+                                    status: state.form.status,
+                                    icon: state.form.icon,
+                                    parent: state.form.parent
+                                })
+                            ).then(async ({ message }) => {
+                                return await createNotice({
+                                    type: 'success',
+                                    title: message,
+                                    onAfterEnter: () => emit('submit', { done: setState })
+                                })
+                            })
+                        },
+                        catch: async e => {
+                            return await createNotice({
+                                type: 'error',
+                                title: e.message,
+                                onAfterEnter: () => setState({ loading: false })
+                            })
+                        }
+                    })
+                }
+
                 if (props.command === 'UPDATE') {
                     await setState({ loading: true })
                     return await createRequest({
@@ -93,7 +132,13 @@ export default defineComponent({
                                 })
                             })
                         },
-                        catch: async e => await createNotice({ type: 'error', title: e.message })
+                        catch: async e => {
+                            return await createNotice({
+                                type: 'error',
+                                title: e.message,
+                                onAfterEnter: () => setState({ loading: false })
+                            })
+                        }
                     })
                 }
             })
