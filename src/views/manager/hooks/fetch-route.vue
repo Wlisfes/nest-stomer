@@ -21,7 +21,6 @@ export default defineComponent({
     },
     emits: ['close', 'submit'],
     setup(props, { emit }) {
-        // const dataRemix = computed(() => Object.keys(RemixUI).map())
         const { t, tm } = useCurrent()
         const { formRef, state, setState, divineFormValidater } = useCustomize(
             {
@@ -200,6 +199,8 @@ export default defineComponent({
                             <n-form-item label={t('route.order.value')} path="order">
                                 <n-input-number
                                     v-model:value={state.form.order}
+                                    min={1}
+                                    precision={0}
                                     placeholder={t('route.order.placeholder')}
                                     style={{ width: '100%' }}
                                 />
@@ -219,9 +220,16 @@ export default defineComponent({
                                 <n-select
                                     v-model:value={state.form.icon}
                                     filterable
+                                    clearable
                                     placeholder={t('route.icon.placeholder')}
                                     options={Object.keys(RemixUI).map(value => ({ value, label: value }))}
                                     render-tag={({ option }: { option: SelectOption }) => {
+                                        return h('div', { class: 'n-basic n-center' }, [
+                                            <n-icon size={24} component={compute(option.value as INameUI)} />,
+                                            <n-text style={{ marginLeft: '5px' }}>{option.value}</n-text>
+                                        ])
+                                    }}
+                                    render-label={(option: SelectOption) => {
                                         return h('div', { class: 'n-basic n-center' }, [
                                             <n-icon size={24} component={compute(option.value as INameUI)} />,
                                             <n-text style={{ marginLeft: '5px' }}>{option.value}</n-text>
