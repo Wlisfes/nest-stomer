@@ -4,7 +4,7 @@ import { useClipboard } from '@vueuse/core'
 import { type IRule, IMethod } from '@/api/http-route'
 import { useCurrent } from '@/locale/instance'
 import { divineChained } from '@/utils/utils-common'
-import { sompute } from '@/utils/utils-remix'
+import { sompute, compute } from '@/utils/utils-remix'
 
 export default defineComponent({
     name: 'CommonRule',
@@ -50,9 +50,12 @@ export default defineComponent({
                     {props.node.method}
                 </n-button>
                 <n-text class="common-rule__content">
-                    <div style={{ overflow: 'hidden', marginRight: '12px' }}>
-                        <n-ellipsis tooltip={false}>{props.node.path}</n-ellipsis>
-                    </div>
+                    <n-text style={{ overflow: 'hidden', marginRight: '12px' }}>
+                        <n-ellipsis tooltip={false}>
+                            <n-h4 inline>{`${props.node.name}：`}</n-h4>
+                            <n-text>{props.node.path}</n-text>
+                        </n-ellipsis>
+                    </n-text>
                     <common-mode value={props.node.status}></common-mode>
                 </n-text>
                 <n-space align="center" wrap-item={false} size={5}>
