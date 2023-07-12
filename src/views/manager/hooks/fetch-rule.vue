@@ -15,7 +15,7 @@ export default defineComponent({
         title: { type: String, required: true },
         command: { type: String as PropType<'CREATE' | 'UPDATE'>, default: 'CREATE' },
         id: { type: Number },
-        parent: { type: Number }
+        route: { type: Number }
     },
     emits: ['close', 'submit'],
     setup(props, { emit }) {
@@ -30,7 +30,7 @@ export default defineComponent({
                     name: undefined,
                     path: undefined,
                     status: undefined,
-                    parent: props.parent ?? undefined
+                    route: props.route ?? undefined
                 },
                 rules: {
                     method: { required: true, message: t('rule.method.placeholder'), trigger: 'change' },
@@ -53,7 +53,7 @@ export default defineComponent({
                                     name: data.name,
                                     path: data.path,
                                     status: data.status,
-                                    parent: data.parent.id
+                                    route: data.route.id
                                 })
                             })
                         }
@@ -70,8 +70,8 @@ export default defineComponent({
                     await setState({ loading: true })
                     return await createRequest({
                         execute: async () => {
-                            const { status, name, path, method, parent } = state.form
-                            return await httpCreateRule(await divineParameter({ status, name, path, method, parent })).then(
+                            const { status, name, path, method, route } = state.form
+                            return await httpCreateRule(await divineParameter({ status, name, path, method, route })).then(
                                 async ({ message }) => {
                                     return await createNotice({
                                         type: 'success',
@@ -95,8 +95,8 @@ export default defineComponent({
                     await setState({ loading: true })
                     return await createRequest({
                         execute: async () => {
-                            const { status, name, path, method, parent } = state.form
-                            return await httpUpdateRule(await divineParameter({ id: props.id, status, name, path, method, parent })).then(
+                            const { status, name, path, method, route } = state.form
+                            return await httpUpdateRule(await divineParameter({ id: props.id, status, name, path, method, route })).then(
                                 async ({ message }) => {
                                     return await createNotice({
                                         type: 'success',

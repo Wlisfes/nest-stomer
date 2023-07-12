@@ -4,7 +4,7 @@ import { Rule, Route } from './fetch-import'
 export interface HBasic {
     command: HCommand
     title: string
-    parent?: number
+    route?: number
     id?: number
 }
 

@@ -48,7 +48,7 @@ export default defineComponent({
                 return await createRequest({
                     execute: async e => {
                         await app.done(true)
-                        await httpRuleTransfer({ id: option.id, status: key })
+                        await httpRuleTransfer({ id: option.id, status: key as IRule['status'] })
                         await divineDelay(300)
                         return await createNotice({
                             title: t(`common.${key}.enter` as Parameters<typeof t>['0']),
@@ -94,7 +94,7 @@ export default defineComponent({
                 return fetchRule({
                     title: t('common.create.enter', { name: t('rule.common.name') }),
                     command: 'CREATE',
-                    parent: option.id
+                    route: option.id
                 }).then(({ observer }) => {
                     observer.on('submit', async ({ done }) => {
                         await done({ visible: false })
@@ -134,7 +134,7 @@ export default defineComponent({
                 return await createRequest({
                     execute: async e => {
                         await app.done(true)
-                        await httpRouteTransfer({ id: option.id, status: key })
+                        await httpRouteTransfer({ id: option.id, status: key as IRule['status'] })
                         await divineDelay(300)
                         return await createNotice({
                             title: t(`common.${key}.enter` as Parameters<typeof t>['0']),

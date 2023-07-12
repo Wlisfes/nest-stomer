@@ -10,7 +10,7 @@ export enum IMethod {
 export interface IRule extends Scheme {
     path: string
     name: string
-    parent: IRoute
+    route: IRoute
     method: keyof typeof IMethod
 }
 export interface IRoute extends Scheme {
@@ -73,7 +73,7 @@ export function httpUpdateRoute(
 }
 
 /**编辑路由状态**/
-export function httpRouteTransfer(data: { id: number; status: string }) {
+export function httpRouteTransfer(data: Pick<IRoute, 'id' | 'status'>) {
     return request<Notice>({
         url: `/api/route/transfer`,
         method: 'PUT',
@@ -82,7 +82,7 @@ export function httpRouteTransfer(data: { id: number; status: string }) {
 }
 
 /**新增接口规则**/
-export function httpCreateRule(data: { status: string; path: string; name: string; method: string; parent: number }) {
+export function httpCreateRule(data: Pick<IRule, 'path' | 'name' | 'method' | 'status' | 'route'>) {
     return request<Notice>({
         url: `/api/route/create/rule`,
         method: 'POST',
@@ -91,7 +91,7 @@ export function httpCreateRule(data: { status: string; path: string; name: strin
 }
 
 /**编辑接口规则**/
-export function httpUpdateRule(data: { id: number; status: string; path: string; name: string; method: string; parent: number }) {
+export function httpUpdateRule(data: Pick<IRule, 'id' | 'path' | 'name' | 'method' | 'status' | 'route'>) {
     return request<Notice>({
         url: `/api/route/update/rule`,
         method: 'PUT',
@@ -100,7 +100,7 @@ export function httpUpdateRule(data: { id: number; status: string; path: string;
 }
 
 /**接口规则信息**/
-export function httpBasicRule(params: { id: number }) {
+export function httpBasicRule(params: Pick<IRule, 'id'>) {
     return request<IRule>({
         url: `/api/route/rule/basic`,
         method: 'GET',
@@ -109,7 +109,7 @@ export function httpBasicRule(params: { id: number }) {
 }
 
 /**编辑规则状态**/
-export function httpRuleTransfer(data: { id: number; status: string }) {
+export function httpRuleTransfer(data: Pick<IRoute, 'id' | 'status'>) {
     return request<Notice>({
         url: `/api/route/transfer/rule`,
         method: 'PUT',
