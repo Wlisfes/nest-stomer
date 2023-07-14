@@ -251,6 +251,7 @@ export default defineComponent({
                     data-source={state.dataSource}
                     data-render={(data: IRoute) => (
                         <common-source-column
+                            header={true}
                             key={data.id}
                             node={data}
                             collapse={data.children.length > 0}
@@ -268,6 +269,7 @@ export default defineComponent({
                                                     <Fragment>
                                                         <n-divider style={{ margin: '0 16px', width: 'calc(100% - 32px)' }} />
                                                         <common-source-column
+                                                            header={true}
                                                             bordered={false}
                                                             collapse={scope.children.length > 0}
                                                             node={scope}
