@@ -10,20 +10,20 @@ export interface IUser extends Scheme {
 }
 
 /**注册**/
-export function httpRegister(params: { nickname: string; password: string; mobile: string; code: string }) {
+export function httpRegister(data: { nickname: string; password: string; mobile: string; code: string }) {
     return request<IUser>({
         url: `/api/user/register`,
         method: 'POST',
-        params
+        data
     })
 }
 
 /**登录**/
-export function httpAuthorize(params: { mobile?: string; password?: string; code?: string }) {
+export function httpAuthorize(data: { mobile?: string; password?: string; code?: string }) {
     return request<{ token: string; refresh: string; expire: number; message: string }>({
         url: `/api/user/login`,
         method: 'POST',
-        params
+        data
     })
 }
 

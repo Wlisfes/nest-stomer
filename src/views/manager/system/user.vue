@@ -1,9 +1,8 @@
 <script lang="tsx">
-import { defineComponent } from 'vue'
+import { defineComponent, Fragment } from 'vue'
 import { httpColumnUser, type IUser } from '@/api/http-user'
 import { useCurrent } from '@/locale/instance'
 import { useSource } from '@/hooks/hook-source'
-import type { IColumn } from '@/interface/http-interface'
 
 export default defineComponent({
     name: 'User',
@@ -24,9 +23,22 @@ export default defineComponent({
                     data-column={state.dataColumn}
                     data-source={state.dataSource}
                     data-render={(data: IUser) => (
-                        <common-source-column key={data.id} node={data}>
-                            <div>{data.uid}</div>
-                        </common-source-column>
+                        <common-source-column
+                            header={true}
+                            source-style={{}}
+                            direction="horizontal"
+                            node={data}
+                            title={data.nickname}
+                            before-style={{ padding: '14px 0 14px 14px' }}
+                            data-before={(data: IUser) => (
+                                <n-avatar size={116} src="https://07akioni.oss-cn-beijing.aliyuncs.com/07akioni.jpeg" />
+                            )}
+                            data-render={(model: { visible: boolean }) => (
+                                <Fragment>
+                                    <section style={{ padding: '0 16px 16px' }}></section>
+                                </Fragment>
+                            )}
+                        ></common-source-column>
                     )}
                 ></common-source>
             </common-container>

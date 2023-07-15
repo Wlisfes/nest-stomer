@@ -252,13 +252,14 @@ export default defineComponent({
                     data-render={(data: IRoute) => (
                         <common-source-column
                             header={true}
-                            key={data.id}
                             node={data}
+                            icon={data.icon}
+                            title={data.title}
                             collapse={data.children.length > 0}
                             v-slots={{ suffix: RouteSuffixUI }}
                             data-render={(model: { visible: boolean }) => (
                                 <Fragment>
-                                    <section style={{ padding: '0 16px 16px' }}>
+                                    <section style={{ padding: '0 14px 14px' }}>
                                         <RouteColumnUI {...data} />
                                     </section>
                                     <common-collapse visible={model.visible}>
@@ -271,12 +272,14 @@ export default defineComponent({
                                                         <common-source-column
                                                             header={true}
                                                             bordered={false}
+                                                            node={data}
+                                                            icon={data.icon}
+                                                            title={data.title}
                                                             collapse={scope.children.length > 0}
-                                                            node={scope}
                                                             v-slots={{ suffix: RouteSuffixUI }}
                                                             data-render={(e: { visible: boolean }) => (
                                                                 <Fragment>
-                                                                    <section style={{ padding: '0 16px 16px' }}>
+                                                                    <section style={{ padding: '0 14px 14px' }}>
                                                                         <RouteColumnUI {...scope} />
                                                                     </section>
                                                                     <common-collapse visible={e.visible}>
