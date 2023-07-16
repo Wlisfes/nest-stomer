@@ -1,14 +1,14 @@
 <script lang="tsx">
-import { defineComponent, Fragment, computed, type PropType, type VNode, type CSSProperties, type SetupContext } from 'vue'
+import { defineComponent, computed, Fragment, type PropType } from 'vue'
 import { useState } from '@/hooks/hook-state'
 import { useCurrent } from '@/locale/instance'
 import { divineDelay, divineParameter } from '@/utils/utils-common'
 import { createRequest } from '@/utils/utils-request'
-import { sompute, type INameUI } from '@/utils/utils-remix'
+import { sompute } from '@/utils/utils-remix'
 import { createDiscover, createNotice } from '@/utils/utils-naive'
 import { createElement } from '@/utils/utils-instance'
 import { fetchRule, fetchRoute } from '@/views/manager/hooks/fetch-instance'
-import { httpColumnRoute, httpRouteTransfer, httpRuleTransfer, type IRoute, type IRule } from '@/api/http-route'
+import { httpRouteTransfer, httpRuleTransfer, type IRoute, type IRule } from '@/api/http-route'
 
 export default defineComponent({
     name: 'ProviderRoute',
@@ -17,176 +17,170 @@ export default defineComponent({
             type: Object as PropType<IRoute>,
             required: true
         },
-        collapse: {
-            type: Boolean,
-            default: true
-        },
         bordered: {
             type: Boolean,
             default: true
         }
     },
     emits: ['update'],
-    setup(props, { slots, emit }) {
+    setup(props, { emit }) {
         const { t } = useCurrent()
-        const { state, setState } = useState({ visible: false })
+        const { state, setState } = useState({
+            visible: false,
+            collapse: props.node.children.length > 0
+        })
 
         /**切换收缩状态**/
         async function onCollapse() {
             return await setState({ visible: !state.visible })
         }
 
-        /**选中规则回调**/
-        async function onRuleSelecter(key: string, option: IRule, app: { done: Function }) {
-            if (key === 'update') {
-                /**编辑规则**/
-                return fetchRule({
-                    title: t('common.update.enter', { name: t('rule.common.name') }),
-                    command: 'UPDATE',
-                    id: option.id
-                }).then(({ observer }) => {
-                    observer.on('submit', ({ done }) => {
-                        done({ visible: false }).finally(() => emit('update'))
-                    })
+        /**新增规则**/
+        async function onCreateRule(app: { done: Function }) {
+            return fetchRule({
+                title: t('common.create.enter', { name: t('rule.common.name') }),
+                command: 'CREATE',
+                route: props.node.id
+            }).then(({ observer }) => {
+                observer.on('submit', ({ done }) => {
+                    done({ visible: false }).finally(() => emit('update'))
                 })
-            }
-
-            if (['disable', 'enable'].includes(key)) {
-                /**启用、禁用规则**/
-                return await createRequest({
-                    execute: async e => {
-                        await app.done(true)
-                        await httpRuleTransfer({ id: option.id, status: key as IRule['status'] })
-                        await divineDelay(300)
-                        return await createNotice({
-                            title: t(`common.${key}.enter` as Parameters<typeof t>['0']),
-                            onAfterEnter: () => emit('update')
-                        })
-                    },
-                    catch: async e => await createNotice({ type: 'error', title: e.message }),
-                    finally: e => app.done(false)
-                })
-            }
-
-            if (key === 'delete') {
-                /**删除规则**/
-                const { element } = await createElement(<n-text type="error" v-slots={{ default: () => t('rule.common.name') }} />, {
-                    style: { padding: '0 5px', fontWeight: 600 }
-                })
-                return await createDiscover({
-                    type: 'error',
-                    title: t('common.hint.value'),
-                    content: () => <n-h3 v-html={t('common.delete.hint', { name: element })}></n-h3>,
-                    negativeText: t('common.cancel.value'),
-                    positiveText: t('common.confirm.value'),
-                    onPositiveClick: async (evt, vm, done: Function) => {
-                        return await createRequest<boolean>({
-                            execute: async e => {
-                                await done(true)
-                                await httpRuleTransfer({ id: option.id, status: 'delete' })
-                                await divineDelay(300)
-                                return await createNotice({
-                                    title: t('common.delete.notice'),
-                                    onAfterEnter: () => emit('update')
-                                })
-                            },
-                            catch: async e => await createNotice({ type: 'error', title: e.message }),
-                            finally: async e => await done(false)
-                        })
-                    }
-                })
-            }
+            })
         }
 
-        /**选中路由回调**/
-        async function onRouteSelecter(key: string, option: IRoute, app: { done: Function }) {
-            if (key === 'create-rule') {
-                /**新增规则**/
-                return fetchRule({
-                    title: t('common.create.enter', { name: t('rule.common.name') }),
-                    command: 'CREATE',
-                    route: option.id
-                }).then(({ observer }) => {
-                    observer.on('submit', ({ done }) => {
-                        done({ visible: false }).finally(() => emit('update'))
+        /**编辑规则**/
+        async function onUpdateRule(key: string, data: IRule, app: { done: Function }) {
+            return fetchRule({
+                title: t('common.update.enter', { name: t('rule.common.name') }),
+                command: 'UPDATE',
+                id: data.id
+            }).then(({ observer }) => {
+                observer.on('submit', ({ done }) => {
+                    done({ visible: false }).finally(() => emit('update'))
+                })
+            })
+        }
+
+        /**启用、禁用规则**/
+        async function onRuleTransfer(key: string, data: IRule, app: { done: Function }) {
+            return await createRequest({
+                execute: async e => {
+                    await app.done(true)
+                    await httpRuleTransfer({ id: data.id, status: key as IRule['status'] })
+                    await divineDelay(300)
+                    return await createNotice({
+                        title: t(`common.${key}.enter` as Parameters<typeof t>['0']),
+                        onAfterEnter: () => emit('update')
                     })
-                })
-            }
+                },
+                catch: async e => await createNotice({ type: 'error', title: e.message }),
+                finally: e => app.done(false)
+            })
+        }
 
-            if (['create-route', 'update'].includes(key)) {
-                /**新增、编辑路由**/
-                const parameter = await divineParameter({ id: option.id }).then(data => {
-                    if (key === 'create-route') {
-                        return {
-                            ...data,
-                            command: 'CREATE',
-                            parent: option.id,
-                            title: t('common.create.enter', { name: t('route.common.name') })
-                        }
-                    }
-                    return {
-                        ...data,
-                        command: 'UPDATE',
-                        parent: option.parent,
-                        title: t('common.update.enter', { name: t('route.common.name') })
-                    }
-                })
-                return fetchRoute(parameter).then(({ observer }) => {
-                    observer.on('submit', ({ done }) => {
-                        done({ visible: false }).finally(() => emit('update'))
+        /**删除规则**/
+        async function onDeleteRule(key: string, data: IRule, app: { done: Function }) {
+            const { element } = await createElement(<n-text type="error" v-slots={{ default: () => t('rule.common.name') }} />, {
+                style: { padding: '0 5px', fontWeight: 600 }
+            })
+            return await createDiscover({
+                type: 'error',
+                title: t('common.hint.value'),
+                content: () => <n-h3 v-html={t('common.delete.hint', { name: element })}></n-h3>,
+                negativeText: t('common.cancel.value'),
+                positiveText: t('common.confirm.value'),
+                onPositiveClick: async (evt, vm, done: Function) => {
+                    return await createRequest<boolean>({
+                        execute: async e => {
+                            await done(true)
+                            await httpRuleTransfer({ id: data.id, status: 'delete' })
+                            await divineDelay(300)
+                            return await createNotice({
+                                title: t('common.delete.notice'),
+                                onAfterEnter: () => emit('update')
+                            })
+                        },
+                        catch: async e => await createNotice({ type: 'error', title: e.message }),
+                        finally: async e => await done(false)
                     })
-                })
-            }
+                }
+            })
+        }
 
-            if (['disable', 'enable'].includes(key)) {
-                /**启用、禁用路由**/
-                return await createRequest({
-                    execute: async e => {
-                        await app.done(true)
-                        await httpRouteTransfer({ id: option.id, status: key as IRule['status'] })
-                        await divineDelay(300)
-                        return await createNotice({
-                            title: t(`common.${key}.enter` as Parameters<typeof t>['0']),
-                            onAfterEnter: () => emit('update')
-                        })
-                    },
-                    catch: async e => await createNotice({ type: 'error', title: e.message }),
-                    finally: e => app.done(false)
+        /**新增路由**/
+        async function onCreateRoute() {
+            return fetchRoute({
+                command: 'CREATE',
+                parent: props.node.id,
+                title: t('common.create.enter', { name: t('route.common.name') })
+            }).then(({ observer }) => {
+                observer.on('submit', ({ done }) => {
+                    done({ visible: false }).finally(() => emit('update'))
                 })
-            }
+            })
+        }
 
-            if (key === 'delete') {
-                /**删除路由**/
-                const { element } = await createElement(<n-text type="error" v-slots={{ default: () => option.title }} />, {
-                    style: { padding: '0 5px', fontWeight: 600 }
+        /**编辑路由**/
+        async function onUpdateRoute() {
+            return fetchRoute({
+                command: 'UPDATE',
+                id: props.node.id,
+                title: t('common.create.enter', { name: t('route.common.name') })
+            }).then(({ observer }) => {
+                observer.on('submit', ({ done }) => {
+                    done({ visible: false }).finally(() => emit('update'))
                 })
-                return await createDiscover({
-                    type: 'error',
-                    title: t('common.hint.value'),
-                    content: () => <n-h3 v-html={t('common.delete.hint', { name: element })}></n-h3>,
-                    negativeText: t('common.cancel.value'),
-                    positiveText: t('common.confirm.value'),
-                    onPositiveClick: (evt, vm, done: Function) => {
-                        return createRequest<boolean>({
-                            execute: async () => {
-                                await done(true)
-                                await httpRouteTransfer({ id: option.id, status: 'disable' })
-                                await divineDelay(300)
-                                return await createNotice({ title: t('common.delete.notice'), onAfterEnter: () => emit('update') })
-                            },
-                            catch: async e => await createNotice({ type: 'error', title: e.message }),
-                            finally: e => done(false)
-                        })
-                    }
-                })
-            }
+            })
+        }
+
+        /**启用、禁用路由**/
+        async function onRouteTransfer(key: string, app: { done: Function }) {
+            return await createRequest({
+                execute: async e => {
+                    await app.done(true)
+                    await httpRouteTransfer({ id: props.node.id, status: key as IRule['status'] })
+                    await divineDelay(300)
+                    return await createNotice({
+                        title: t(`common.${key}.enter` as Parameters<typeof t>['0']),
+                        onAfterEnter: () => emit('update')
+                    })
+                },
+                catch: async e => await createNotice({ type: 'error', title: e.message }),
+                finally: e => app.done(false)
+            })
+        }
+
+        /**删除路由**/
+        async function onDeleteRoute(key: string, app: { done: Function }) {
+            const { element } = await createElement(<n-text type="error" v-slots={{ default: () => props.node.title }} />, {
+                style: { padding: '0 5px', fontWeight: 600 }
+            })
+            return await createDiscover({
+                type: 'error',
+                title: t('common.hint.value'),
+                content: () => <n-h3 v-html={t('common.delete.hint', { name: element })}></n-h3>,
+                negativeText: t('common.cancel.value'),
+                positiveText: t('common.confirm.value'),
+                onPositiveClick: (evt, vm, done: Function) => {
+                    return createRequest<boolean>({
+                        execute: async () => {
+                            await done(true)
+                            await httpRouteTransfer({ id: props.node.id, status: 'disable' })
+                            await divineDelay(300)
+                            return await createNotice({ title: t('common.delete.notice'), onAfterEnter: () => emit('update') })
+                        },
+                        catch: async e => await createNotice({ type: 'error', title: e.message }),
+                        finally: e => done(false)
+                    })
+                }
+            })
         }
 
         return () => (
             <n-el tag="div" class={{ 'provider-route': true, 'is-bordered': props.bordered }}>
                 <div
-                    class={{ 'route-header not-selecter': true, 'n-pointer': props.collapse }}
-                    onClick={() => props.collapse && onCollapse()}
+                    class={{ 'route-header not-selecter': true, 'n-pointer': state.collapse }}
+                    onClick={() => state.collapse && onCollapse()}
                 >
                     <div class="route-header__content n-basic">
                         {props.node.icon && <n-icon size={28} style={{ marginRight: '10px' }} component={<Icon-HomeOutlined />}></n-icon>}
@@ -196,21 +190,9 @@ export default defineComponent({
                     </div>
                     <n-space align="center" justify="center" wrap-item={false} size={5} style={{ margin: '0 10px 0' }}>
                         {props.node.type === 'directory' ? (
-                            <common-remix
-                                stop
-                                size={18}
-                                type="primary"
-                                icon={sompute('AddBold')}
-                                onTrigger={(app: never) => onRouteSelecter('create-route', props.node, app)}
-                            />
+                            <common-remix stop size={18} type="primary" icon={sompute('AddBold')} onTrigger={onCreateRoute} />
                         ) : (
-                            <common-remix
-                                stop
-                                size={18}
-                                type="success"
-                                icon={sompute('SlackBold')}
-                                onTrigger={(app: never) => onRouteSelecter('create-rule', props.node, app)}
-                            />
+                            <common-remix stop size={18} type="success" icon={sompute('SlackBold')} onTrigger={onCreateRule} />
                         )}
                         <common-dropdown
                             command={[
@@ -219,11 +201,14 @@ export default defineComponent({
                                 { key: 'disable', visible: props.node.status === 'enable' },
                                 { key: 'enable', visible: props.node.status === 'disable' }
                             ].reduce((and: string[], next) => (next.visible ? and.concat(next.key) : and), [])}
-                            onSelecter={(key: string, app: never) => onRouteSelecter(key, props.node, app)}
+                            onUpdate={onUpdateRoute}
+                            onDisable={onRouteTransfer}
+                            onEnable={onRouteTransfer}
+                            onDelete={onDeleteRoute}
                         >
                             <common-remix stop size={18} icon={sompute('RadixMore')}></common-remix>
                         </common-dropdown>
-                        {props.collapse && (
+                        {state.collapse && (
                             <common-remix
                                 hover={false}
                                 size={18}
@@ -264,7 +249,14 @@ export default defineComponent({
                             <n-grid cols={2} x-gap={14} y-gap={14} item-responsive style={{ padding: '0', marginTop: '20px' }}>
                                 {props.node.rule.map(item => (
                                     <n-grid-item span="1:2 520:2 960:1">
-                                        <common-rule key={item.id} node={item} onSelecter={onRuleSelecter}></common-rule>
+                                        <common-rule
+                                            key={item.id}
+                                            node={item}
+                                            onUpdate={onUpdateRule}
+                                            onDisable={onRuleTransfer}
+                                            onEnable={onRuleTransfer}
+                                            onDelete={onDeleteRule}
+                                        ></common-rule>
                                     </n-grid-item>
                                 ))}
                             </n-grid>
@@ -277,7 +269,12 @@ export default defineComponent({
                                 default: (scope: IRoute) => (
                                     <Fragment>
                                         <n-divider style={{ margin: '0 16px', width: 'calc(100% - 32px)' }} />
-                                        <provider-route bordered={false} node={scope} collapse={scope.children.length > 0}></provider-route>
+                                        <provider-route
+                                            bordered={false}
+                                            node={scope}
+                                            collapse={scope.children.length > 0}
+                                            onUpdate={() => emit('update')}
+                                        ></provider-route>
                                     </Fragment>
                                 )
                             }}

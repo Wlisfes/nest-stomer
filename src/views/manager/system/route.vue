@@ -29,9 +29,7 @@ export default defineComponent({
                     total={state.total}
                     data-column={state.dataColumn}
                     data-source={state.dataSource}
-                    data-render={(data: IRoute) => (
-                        <provider-route node={data} collapse={data.children.length > 0} onUpdate={fetchUpdate}></provider-route>
-                    )}
+                    data-render={(data: IRoute) => <provider-route node={data} onUpdate={fetchUpdate}></provider-route>}
                 ></common-source>
             </common-container>
         )
