@@ -31,7 +31,7 @@ export default defineComponent({
                             title={data.nickname}
                             before-style={{ padding: '14px 0 14px 14px' }}
                             data-before={(data: IUser) => (
-                                <n-avatar size={116} src="https://07akioni.oss-cn-beijing.aliyuncs.com/07akioni.jpeg" />
+                                <n-avatar size={86} src="https://07akioni.oss-cn-beijing.aliyuncs.com/07akioni.jpeg" />
                             )}
                             data-render={(model: { visible: boolean }) => (
                                 <Fragment>

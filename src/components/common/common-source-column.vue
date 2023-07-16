@@ -88,13 +88,12 @@ export default defineComponent({
             return await setState({ visible: !visible.value })
         }
 
-        console.log(slots.before, props.dataBefore)
-
         return () => (
             <n-el
                 class={{ 'common-source__column': true, 'is-bordered': props.bordered, [`is-${props.direction}`]: true }}
                 style={props.sourceStyle}
             >
+                <div class="source-fragment"></div>
                 {(slots.before || props.dataBefore) && (
                     <div class="source-before" style={props.beforeStyle}>
                         {slots.before ? slots.before(props.node) : props.dataBefore?.(props.node)}

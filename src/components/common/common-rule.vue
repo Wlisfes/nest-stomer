@@ -4,14 +4,14 @@ import { useClipboard } from '@vueuse/core'
 import { type IRule, IMethod } from '@/api/http-route'
 import { useCurrent } from '@/locale/instance'
 import { divineChained } from '@/utils/utils-common'
-import { sompute, compute } from '@/utils/utils-remix'
+import { sompute } from '@/utils/utils-remix'
 
 export default defineComponent({
     name: 'CommonRule',
     props: {
         node: { type: Object as PropType<IRule>, required: true }
     },
-    emits: ['selecter'],
+    emits: ['selecter', 'create', 'update', 'delete', 'disable', 'enable'],
     setup(props, { emit }) {
         const { t } = useCurrent()
         const { text, copy, isSupported } = useClipboard()
@@ -26,7 +26,8 @@ export default defineComponent({
         })
 
         /**规则指令**/
-        function onSelecter(key: string, app: unknown) {
+        function onSelecter(key: Parameters<typeof emit>['0'], app: unknown) {
+            emit(key, key, props.node, app)
             emit('selecter', key, props.node, app)
         }
 

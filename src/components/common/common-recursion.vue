@@ -1,6 +1,6 @@
 <script lang="tsx">
 import { defineComponent, Fragment, type PropType } from 'vue'
-import { type Scheme } from '@/'
+import { type Scheme } from '@/interface/http-interface'
 interface DataSource extends Scheme, Record<string, unknown> {
     children: DataSource[]
 }
