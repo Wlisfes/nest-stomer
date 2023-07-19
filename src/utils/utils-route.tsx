@@ -12,7 +12,7 @@ export function formatter<T extends IRoute>(data: Array<T>) {
                 meta: {},
                 key: node.path,
                 label: () => {
-                    return node.type === 'directory' ? (
+                    return node.source === 'folder' ? (
                         <Fragment>{node.title}</Fragment>
                     ) : (
                         <Fragment>{h(RouterLink, { to: node.path }, { default: () => node.title })}</Fragment>

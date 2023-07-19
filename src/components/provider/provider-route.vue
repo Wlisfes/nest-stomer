@@ -1,14 +1,14 @@
 <script lang="tsx">
-import { defineComponent, computed, Fragment, type PropType } from 'vue'
+import { defineComponent, Fragment, type PropType } from 'vue'
 import { useState } from '@/hooks/hook-state'
 import { useCurrent } from '@/locale/instance'
-import { divineDelay, divineParameter } from '@/utils/utils-common'
+import { divineDelay } from '@/utils/utils-common'
 import { createRequest } from '@/utils/utils-request'
 import { sompute } from '@/utils/utils-remix'
 import { createDiscover, createNotice } from '@/utils/utils-naive'
 import { createElement } from '@/utils/utils-instance'
 import { fetchRule, fetchRoute } from '@/views/manager/hooks/fetch-instance'
-import { httpRouteTransfer, httpRuleTransfer, type IRoute, type IRule } from '@/api/http-route'
+import { httpRouteTransfer, httpRuleTransfer, type IRoute } from '@/api/http-route'
 
 export default defineComponent({
     name: 'ProviderRoute',
@@ -27,7 +27,7 @@ export default defineComponent({
         const { t } = useCurrent()
         const { state, setState } = useState({
             visible: false,
-            collapse: props.node.children.length > 0
+            collapse: props.node.source === 'folder' && props.node.children.length > 0
         })
 
         /**切换收缩状态**/
@@ -40,7 +40,7 @@ export default defineComponent({
             return fetchRule({
                 title: t('common.create.enter', { name: t('rule.common.name') }),
                 command: 'CREATE',
-                route: props.node.id
+                parent: props.node.id
             }).then(({ observer }) => {
                 observer.on('submit', ({ done }) => {
                     done({ visible: false }).finally(() => emit('update'))
@@ -49,7 +49,7 @@ export default defineComponent({
         }
 
         /**编辑规则**/
-        async function onUpdateRule(key: string, data: IRule, app: { done: Function }) {
+        async function onUpdateRule(key: string, data: IRoute, app: { done: Function }) {
             return fetchRule({
                 title: t('common.update.enter', { name: t('rule.common.name') }),
                 command: 'UPDATE',
@@ -62,11 +62,11 @@ export default defineComponent({
         }
 
         /**启用、禁用规则**/
-        async function onRuleTransfer(key: string, data: IRule, app: { done: Function }) {
+        async function onRuleTransfer(key: string, data: IRoute, app: { done: Function }) {
             return await createRequest({
                 execute: async e => {
                     await app.done(true)
-                    await httpRuleTransfer({ id: data.id, status: key as IRule['status'] })
+                    await httpRuleTransfer({ id: data.id, status: key as IRoute['status'] })
                     await divineDelay(300)
                     return await createNotice({
                         title: t(`common.${key}.enter` as Parameters<typeof t>['0']),
@@ -79,7 +79,7 @@ export default defineComponent({
         }
 
         /**删除规则**/
-        async function onDeleteRule(key: string, data: IRule, app: { done: Function }) {
+        async function onDeleteRule(key: string, data: IRoute, app: { done: Function }) {
             const { element } = await createElement(<n-text type="error" v-slots={{ default: () => t('rule.common.name') }} />, {
                 style: { padding: '0 5px', fontWeight: 600 }
             })
@@ -138,7 +138,7 @@ export default defineComponent({
             return await createRequest({
                 execute: async e => {
                     await app.done(true)
-                    await httpRouteTransfer({ id: props.node.id, status: key as IRule['status'] })
+                    await httpRouteTransfer({ id: props.node.id, status: key as IRoute['status'] })
                     await divineDelay(300)
                     return await createNotice({
                         title: t(`common.${key}.enter` as Parameters<typeof t>['0']),
@@ -189,7 +189,7 @@ export default defineComponent({
                         </n-h3>
                     </div>
                     <n-space align="center" justify="center" wrap-item={false} size={5} style={{ margin: '0 10px 0' }}>
-                        {props.node.type === 'directory' ? (
+                        {props.node.source === 'folder' ? (
                             <common-remix stop size={18} type="primary" icon={sompute('AddBold')} onTrigger={onCreateRoute} />
                         ) : (
                             <common-remix stop size={18} type="success" icon={sompute('SlackBold')} onTrigger={onCreateRule} />
@@ -245,9 +245,9 @@ export default defineComponent({
                                 </common-reactive>
                             </n-grid-item>
                         </n-grid>
-                        {props.node.rule.length > 0 && (
+                        {props.node.source === 'menu' && (props.node.children ?? []).length > 0 && (
                             <n-grid cols={2} x-gap={14} y-gap={14} item-responsive style={{ padding: '0', marginTop: '20px' }}>
-                                {props.node.rule.map(item => (
+                                {(props.node.children ?? []).map(item => (
                                     <n-grid-item span="1:2 520:2 960:1">
                                         <common-rule
                                             key={item.id}
@@ -269,12 +269,7 @@ export default defineComponent({
                                 default: (scope: IRoute) => (
                                     <Fragment>
                                         <n-divider style={{ margin: '0 16px', width: 'calc(100% - 32px)' }} />
-                                        <provider-route
-                                            bordered={false}
-                                            node={scope}
-                                            collapse={scope.children.length > 0}
-                                            onUpdate={() => emit('update')}
-                                        ></provider-route>
+                                        <provider-route bordered={false} node={scope} onUpdate={() => emit('update')}></provider-route>
                                     </Fragment>
                                 )
                             }}

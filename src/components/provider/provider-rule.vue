@@ -1,7 +1,7 @@
 <script lang="tsx">
 import { defineComponent, computed, type PropType } from 'vue'
 import { useClipboard } from '@vueuse/core'
-import { type IRule, IMethod } from '@/api/http-route'
+import { type IRoute, IMethod } from '@/api/http-route'
 import { useCurrent } from '@/locale/instance'
 import { divineChained } from '@/utils/utils-common'
 import { sompute } from '@/utils/utils-remix'
@@ -9,7 +9,7 @@ import { sompute } from '@/utils/utils-remix'
 export default defineComponent({
     name: 'ProviderRule',
     props: {
-        node: { type: Object as PropType<IRule>, required: true }
+        node: { type: Object as PropType<IRoute>, required: true }
     },
     emits: ['selecter', 'create', 'update', 'delete', 'disable', 'enable'],
     setup(props, { emit }) {
@@ -53,7 +53,7 @@ export default defineComponent({
                 <n-text class="provider-rule__content">
                     <n-text style={{ overflow: 'hidden', marginRight: '12px' }}>
                         <n-ellipsis tooltip={false}>
-                            <n-h4 inline>{`${props.node.name}：`}</n-h4>
+                            <n-h4 inline>{`${props.node.title}：`}</n-h4>
                             <n-text>{props.node.path}</n-text>
                         </n-ellipsis>
                     </n-text>

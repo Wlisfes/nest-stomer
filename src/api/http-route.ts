@@ -7,22 +7,16 @@ export enum IMethod {
     PUT = 'warning',
     DELETE = 'error'
 }
-export interface IRule extends Scheme {
-    path: string
-    name: string
-    route: IRoute
-    method: keyof typeof IMethod
-}
 export interface IRoute extends Scheme {
-    type: string
+    source: string
     title: string
     path: string
     redirect: string
     icon: string
     order: number
     parent: string
+    method: keyof typeof IMethod
     children: Array<IRoute>
-    rule: Array<IRule>
 }
 
 /**动态路由菜单**/
@@ -52,7 +46,7 @@ export function httpBasicRoute(params: Pick<IRoute, 'id'>) {
 
 /**新增路由**/
 export function httpCreateRoute(
-    data: Pick<IRoute, 'status' | 'type' | 'title' | 'order' | 'path'> & Partial<Pick<IRoute, 'redirect' | 'icon' | 'parent'>>
+    data: Pick<IRoute, 'status' | 'source' | 'title' | 'order' | 'path'> & Partial<Pick<IRoute, 'redirect' | 'icon' | 'parent'>>
 ) {
     return request<Notice>({
         url: `/api/route/create`,
@@ -63,7 +57,7 @@ export function httpCreateRoute(
 
 /**编辑路由**/
 export function httpUpdateRoute(
-    data: Pick<IRoute, 'id' | 'status' | 'type' | 'title' | 'order' | 'path'> & Partial<Pick<IRoute, 'redirect' | 'icon' | 'parent'>>
+    data: Pick<IRoute, 'id' | 'status' | 'source' | 'title' | 'order' | 'path'> & Partial<Pick<IRoute, 'redirect' | 'icon' | 'parent'>>
 ) {
     return request<Notice>({
         url: `/api/route/update`,
@@ -82,7 +76,7 @@ export function httpRouteTransfer(data: Pick<IRoute, 'id' | 'status'>) {
 }
 
 /**新增接口规则**/
-export function httpCreateRule(data: Pick<IRule, 'path' | 'name' | 'method' | 'status' | 'route'>) {
+export function httpCreateRule(data: Pick<IRoute, 'path' | 'title' | 'method' | 'status' | 'parent'>) {
     return request<Notice>({
         url: `/api/route/create/rule`,
         method: 'POST',
@@ -91,7 +85,7 @@ export function httpCreateRule(data: Pick<IRule, 'path' | 'name' | 'method' | 's
 }
 
 /**编辑接口规则**/
-export function httpUpdateRule(data: Pick<IRule, 'id' | 'path' | 'name' | 'method' | 'status' | 'route'>) {
+export function httpUpdateRule(data: Pick<IRoute, 'id' | 'path' | 'title' | 'method' | 'status' | 'parent'>) {
     return request<Notice>({
         url: `/api/route/update/rule`,
         method: 'PUT',
@@ -100,9 +94,9 @@ export function httpUpdateRule(data: Pick<IRule, 'id' | 'path' | 'name' | 'metho
 }
 
 /**接口规则信息**/
-export function httpBasicRule(params: Pick<IRule, 'id'>) {
-    return request<IRule>({
-        url: `/api/route/rule/basic`,
+export function httpBasicRule(params: Pick<IRoute, 'id'>) {
+    return request<IRoute>({
+        url: `/api/route/basic/rule`,
         method: 'GET',
         params
     })

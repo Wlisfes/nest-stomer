@@ -15,7 +15,7 @@ export default defineComponent({
         title: { type: String, required: true },
         command: { type: String as PropType<'CREATE' | 'UPDATE'>, default: 'CREATE' },
         id: { type: Number },
-        route: { type: Number }
+        parent: { type: Number }
     },
     emits: ['close', 'submit'],
     setup(props, { emit }) {
@@ -27,14 +27,14 @@ export default defineComponent({
                 visible: false,
                 form: {
                     method: undefined,
-                    name: undefined,
+                    title: undefined,
                     path: undefined,
                     status: undefined,
-                    route: props.route ?? undefined
+                    parent: props.parent ?? undefined
                 },
                 rules: {
                     method: { required: true, message: t('rule.method.placeholder'), trigger: 'change' },
-                    name: { required: true, message: t('rule.name.placeholder'), trigger: 'blur' },
+                    title: { required: true, message: t('rule.name.placeholder'), trigger: 'blur' },
                     path: { required: true, message: t('rule.path.placeholder'), trigger: 'blur' },
                     status: { required: true, message: t('common.status.placeholder'), trigger: 'change' }
                 }
@@ -50,10 +50,10 @@ export default defineComponent({
                                 loading: false,
                                 form: await divineParameter({
                                     method: data.method,
-                                    name: data.name,
+                                    title: data.title,
                                     path: data.path,
                                     status: data.status,
-                                    route: data.route.id
+                                    parent: data.parent
                                 })
                             })
                         }
@@ -70,8 +70,8 @@ export default defineComponent({
                     await setState({ loading: true })
                     return await createRequest({
                         execute: async () => {
-                            const { status, name, path, method, route } = state.form
-                            return await httpCreateRule(await divineParameter({ status, name, path, method, route })).then(
+                            const { status, title, path, method, parent } = state.form
+                            return await httpCreateRule(await divineParameter({ status, title, path, method, parent })).then(
                                 async ({ message }) => {
                                     return await createNotice({
                                         type: 'success',
@@ -95,8 +95,8 @@ export default defineComponent({
                     await setState({ loading: true })
                     return await createRequest({
                         execute: async () => {
-                            const { status, name, path, method, route } = state.form
-                            return await httpUpdateRule(await divineParameter({ id: props.id, status, name, path, method, route })).then(
+                            const { status, title, path, method, parent } = state.form
+                            return await httpUpdateRule(await divineParameter({ id: props.id, status, title, path, method, parent })).then(
                                 async ({ message }) => {
                                     return await createNotice({
                                         type: 'success',
@@ -152,8 +152,8 @@ export default defineComponent({
                             options={tm('rule.method.column')}
                         />
                     </n-form-item>
-                    <n-form-item label={t('rule.name.value')} path="name">
-                        <n-input v-model:value={state.form.name} clearable placeholder={t('rule.name.placeholder')}></n-input>
+                    <n-form-item label={t('rule.name.value')} path="title">
+                        <n-input v-model:value={state.form.title} clearable placeholder={t('rule.name.placeholder')}></n-input>
                     </n-form-item>
                     <n-form-item label={t('rule.path.value')} path="path">
                         <n-input v-model:value={state.form.path} clearable placeholder={t('rule.path.placeholder')}></n-input>
