@@ -296,7 +296,7 @@ export default defineComponent({
 
     .route-header {
         display: flex;
-        padding: 12px 0 12px 14px;
+        padding: 14px 0 14px 14px;
         color: var(--text-color-1);
         &__content {
             flex: 1;

@@ -22,24 +22,7 @@ export default defineComponent({
                     total={state.total}
                     data-column={state.dataColumn}
                     data-source={state.dataSource}
-                    data-render={(data: IUser) => (
-                        <common-source-column
-                            header={true}
-                            source-style={{}}
-                            direction="horizontal"
-                            node={data}
-                            title={data.nickname}
-                            before-style={{ padding: '14px 0 14px 14px' }}
-                            data-before={(data: IUser) => (
-                                <n-avatar size={86} src="https://07akioni.oss-cn-beijing.aliyuncs.com/07akioni.jpeg" />
-                            )}
-                            data-render={(model: { visible: boolean }) => (
-                                <Fragment>
-                                    <section style={{ padding: '0 16px 16px' }}></section>
-                                </Fragment>
-                            )}
-                        ></common-source-column>
-                    )}
+                    data-render={(data: IUser) => <provider-user node={data}></provider-user>}
                 ></common-source>
             </common-container>
         )
