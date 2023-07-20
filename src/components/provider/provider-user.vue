@@ -1,6 +1,7 @@
 <script lang="tsx">
 import { defineComponent, Fragment, type PropType } from 'vue'
 import { useState } from '@/hooks/hook-state'
+import { useResize } from '@/hooks/hook-resize'
 import { sompute } from '@/utils/utils-remix'
 import { type IUser } from '@/api/http-user'
 
@@ -17,6 +18,7 @@ export default defineComponent({
         }
     },
     setup(props, { emit }) {
+        const { width } = useResize()
         const { state, setState } = useState({
             visible: false,
             collapse: false
@@ -34,6 +36,16 @@ export default defineComponent({
                                 </n-h3>
                             </div>
                             <n-space align="center" justify="center" wrap-item={false} size={5} style={{ margin: '0 10px 0' }}>
+                                <common-remix stop size={18} type="success" icon={sompute('SlackBold')}></common-remix>
+                                <common-dropdown
+                                    command={[
+                                        { key: 'update', visible: true },
+                                        { key: 'disable', visible: props.node.status === 'enable' },
+                                        { key: 'enable', visible: props.node.status === 'disable' }
+                                    ].reduce((and: string[], next) => (next.visible ? and.concat(next.key) : and), [])}
+                                >
+                                    <common-remix stop size={18} icon={sompute('RadixMore')}></common-remix>
+                                </common-dropdown>
                                 <common-remix
                                     hover={false}
                                     size={18}
@@ -47,24 +59,47 @@ export default defineComponent({
                                 ></common-remix>
                             </n-space>
                         </div>
+                        {width.value > 820 && (
+                            <n-grid cols={4} x-gap={14} y-gap={14} item-responsive style={{ padding: '0' }}>
+                                <n-grid-item span="1">
+                                    <common-reactive y-gap={3} label="重定向地址" content={props.node.mobile}></common-reactive>
+                                </n-grid-item>
+                                <n-grid-item span="1">
+                                    <common-reactive y-gap={3} label="页面路径" content={props.node.mobile}></common-reactive>
+                                </n-grid-item>
+                                <n-grid-item span="1">
+                                    <common-reactive y-gap={3} label="重定向地址" content={props.node.createTime}></common-reactive>
+                                </n-grid-item>
+                                <n-grid-item span="1">
+                                    <common-reactive y-gap={3} label="状态">
+                                        <common-mode value={props.node.status}></common-mode>
+                                    </common-reactive>
+                                </n-grid-item>
+                            </n-grid>
+                        )}
+                    </div>
+                </div>
+
+                {width.value < 821 && (
+                    <div style={{ padding: '0 14px 14px' }}>
                         <n-grid cols={4} x-gap={14} y-gap={14} item-responsive style={{ padding: '0' }}>
-                            <n-grid-item span={1}>
+                            <n-grid-item span="1:4 352:2 641:1">
                                 <common-reactive y-gap={3} label="重定向地址" content={props.node.mobile}></common-reactive>
                             </n-grid-item>
-                            <n-grid-item span={1}>
+                            <n-grid-item span="1:4 352:2 641:1">
                                 <common-reactive y-gap={3} label="页面路径" content={props.node.mobile}></common-reactive>
                             </n-grid-item>
-                            <n-grid-item span={1}>
+                            <n-grid-item span="1:4 352:2 641:1">
                                 <common-reactive y-gap={3} label="重定向地址" content={props.node.createTime}></common-reactive>
                             </n-grid-item>
-                            <n-grid-item span={1}>
+                            <n-grid-item span="1:4 352:2 641:1">
                                 <common-reactive y-gap={3} label="状态">
                                     <common-mode value={props.node.status}></common-mode>
                                 </common-reactive>
                             </n-grid-item>
                         </n-grid>
                     </div>
-                </div>
+                )}
             </n-el>
         )
     }
