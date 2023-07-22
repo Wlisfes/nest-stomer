@@ -1,5 +1,5 @@
 <script lang="tsx">
-import { defineComponent, computed, type PropType, type CSSProperties, type VNodeChild } from 'vue'
+import { defineComponent, computed, Fragment, type PropType, type CSSProperties, type VNodeChild } from 'vue'
 import { type DataTableBaseColumn } from 'naive-ui'
 
 export default defineComponent({
@@ -7,6 +7,8 @@ export default defineComponent({
     props: {
         dataColumn: { type: Array as PropType<Array<DataTableBaseColumn>>, default: () => [] },
         dataSource: { type: Array as PropType<Array<Record<string, unknown>>>, default: () => [] },
+        size: { type: Number, default: 10 },
+        page: { type: Number, default: 1 },
         total: { type: Number, default: 0 },
         loading: { type: Boolean, default: true },
         width: { type: Number, default: 640 },
@@ -32,11 +34,16 @@ export default defineComponent({
                             }}
                         </n-empty>
                     ) : (
-                        <div class="common-source__container" style={cameStyle.value}>
-                            {props.dataSource.map(item => {
-                                return slots.default ? slots.default(item) : props.dataRender ? props.dataRender(item) : null
-                            })}
-                        </div>
+                        <Fragment>
+                            <div class="common-source__container" style={cameStyle.value}>
+                                {props.dataSource.map(item => {
+                                    return slots.default ? slots.default(item) : props.dataRender ? props.dataRender(item) : null
+                                })}
+                            </div>
+                            <div class="common-source__pagination">
+                                <n-pagination page={props.page} page-size={props.size} page-count={props.total} />
+                            </div>
+                        </Fragment>
                     )}
                 </n-scrollbar>
             </section>
@@ -59,7 +66,11 @@ export default defineComponent({
         flex-direction: column;
         row-gap: 12px;
         box-sizing: border-box;
-        padding: 16px 16px 48px;
+        padding: 16px 16px 32px;
+    }
+    &__pagination {
+        display: flex;
+        justify-content: center;
     }
 }
 </style>
