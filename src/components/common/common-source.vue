@@ -41,7 +41,16 @@ export default defineComponent({
                                 })}
                             </div>
                             <div class="common-source__pagination">
-                                <n-pagination page={props.page} page-size={props.size} page-count={props.total} />
+                                <n-pagination
+                                    page={props.page}
+                                    page-size={props.size}
+                                    page-count={props.total}
+                                    page-sizes={[10, 20, 30, 40, 50]}
+                                    show-size-picker
+                                    display-order={['pages', 'size-picker']}
+                                    on-update:page={(e: number) => console.log(e)}
+                                    on-update:page-size={(e: number) => console.log(e)}
+                                />
                             </div>
                         </Fragment>
                     )}
@@ -71,6 +80,7 @@ export default defineComponent({
     &__pagination {
         display: flex;
         justify-content: center;
+        padding: 0 16px 48px;
     }
 }
 </style>
