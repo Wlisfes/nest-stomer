@@ -11,7 +11,7 @@ export default {
             value: '节点图标',
             placeholder: '请选择节点图标'
         },
-        type: {
+        source: {
             value: '节点类型',
             placeholder: '请选择节点类型',
             column: [

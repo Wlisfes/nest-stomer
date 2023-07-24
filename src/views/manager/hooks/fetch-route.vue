@@ -29,7 +29,7 @@ export default defineComponent({
                 loading: false,
                 form: {
                     title: undefined,
-                    type: undefined,
+                    source: undefined,
                     path: undefined,
                     redirect: undefined,
                     order: 1,
@@ -39,7 +39,7 @@ export default defineComponent({
                 },
                 rules: {
                     title: { required: true, message: t('route.title.placeholder'), trigger: 'change' },
-                    type: { required: true, message: t('route.type.placeholder'), trigger: 'change' },
+                    source: { required: true, message: t('route.source.placeholder'), trigger: 'change' },
                     path: { required: true, message: t('route.path.placeholder'), trigger: 'blur' },
                     order: { required: true, type: 'number', message: t('route.order.placeholder'), trigger: 'blur' },
                     status: { required: true, message: t('common.status.placeholder'), trigger: 'change' }
@@ -56,7 +56,7 @@ export default defineComponent({
                                 loading: false,
                                 form: await divineParameter({
                                     title: data.title,
-                                    type: data.type,
+                                    source: data.source,
                                     path: data.path,
                                     redirect: data.redirect,
                                     order: data.order,
@@ -81,7 +81,7 @@ export default defineComponent({
                             return await httpCreateRoute(
                                 await divineParameter({
                                     title: state.form.title,
-                                    type: state.form.type,
+                                    source: state.form.source,
                                     path: state.form.path,
                                     redirect: state.form.redirect,
                                     order: state.form.order,
@@ -115,7 +115,7 @@ export default defineComponent({
                                 await divineParameter({
                                     id: props.id,
                                     title: state.form.title,
-                                    type: state.form.type,
+                                    source: state.form.source,
                                     path: state.form.path,
                                     redirect: state.form.redirect,
                                     order: state.form.order,
@@ -177,11 +177,11 @@ export default defineComponent({
                             </n-form-item>
                         </n-grid-item>
                         <n-grid-item>
-                            <n-form-item label={t('route.type.value')} path="type">
+                            <n-form-item label={t('route.source.value')} path="source">
                                 <n-select
-                                    v-model:value={state.form.type}
-                                    placeholder={t('route.type.placeholder')}
-                                    options={tm('route.type.column')}
+                                    v-model:value={state.form.source}
+                                    placeholder={t('route.source.placeholder')}
+                                    options={tm('route.source.column')}
                                 />
                             </n-form-item>
                         </n-grid-item>
