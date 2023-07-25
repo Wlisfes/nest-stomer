@@ -1,6 +1,7 @@
 <script lang="tsx">
 import { defineComponent, ref, computed, onMounted, onUnmounted } from 'vue'
 import { divineDelay, stop } from '@/utils/utils-common'
+import { sompute, compute } from '@/utils/utils-remix'
 import { useState } from '@/hooks/hook-state'
 
 export default defineComponent({
@@ -9,7 +10,7 @@ export default defineComponent({
         canvasWidth: { type: Number, default: 310 }, // 主canvas的宽
         canvasHeight: { type: Number, default: 160 }, // 主canvas的高
         puzzleScale: { type: Number, default: 1 }, // 拼图块的大小缩放比例
-        sliderSize: { type: Number, default: 50 }, // 滑块的大小
+        sliderSize: { type: Number, default: 40 }, // 滑块的大小
         range: { type: Number, default: 10 }, // 允许的偏差值
         cover: { type: Array, default: () => [] },
         successText: { type: String, default: '验证通过！' },
@@ -17,7 +18,7 @@ export default defineComponent({
         sliderText: { type: String, default: '拖动滑块完成拼图' }
     },
     emits: ['close', 'success', 'fail'],
-    setup(props, { slots, emit }) {
+    setup(props, { emit }) {
         const canvas1 = ref<HTMLCanvasElement>()
         const canvas2 = ref<HTMLCanvasElement>()
         const canvas3 = ref<HTMLCanvasElement>()
@@ -247,7 +248,7 @@ export default defineComponent({
                 const ctx2 = canvas2.value?.getContext('2d') as CanvasRenderingContext2D
                 const ctx3 = canvas3.value?.getContext('2d') as CanvasRenderingContext2D
                 const isFirefox = navigator.userAgent.indexOf('Firefox') >= 0 && navigator.userAgent.indexOf('Windows') >= 0 // 是windows版火狐
-                const image = document.createElement('img')
+                const image = new Image()
                 ctx.fillStyle = 'rgba(255,255,255,1)'
                 ctx3.fillStyle = 'rgba(255,255,255,1)'
                 ctx.clearRect(0, 0, props.canvasWidth, props.canvasHeight)
@@ -404,7 +405,7 @@ export default defineComponent({
                         infoBoxShow: true,
                         isCanSlide: false
                     })
-                    await divineDelay(800, () => emit('fail', x)).then(async () => {
+                    await divineDelay(800, () => emit('fail')).then(async () => {
                         await setState({ isSubmting: false })
                         reset()
                     })
@@ -413,8 +414,8 @@ export default defineComponent({
         }
 
         return () => (
-            <n-el tag="div" class="common-captcha">
-                <div class="common-captcha__container" onMousedown={e => e.stopPropagation()} onTouchstart={e => e.stopPropagation()}>
+            <n-el tag="div" class="common-captcha" style={{ width: props.canvasWidth + 32 + 'px' }}>
+                <div class="common-captcha__container" onMousedown={stop} onTouchstart={stop}>
                     <div class="common-captcha__context" style={{ height: props.canvasHeight + 'px' }}>
                         <canvas
                             ref={canvas1}
@@ -452,16 +453,38 @@ export default defineComponent({
                     </div>
                     <div class="common-captcha__control">
                         <div class="range-control" style={{ height: sliderBaseSize.value + 'px' }}>
-                            <div class="range-control__placeholder">{props.sliderText}</div>
-                            <div ref={slider} class="range-control__slider" style={{ width: styleWidth.value + 'px' }}>
+                            <div
+                                class="range-control__placeholder"
+                                style={{ opacity: state.mouseDown || state.infoBoxFail || state.isSuccess ? 0 : 1 }}
+                            >
+                                {props.sliderText}
+                            </div>
+                            <div
+                                ref={slider}
+                                class={{ 'range-control__slider': true, 'is-fail': state.infoBoxFail, 'is-success': state.isSuccess }}
+                                style={{ width: styleWidth.value + 'px' }}
+                            >
                                 <div
                                     class={{ 'range-control__button': true, 'is-down': state.mouseDown }}
+                                    style={{ width: props.sliderSize + 'px' }}
                                     onMousedown={onRangeMouseDown}
                                     onTouchstart={onRangeMouseDown}
                                 >
-                                    <div></div>
-                                    <div></div>
-                                    <div></div>
+                                    {state.isSuccess ? (
+                                        <div class="n-basic n-center n-middle" style={{ width: '100%', height: '100%' }}>
+                                            <n-icon color="#ffffff" size={16} component={compute('InduceBold')} />
+                                        </div>
+                                    ) : state.infoBoxFail ? (
+                                        <div class="n-basic n-center n-middle" style={{ width: '100%', height: '100%' }}>
+                                            <n-icon color="#ffffff" size={16} component={compute('CloseBold')} />
+                                        </div>
+                                    ) : (
+                                        <div class="button-spin">
+                                            <div></div>
+                                            <div></div>
+                                            <div></div>
+                                        </div>
+                                    )}
                                 </div>
                             </div>
                         </div>
@@ -477,11 +500,11 @@ export default defineComponent({
 .common-captcha {
     position: relative;
     &__container {
-        padding: 20px;
-        background: #fff;
+        padding: 16px;
         user-select: none;
         border-radius: 3px;
-        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+        background-color: var(--card-color);
+        border: 1px solid var(--divider-color);
         .auth-loading {
             position: absolute;
             top: 0;
@@ -506,7 +529,7 @@ export default defineComponent({
             }
             &__spin {
                 flex: none;
-                height: 5px;
+                height: 8px;
                 line-height: 0;
                 @keyframes load {
                     0% {
@@ -520,7 +543,7 @@ export default defineComponent({
                 }
                 span {
                     display: inline-block;
-                    width: 5px;
+                    width: 8px;
                     height: 100%;
                     margin-left: 2px;
                     border-radius: 50%;
@@ -549,23 +572,23 @@ export default defineComponent({
             bottom: 0;
             left: 0;
             width: 100%;
-            height: 24px;
-            line-height: 24px;
+            height: 28px;
+            line-height: 28px;
             text-align: center;
             overflow: hidden;
             font-size: 13px;
-            background-color: #83ce3f;
+            background-color: var(--primary-color);
             opacity: 0;
-            transform: translateY(24px);
+            transform: translateY(28px);
             transition: all 200ms;
-            color: #fff;
+            color: #ffffff;
             z-index: 10;
             &.is-show {
                 opacity: 0.95;
                 transform: translateY(0);
             }
             &.is-fail {
-                background-color: #ce594b;
+                background-color: var(--error-color);
             }
         }
         .auth-flash {
@@ -612,10 +635,11 @@ export default defineComponent({
         .range-control {
             position: relative;
             width: 100%;
-            background-color: #eef1f8;
-            margin-top: 20px;
+            background-color: var(--body-color);
             border-radius: 3px;
-            box-shadow: 0 0 8px rgba(240, 240, 240, 0.6) inset;
+            border: 1px solid var(--divider-color);
+            margin-top: 16px;
+            box-sizing: border-box;
             &__placeholder {
                 position: absolute;
                 top: 50%;
@@ -623,59 +647,82 @@ export default defineComponent({
                 transform: translate(-50%, -50%);
                 font-size: 14px;
                 line-height: 24px;
-                color: #b7bcd1;
+                color: var(--text-color-3);
                 white-space: nowrap;
                 overflow: hidden;
                 text-overflow: ellipsis;
                 text-align: center;
                 width: 100%;
+                transition: opacity 200ms;
             }
             &__slider {
                 position: absolute;
                 height: 100%;
-                width: 50px;
-                background-color: rgba(106, 160, 255, 0.8);
+                width: 40px;
+                background-color: rgba(32, 128, 240, 0.16);
                 border-radius: 3px;
+                transition: background-color 200ms, border 200ms;
+                border: 1px solid transparent;
+                border-right: none;
+                &.is-success {
+                    background-color: rgba(24, 160, 88, 0.16);
+                    border-color: var(--primary-color);
+                    .range-control__button {
+                        background-color: var(--primary-color);
+                    }
+                }
+                &.is-fail {
+                    background-color: rgba(208, 48, 80, 0.16);
+                    border-color: var(--error-color);
+                    .range-control__button {
+                        background-color: var(--error-color);
+                    }
+                }
             }
             &__button {
                 position: absolute;
-                display: flex;
-                align-items: center;
-                justify-content: center;
                 right: 0;
-                width: 50px;
+                width: 40px;
                 height: 100%;
-                background-color: #fff;
                 border-radius: 3px;
-                box-shadow: 0 0 4px #ccc;
+                background-color: var(--card-color);
+                box-shadow: 0 0 4px var(--icon-color);
                 cursor: pointer;
-                & > div {
-                    width: 0;
-                    height: 40%;
-                    transition: all 200ms;
-                    &:nth-child(2) {
-                        margin: 0 4px;
+                transition: background-color 200ms;
+                .button-spin {
+                    width: 100%;
+                    height: 100%;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    & > div {
+                        width: 0;
+                        height: 40%;
+                        transition: all 200ms;
+                        &:nth-child(2) {
+                            margin: 0 4px;
+                        }
+                        border: solid 1px var(--info-color);
                     }
-                    border: solid 1px #6aa0ff;
-                }
-                &:hover,
-                &.is-down {
-                    & > div:first-child {
-                        border: solid 4px transparent;
-                        height: 0;
-                        border-right-color: #6aa0ff;
-                    }
-                    & > div:nth-child(2) {
-                        border-width: 3px;
-                        height: 0;
-                        border-radius: 3px;
-                        margin: 0 6px;
-                        border-right-color: #6aa0ff;
-                    }
-                    & > div:nth-child(3) {
-                        border: solid 4px transparent;
-                        height: 0;
-                        border-left-color: #6aa0ff;
+                    &:hover,
+                    &.is-down {
+                        & > div:first-child {
+                            border: solid 4px transparent;
+                            height: 0;
+                            border-right-color: var(--info-color);
+                        }
+                        & > div:nth-child(2) {
+                            border-width: 3px;
+                            height: 0;
+                            border-radius: 3px;
+                            margin: 0 6px;
+                            border-right-color: var(--info-color);
+                        }
+                        & > div:nth-child(3) {
+                            border: solid 4px transparent;
+                            height: 0;
+                            border-left-color: var(--info-color);
+                        }
                     }
                 }
             }

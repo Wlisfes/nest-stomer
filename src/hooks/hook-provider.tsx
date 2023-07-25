@@ -21,34 +21,14 @@ export function useProvider() {
     const lightThemeOverrides = computed<GlobalThemeOverrides>(() => ({
         common: {
             backColor: 'rgb(244, 246, 248)',
-            primaryColor: store.primaryColor,
-            /**代码编辑器*******************************/
-            backMarkColor: 'rgb(235, 235, 235)',
-            backCodeColor: 'rgb(40, 44, 52)',
-            /**状态标签*******************************/
-            disableBackColor: '#fff0f6',
-            disableTextColor: '#eb2f96',
-            disableBorderColor: '#ffadd2',
-            enableBackColor: '#f6ffed',
-            enableTextColor: '#52c41a',
-            enableBorderColor: '#b7eb8f'
+            primaryColor: store.primaryColor
         }
     }))
     const darkThemeOverrides = computed<GlobalThemeOverrides>(() => ({
         common: {
             backColor: 'rgb(16,16,20)',
             primaryColor: store.primaryColor,
-            primaryColorSuppl: store.primaryColor,
-            /**代码编辑器*******************************/
-            backMarkColor: 'rgb(44, 44, 50)',
-            backCodeColor: 'rgb(6, 6, 10)',
-            /**状态标签*******************************/
-            disableBackColor: '#0000',
-            disableTextColor: '#eb2f96',
-            disableBorderColor: 'rgba(255, 173, 210, 0.3)',
-            enableBackColor: '#0000',
-            enableTextColor: '#52c41a',
-            enableBorderColor: 'rgba(183, 235, 143, 0.3)'
+            primaryColorSuppl: store.primaryColor
         }
     }))
     const primaryVars = ref<Array<string>>([
