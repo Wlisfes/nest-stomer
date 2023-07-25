@@ -56,9 +56,11 @@ export default defineComponent({
             return Math.round(Math.max(Math.min(props.puzzleScale, 2), 0.2) * 52.5 + 6)
         })
         const translateX = computed(() => {
-            const v1 = styleWidth.value - sliderBaseSize.value - (puzzleBaseSize.value - sliderBaseSize.value)
-            const v2 = (styleWidth.value - sliderBaseSize.value) / (props.canvasWidth - sliderBaseSize.value)
-            return `translateX(${v1 * v2}px)`
+            const v1 = styleWidth.value - sliderBaseSize.value
+            const v2 = puzzleBaseSize.value - sliderBaseSize.value
+            const v3 = styleWidth.value - sliderBaseSize.value
+            const v4 = props.canvasWidth - sliderBaseSize.value
+            return `translateX(${v1 - v2 * (v3 / v4)}px)`
         })
         const flashTranslateX = computed(() => {
             const v3 = state.isSuccess ? `${props.canvasWidth + props.canvasHeight * 0.578}px` : `-${props.canvasHeight * 0.578}px`
@@ -85,7 +87,7 @@ export default defineComponent({
             if (state.isCanSlide) {
                 setState({
                     mouseDown: true,
-                    startWidth: 1,
+                    startWidth: (slider.value as HTMLDivElement).clientWidth,
                     newX: e instanceof MouseEvent ? e.clientX : e.changedTouches[0].clientX,
                     startX: e instanceof MouseEvent ? e.clientX : e.changedTouches[0].clientX
                 })
@@ -412,7 +414,7 @@ export default defineComponent({
 
         return () => (
             <n-el tag="div" class="common-captcha">
-                <div class="common-captcha__container" onMousedown={stop} onTouchstart={stop}>
+                <div class="common-captcha__container" onMousedown={e => e.stopPropagation()} onTouchstart={e => e.stopPropagation()}>
                     <div class="common-captcha__context" style={{ height: props.canvasHeight + 'px' }}>
                         <canvas
                             ref={canvas1}
