@@ -83,6 +83,23 @@ export default defineComponent({
             document.removeEventListener('touchend', onRangeMouseUp, false)
         })
 
+        /**注册验证码配置**/
+        function fetchReducer(body: { width: number; height: number; offset: number; appKey: string }) {
+            return new Promise(async (resolve, reject) => {
+                try {
+                    const response = await fetch(`http://localhost:5002/api/supervisor/reducer`, {
+                        method: 'POST',
+                        headers: { 'Content-type': 'application:/x-www-form-urlencoded:charset=UTF-8' },
+                        body: Object.keys(body)
+                            .map(key => `${key}=${body[key as keyof typeof body]}`)
+                            .join('&')
+                    })
+
+                    console.log(await response.json())
+                } catch (e) {}
+            })
+        }
+
         /**鼠标按下准备拖动**/
         function onRangeMouseDown(e: MouseEvent | TouchEvent) {
             if (state.isCanSlide) {
@@ -256,9 +273,23 @@ export default defineComponent({
                 /**匿名，想要获取跨域的图片**/
                 image.crossOrigin = 'anonymous'
                 /**取一个随机坐标，作为拼图块的位置**/
+                await fetchReducer({
+                    width: props.canvasWidth,
+                    height: props.canvasHeight,
+                    offset: puzzleBaseSize.value,
+                    appKey: 'sFnFysvpL0DFGs6H'
+                })
                 await setState({
                     pinX: getRandom(puzzleBaseSize.value, props.canvasWidth - puzzleBaseSize.value - 20), //留20的边距
                     pinY: getRandom(20, props.canvasHeight - puzzleBaseSize.value - 20) //主图高度 - 拼图块自身高度 - 20边距
+                }).then(e => {
+                    console.log({
+                        puzzleBaseSize: puzzleBaseSize.value,
+                        canvasWidth: props.canvasWidth,
+                        canvasHeight: props.canvasHeight,
+                        pinX: e.pinX,
+                        pinY: e.pinY
+                    })
                 })
                 image.onload = async () => {
                     const [x, y, w, h] = makeImgSize(image)
