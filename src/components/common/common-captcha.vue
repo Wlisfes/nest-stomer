@@ -15,7 +15,8 @@ export default defineComponent({
         cover: { type: Array, default: () => [] },
         successText: { type: String, default: '验证通过！' },
         failText: { type: String, default: '验证失败，请重试' },
-        sliderText: { type: String, default: '拖动滑块完成拼图' }
+        sliderText: { type: String, default: '拖动滑块完成拼图' },
+        appKey: { type: String, default: 'sFnFysvpL0DFGs6H' }
     },
     emits: ['close', 'success', 'fail'],
     setup(props, { emit }) {
@@ -101,6 +102,26 @@ export default defineComponent({
                             pinY: data.pinY, 
                             requestId: data.requestId
                         }))
+                    }
+                    reject(data.message)
+                } catch (e) {
+                    reject(e)
+                }
+            })
+        }
+
+        /**生成校验凭证**/ //prettier-ignore
+        function fetchAuthorize(body: { requestId: string; appKey: string }) {
+            return new Promise(async (resolve, reject) => {
+                try {
+                    const { code, data } = await fetch(`http://localhost:5002/api/supervisor/authorize`, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json;charset=utf-8' },
+                        body: JSON.stringify(body)
+                    }).then(e => e.json())
+                    if (code === 200) {
+                        console.log(data.token.length)
+                        return resolve(await setState({ token: data.token }))
                     }
                     reject(data.message)
                 } catch (e) {
@@ -287,7 +308,7 @@ export default defineComponent({
                     width: props.canvasWidth,
                     height: props.canvasHeight,
                     offset: puzzleBaseSize.value,
-                    appKey: 'sFnFysvpL0DFGs6H'
+                    appKey: props.appKey
                 })
                 // await setState({
                 //     pinX: getRandom(puzzleBaseSize.value, props.canvasWidth - puzzleBaseSize.value - 20), //留20的边距
@@ -419,15 +440,19 @@ export default defineComponent({
             setState({ isSubmting: true }).then(async () => {
                 // 偏差 x = puzzle的起始X - (用户真滑动的距离) + (puzzle的宽度 - 滑块的宽度) * （用户真滑动的距离/canvas总宽度）
                 // 最后+ 的是补上slider和滑块宽度不一致造成的缝隙
-                const x = Math.abs(
-                    state.pinX -
-                        (styleWidth.value - sliderBaseSize.value) +
-                        (puzzleBaseSize.value - sliderBaseSize.value) *
-                            ((styleWidth.value - sliderBaseSize.value) / (props.canvasWidth - sliderBaseSize.value)) -
-                        3
-                )
-                if (x < props.range) {
+                const x1 = styleWidth.value - sliderBaseSize.value
+                const x2 = puzzleBaseSize.value - sliderBaseSize.value
+                const x3 = (styleWidth.value - sliderBaseSize.value) / (props.canvasWidth - sliderBaseSize.value)
+                const distance = Math.abs(state.pinX - x1 + x2 * x3 - 3)
+
+                if (distance < props.range) {
                     //成功
+                    await fetchAuthorize(
+                        Object.assign({
+                            requestId: state.requestId,
+                            appKey: props.appKey
+                        })
+                    )
                     await setState({
                         infoText: props.successText,
                         infoBoxFail: false,
@@ -435,9 +460,14 @@ export default defineComponent({
                         isCanSlide: false,
                         isSuccess: true
                     })
-                    await divineDelay(800)
                     setState({ isSubmting: false }).finally(() => {
-                        emit('success', x)
+                        emit('success', {
+                            distance,
+                            token: state.token,
+                            requestId: state.requestId,
+                            appKey: props.appKey,
+                            reset: reset
+                        })
                     })
                 } else {
                     //失败

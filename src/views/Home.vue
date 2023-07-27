@@ -17,12 +17,26 @@ export default defineComponent({
             console.log(data)
         }
 
+        async function httpInspector(e: { token: string; requestId: string; appKey: string }) {
+            console.log(e)
+            const { data } = await fetch(`http://localhost:5002/api/supervisor/inspector`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json;charset=utf-8' },
+                body: JSON.stringify({
+                    appKey: e.appKey,
+                    token: e.token,
+                    requestId: e.requestId
+                })
+            }).then(response => response.json())
+            console.log(data)
+        }
+
         return () => (
             <main>
                 <n-button type="primary" onClick={httpUpdateBucket}>
                     Tertiary
                 </n-button>
-                <common-captcha show={true}></common-captcha>
+                <common-captcha onSuccess={httpInspector}></common-captcha>
             </main>
         )
     }
