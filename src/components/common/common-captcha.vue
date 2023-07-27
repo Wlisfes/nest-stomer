@@ -1,7 +1,7 @@
 <script lang="tsx">
 import { defineComponent, ref, computed, onMounted, onUnmounted } from 'vue'
 import { divineDelay, stop } from '@/utils/utils-common'
-import { sompute, compute } from '@/utils/utils-remix'
+import { compute } from '@/utils/utils-remix'
 import { useState } from '@/hooks/hook-state'
 
 export default defineComponent({
@@ -40,7 +40,10 @@ export default defineComponent({
             closeDown: false, // 为了解决Mac上的click BUG
             isSuccess: false, // 验证成功
             imgIndex: -1, // 用于自定义图片时不会随机到重复的图片
-            isSubmting: false // 是否正在判定，主要用于判定中不能点击重置按钮
+            isSubmting: false, // 是否正在判定，主要用于判定中不能点击重置按钮
+            reducer: false,
+            requestId: undefined,
+            token: undefined
         })
 
         //处理一下sliderSize，弄成整数，以免计算有偏差
@@ -83,20 +86,26 @@ export default defineComponent({
             document.removeEventListener('touchend', onRangeMouseUp, false)
         })
 
-        /**注册验证码配置**/
+        /**注册验证码配置**/ //prettier-ignore
         function fetchReducer(body: { width: number; height: number; offset: number; appKey: string }) {
             return new Promise(async (resolve, reject) => {
                 try {
-                    const response = await fetch(`http://localhost:5002/api/supervisor/reducer`, {
+                    const { code, data } = await fetch(`http://localhost:5002/api/supervisor/reducer`, {
                         method: 'POST',
-                        headers: { 'Content-type': 'application:/x-www-form-urlencoded:charset=UTF-8' },
-                        body: Object.keys(body)
-                            .map(key => `${key}=${body[key as keyof typeof body]}`)
-                            .join('&')
-                    })
-
-                    console.log(await response.json())
-                } catch (e) {}
+                        headers: { 'Content-Type': 'application/json;charset=utf-8' },
+                        body: JSON.stringify(body)
+                    }).then(e => e.json())
+                    if (code === 200) {
+                        return resolve(await setState({ 
+                            pinX: data.pinX, 
+                            pinY: data.pinY, 
+                            requestId: data.requestId
+                        }))
+                    }
+                    reject(data.message)
+                } catch (e) {
+                    reject(e)
+                }
             })
         }
 
@@ -260,6 +269,7 @@ export default defineComponent({
             if (state.loading && !withCanvas) {
                 return false
             }
+            //prettier-ignore
             setState({ loading: true, isCanSlide: false }).then(async () => {
                 const ctx = canvas1.value?.getContext('2d') as CanvasRenderingContext2D
                 const ctx2 = canvas2.value?.getContext('2d') as CanvasRenderingContext2D
@@ -279,18 +289,10 @@ export default defineComponent({
                     offset: puzzleBaseSize.value,
                     appKey: 'sFnFysvpL0DFGs6H'
                 })
-                await setState({
-                    pinX: getRandom(puzzleBaseSize.value, props.canvasWidth - puzzleBaseSize.value - 20), //留20的边距
-                    pinY: getRandom(20, props.canvasHeight - puzzleBaseSize.value - 20) //主图高度 - 拼图块自身高度 - 20边距
-                }).then(e => {
-                    console.log({
-                        puzzleBaseSize: puzzleBaseSize.value,
-                        canvasWidth: props.canvasWidth,
-                        canvasHeight: props.canvasHeight,
-                        pinX: e.pinX,
-                        pinY: e.pinY
-                    })
-                })
+                // await setState({
+                //     pinX: getRandom(puzzleBaseSize.value, props.canvasWidth - puzzleBaseSize.value - 20), //留20的边距
+                //     pinY: getRandom(20, props.canvasHeight - puzzleBaseSize.value - 20) //主图高度 - 拼图块自身高度 - 20边距
+                // })
                 image.onload = async () => {
                     const [x, y, w, h] = makeImgSize(image)
                     ctx.save()
@@ -400,6 +402,15 @@ export default defineComponent({
                 } else {
                     image.src = makeImgWithCanvas()
                 }
+            }).catch(text => {
+                setState({
+                    loading: false,
+                    reducer: true,
+                    infoText: text,
+                    infoBoxFail: true,
+                    infoBoxShow: true,
+                    isCanSlide: false
+                })
             })
         }
 
@@ -468,16 +479,30 @@ export default defineComponent({
                             height={props.canvasHeight}
                             style={{ width: puzzleBaseSize.value + 'px', height: props.canvasHeight + 'px', transform: translateX.value }}
                         />
-                        <div class={{ 'auth-loading': true, 'is-hide': !state.loading }}>
-                            <div class="auth-loading__spin">
-                                <span></span>
-                                <span></span>
-                                <span></span>
-                                <span></span>
-                                <span></span>
-                            </div>
+                        <div class={{ 'auth-loading': true, 'is-hide': !state.loading, 'is-reducer': state.reducer }}>
+                            {state.reducer ? (
+                                <div class="auth-loading__reducer">
+                                    <n-skeleton animated={false} height="100%" width="100%" />
+                                    <n-icon size={48} component={compute('Debugger')} />
+                                </div>
+                            ) : (
+                                <div class="auth-loading__spin">
+                                    <span></span>
+                                    <span></span>
+                                    <span></span>
+                                    <span></span>
+                                    <span></span>
+                                </div>
+                            )}
                         </div>
-                        <div class={{ 'auth-info': true, 'is-show': state.infoBoxShow, 'is-fail': state.infoBoxFail }}>
+                        <div
+                            class={{
+                                'auth-info': true,
+                                'is-show': state.infoBoxShow,
+                                'is-fail': state.infoBoxFail,
+                                'is-reducer': state.reducer
+                            }}
+                        >
                             {state.infoText}
                         </div>
                         <div class={{ 'auth-flash': true, 'is-show': state.isSuccess }} style={{ transform: flashTranslateX.value }}></div>
@@ -492,7 +517,11 @@ export default defineComponent({
                             </div>
                             <div
                                 ref={slider}
-                                class={{ 'range-control__slider': true, 'is-fail': state.infoBoxFail, 'is-success': state.isSuccess }}
+                                class={{
+                                    'range-control__slider': true,
+                                    'is-fail': state.infoBoxFail && !state.reducer,
+                                    'is-success': state.isSuccess && !state.reducer
+                                }}
                                 style={{ width: styleWidth.value + 'px' }}
                             >
                                 <div
@@ -505,7 +534,7 @@ export default defineComponent({
                                         <div class="n-basic n-center n-middle" style={{ width: '100%', height: '100%' }}>
                                             <n-icon color="#ffffff" size={16} component={compute('InduceBold')} />
                                         </div>
-                                    ) : state.infoBoxFail ? (
+                                    ) : state.infoBoxFail && !state.reducer ? (
                                         <div class="n-basic n-center n-middle" style={{ width: '100%', height: '100%' }}>
                                             <n-icon color="#ffffff" size={16} component={compute('CloseBold')} />
                                         </div>
@@ -556,6 +585,25 @@ export default defineComponent({
                     span {
                         animation-play-state: paused;
                     }
+                }
+            }
+            &.is-reducer {
+                opacity: 1;
+            }
+            &__reducer {
+                width: 100%;
+                height: 100%;
+                position: relative;
+                display: flex;
+                flex-direction: column;
+                justify-content: center;
+                align-items: center;
+                padding-bottom: 28px;
+                box-sizing: border-box;
+                .n-skeleton {
+                    position: absolute;
+                    left: 0;
+                    top: 0;
                 }
             }
             &__spin {
@@ -620,6 +668,9 @@ export default defineComponent({
             }
             &.is-fail {
                 background-color: var(--error-color);
+            }
+            &.is-reducer {
+                z-index: 20;
             }
         }
         .auth-flash {

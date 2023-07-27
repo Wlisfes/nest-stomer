@@ -5,7 +5,7 @@ export const client: Array<RouteRecordRaw> = [
         path: '/',
         redirect: '/client/master',
         meta: { Authorize: 'NONE' },
-        component: () => import('@/layout/client-layout.vue'),
+        component: () => import('@/layout/manager-layout.vue'),
         children: [
             {
                 path: '/client/master',
