@@ -43,7 +43,7 @@ export default defineComponent({
             imgIndex: -1, // 用于自定义图片时不会随机到重复的图片
             isSubmting: false, // 是否正在判定，主要用于判定中不能点击重置按钮
             reducer: false,
-            requestId: undefined,
+            session: undefined,
             token: undefined
         })
 
@@ -100,7 +100,7 @@ export default defineComponent({
                         return resolve(await setState({ 
                             pinX: data.pinX, 
                             pinY: data.pinY, 
-                            requestId: data.requestId
+                            session: data.session
                         }))
                     }
                     reject(data.message)
@@ -111,7 +111,7 @@ export default defineComponent({
         }
 
         /**生成校验凭证**/ //prettier-ignore
-        function fetchAuthorize(body: { requestId: string; appKey: string }) {
+        function fetchAuthorize(body: { session: string; appKey: string }) {
             return new Promise(async (resolve, reject) => {
                 try {
                     const { code, data } = await fetch(`http://localhost:5002/api/supervisor/authorize`, {
@@ -449,7 +449,7 @@ export default defineComponent({
                     //成功
                     await fetchAuthorize(
                         Object.assign({
-                            requestId: state.requestId,
+                            session: state.session,
                             appKey: props.appKey
                         })
                     )
@@ -464,7 +464,7 @@ export default defineComponent({
                         emit('success', {
                             distance,
                             token: state.token,
-                            requestId: state.requestId,
+                            session: state.session,
                             appKey: props.appKey,
                             reset: reset
                         })

@@ -17,7 +17,7 @@ export default defineComponent({
             console.log(data)
         }
 
-        async function httpInspector(e: { token: string; requestId: string; appKey: string }) {
+        async function httpInspector(e: { token: string; session: string; appKey: string }) {
             console.log(e)
             const { data } = await fetch(`http://localhost:5002/api/supervisor/inspector`, {
                 method: 'POST',
@@ -25,7 +25,7 @@ export default defineComponent({
                 body: JSON.stringify({
                     appKey: e.appKey,
                     token: e.token,
-                    requestId: e.requestId
+                    session: e.session
                 })
             }).then(response => response.json())
             console.log(data)
