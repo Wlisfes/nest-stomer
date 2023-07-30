@@ -23,7 +23,7 @@ export default defineComponent({
                     data-column={state.dataColumn}
                     data-source={state.dataSource}
                     data-style={{ flexDirection: 'row' }}
-                    data-render={(data: IUser) => <provider-user node={data}></provider-user>}
+                    data-render={(data: IUser) => <compose-user node={data}></compose-user>}
                 ></common-source>
             </common-container>
         )

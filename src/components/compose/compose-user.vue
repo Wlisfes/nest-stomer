@@ -6,7 +6,7 @@ import { sompute } from '@/utils/utils-remix'
 import { type IUser } from '@/api/http-user'
 
 export default defineComponent({
-    name: 'ProviderUser',
+    name: 'ComposeUser',
     props: {
         node: {
             type: Object as PropType<IUser>,
@@ -25,8 +25,8 @@ export default defineComponent({
         })
 
         return () => (
-            <n-el tag="div" class={{ 'provider-user': true, 'is-bordered': props.bordered }}>
-                <div class="provider-user__reserve">
+            <n-el tag="div" class={{ 'compose-user': true, 'is-bordered': props.bordered }}>
+                <div class="compose-user__reserve">
                     <n-avatar size={90} src={props.node.avatar} style={{ margin: '14px 20px 14px 14px' }}></n-avatar>
                     <div class="n-basic n-column n-auto" style={{ padding: '0' }}>
                         <div class={{ 'user-header not-selecter': true, 'n-pointer': state.collapse }}>
@@ -107,7 +107,7 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
-.provider-user {
+.compose-user {
     position: relative;
     border-radius: var(--border-radius);
     box-sizing: border-box;

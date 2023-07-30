@@ -11,7 +11,7 @@ import { fetchRule, fetchRoute } from '@/views/manager/hooks/fetch-instance'
 import { httpRouteTransfer, httpRuleTransfer, type IRoute } from '@/api/http-route'
 
 export default defineComponent({
-    name: 'ProviderRoute',
+    name: 'ComposeRoute',
     props: {
         node: {
             type: Object as PropType<IRoute>,
@@ -177,7 +177,7 @@ export default defineComponent({
         }
 
         return () => (
-            <n-el tag="div" class={{ 'provider-route': true, 'is-bordered': props.bordered }}>
+            <n-el tag="div" class={{ 'compose-route': true, 'is-bordered': props.bordered }}>
                 <div
                     class={{ 'route-header not-selecter': true, 'n-pointer': state.collapse }}
                     onClick={() => state.collapse && onCollapse()}
@@ -249,14 +249,14 @@ export default defineComponent({
                             <n-grid cols={2} x-gap={14} y-gap={14} item-responsive style={{ padding: '0', marginTop: '20px' }}>
                                 {(props.node.children ?? []).map(item => (
                                     <n-grid-item span="1:2 520:2 960:1">
-                                        <provider-rule
+                                        <compose-rule
                                             key={item.id}
                                             node={item}
                                             onUpdate={onUpdateRule}
                                             onDisable={onRuleTransfer}
                                             onEnable={onRuleTransfer}
                                             onDelete={onDeleteRule}
-                                        ></provider-rule>
+                                        ></compose-rule>
                                     </n-grid-item>
                                 ))}
                             </n-grid>
@@ -269,7 +269,7 @@ export default defineComponent({
                                 default: (scope: IRoute) => (
                                     <Fragment>
                                         <n-divider style={{ margin: '0 16px', width: 'calc(100% - 32px)' }} />
-                                        <provider-route bordered={false} node={scope} onUpdate={() => emit('update')}></provider-route>
+                                        <compose-route bordered={false} node={scope} onUpdate={() => emit('update')}></compose-route>
                                     </Fragment>
                                 )
                             }}
@@ -283,7 +283,7 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
-.provider-route {
+.compose-route {
     position: relative;
     border-radius: var(--border-radius);
     box-sizing: border-box;

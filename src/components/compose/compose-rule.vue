@@ -7,7 +7,7 @@ import { divineChained } from '@/utils/utils-common'
 import { sompute } from '@/utils/utils-remix'
 
 export default defineComponent({
-    name: 'ProviderRule',
+    name: 'ComposeRule',
     props: {
         node: { type: Object as PropType<IRoute>, required: true }
     },
@@ -46,11 +46,11 @@ export default defineComponent({
         }
 
         return () => (
-            <n-alert class="provider-rule" show-icon={false} type={methodType.value}>
+            <n-alert class="compose-rule" show-icon={false} type={methodType.value}>
                 <n-button type={methodType.value} size="small" strong style={{ minWidth: '80px' }}>
                     {props.node.method}
                 </n-button>
-                <n-text class="provider-rule__content">
+                <n-text class="compose-rule__content">
                     <n-text style={{ overflow: 'hidden', marginRight: '12px' }}>
                         <n-ellipsis tooltip={false}>
                             <n-h4 inline>{`${props.node.title}：`}</n-h4>
@@ -77,7 +77,7 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
-.provider-rule {
+.compose-rule {
     box-sizing: border-box;
     padding: 6px;
     overflow: hidden;
