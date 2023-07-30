@@ -5,7 +5,7 @@ export default defineComponent({
     name: 'Home',
     setup(props) {
         async function httpUpdateBucket() {
-            const { data } = await fetch(`http://localhost:5002/api/app/update/bucket`, {
+            const { data } = await fetch(`https://api.lisfes.cn/api-captcha/app/update/bucket`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json;charset=utf-8' },
                 body: JSON.stringify({
@@ -19,10 +19,11 @@ export default defineComponent({
 
         async function httpInspector(e: { token: string; session: string; appKey: string }) {
             console.log(e)
-            const { data } = await fetch(`http://localhost:5002/api/supervisor/inspector`, {
+            const { data } = await fetch(`https://api.lisfes.cn/api-captcha/supervisor/inspector`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json;charset=utf-8' },
                 body: JSON.stringify({
+                    appSecret: '5wE2EzGEI4JDn4M1uzsEEMsGCCsAu2pJ',
                     appKey: e.appKey,
                     token: e.token,
                     session: e.session

@@ -91,7 +91,7 @@ export default defineComponent({
         function fetchReducer(body: { width: number; height: number; offset: number; appKey: string }) {
             return new Promise(async (resolve, reject) => {
                 try {
-                    const { code, data } = await fetch(`http://localhost:5002/api/supervisor/reducer`, {
+                    const { code, data } = await fetch(`https://api.lisfes.cn/api-captcha/supervisor/reducer`, {
                         method: 'POST',
                         headers: { 'Content-Type': 'application/json;charset=utf-8' },
                         body: JSON.stringify(body)
@@ -105,7 +105,7 @@ export default defineComponent({
                     }
                     reject(data.message)
                 } catch (e) {
-                    reject(e)
+                    reject(e.message)
                 }
             })
         }
@@ -114,18 +114,17 @@ export default defineComponent({
         function fetchAuthorize(body: { session: string; appKey: string }) {
             return new Promise(async (resolve, reject) => {
                 try {
-                    const { code, data } = await fetch(`http://localhost:5002/api/supervisor/authorize`, {
+                    const { code, data } = await fetch(`https://api.lisfes.cn/api-captcha/supervisor/authorize`, {
                         method: 'POST',
                         headers: { 'Content-Type': 'application/json;charset=utf-8' },
                         body: JSON.stringify(body)
                     }).then(e => e.json())
                     if (code === 200) {
-                        console.log(data.token.length)
                         return resolve(await setState({ token: data.token }))
                     }
                     reject(data.message)
                 } catch (e) {
-                    reject(e)
+                    reject(e.message)
                 }
             })
         }
@@ -435,7 +434,7 @@ export default defineComponent({
             })
         }
 
-        /**开始判定**/
+        /**开始判定**/ //prettier-ignore
         function submit() {
             setState({ isSubmting: true }).then(async () => {
                 // 偏差 x = puzzle的起始X - (用户真滑动的距离) + (puzzle的宽度 - 滑块的宽度) * （用户真滑动的距离/canvas总宽度）
@@ -476,12 +475,25 @@ export default defineComponent({
                         infoBoxFail: true,
                         infoBoxShow: true,
                         isCanSlide: false
+                    }).finally(() => {
+                        divineDelay(800, () => emit('fail')).then(async () => {
+                            await setState({ isSubmting: false })
+                            reset()
+                        })
                     })
-                    await divineDelay(800, () => emit('fail')).then(async () => {
+                }
+            }).catch(text => {
+                setState({
+                    infoText: text,
+                    infoBoxFail: true,
+                    infoBoxShow: true,
+                    isCanSlide: false
+                }).finally(() => {
+                    divineDelay(800, () => emit('fail')).then(async () => {
                         await setState({ isSubmting: false })
                         reset()
                     })
-                }
+                })
             })
         }
 
