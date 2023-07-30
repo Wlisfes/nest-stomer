@@ -12,16 +12,16 @@ export interface IUser extends Scheme {
 /**注册**/
 export function httpRegister(data: { nickname: string; password: string; mobile: string; code: string }) {
     return request<IUser>({
-        url: `/api/user/register`,
+        url: `/api-stomer/user/register`,
         method: 'POST',
         data
     })
 }
 
 /**登录**/
-export function httpAuthorize(data: { mobile?: string; password?: string; code?: string }) {
+export function httpAuthorize(data: { mobile: string; password: string; token: string; session: string }) {
     return request<{ token: string; refresh: string; expire: number; message: string }>({
-        url: `/api/user/login`,
+        url: `/api-stomer/user/authorize`,
         method: 'POST',
         data
     })
@@ -30,7 +30,7 @@ export function httpAuthorize(data: { mobile?: string; password?: string; code?:
 /**用户信息**/
 export function httpBasicUser() {
     return request<IUser>({
-        url: `/api/user/basic`,
+        url: `/api-stomer/user/basic`,
         method: 'GET'
     })
 }
@@ -38,7 +38,7 @@ export function httpBasicUser() {
 /**用户列表**/
 export function httpColumnUser(params: Pick<IColumn, 'page' | 'size'>) {
     return request<Result<IUser>>({
-        url: `/api/user/column`,
+        url: `/api-stomer/user/column`,
         method: 'GET',
         params
     })

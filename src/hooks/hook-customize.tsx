@@ -4,6 +4,7 @@ import { useState } from '@/hooks/hook-state'
 import { divineHandler } from '@/utils/utils-common'
 export interface OptionCustomize<T extends Record<string, any>> {
     immediate?: boolean
+    disabled?: boolean
     visible?: boolean
     rules?: FormRules
     form: T

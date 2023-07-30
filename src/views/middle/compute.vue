@@ -2,28 +2,38 @@
 import { defineComponent } from 'vue'
 import { RouterView } from 'vue-router'
 import { loadFile } from '@/utils/utils-common'
+import { useCurrent } from '@/locale/instance'
 
 export default defineComponent({
     name: 'Compute',
     setup() {
-        // const { locale, setLocale } = useCurrent()
+        const { locale, setLocale } = useCurrent()
 
         return () => (
-            <div class="compute-container">
-                <n-el class="app-compute">
+            <n-el class="compute-container">
+                <common-screen></common-screen>
+                <div class="app-compute">
+                    <div class={`n-locale is-${'cn'}`}>
+                        <n-text class="n-locale__value" depth={1} onClick={() => setLocale(locale.value === 'cn' ? 'en' : 'cn')}>
+                            {{ default: () => locale.value.toUpperCase() }}
+                        </n-text>
+                    </div>
+                    <RouterView></RouterView>
+                </div>
+                {/* <n-el class="app-compute">
                     <div class="app-compute__stomer">
                         <img src={loadFile('basic/login-stomer.svg')} />
                     </div>
                     <div class="app-compute__form">
                         <div class={`n-locale is-${'cn'}`}>
-                            {/* <n-text class="n-locale__value" depth={1} onClick={() => setLocale(locale.value === 'cn' ? 'en' : 'cn')}>
+                            <n-text class="n-locale__value" depth={1} onClick={() => setLocale(locale.value === 'cn' ? 'en' : 'cn')}>
                                 {{ default: () => locale.value.toUpperCase() }}
-                            </n-text> */}
+                            </n-text>
                         </div>
                         <RouterView></RouterView>
                     </div>
-                </n-el>
-            </div>
+                </n-el> */}
+            </n-el>
         )
     }
 })
@@ -36,9 +46,8 @@ export default defineComponent({
     height: 100%;
     display: flex;
     flex-direction: column;
-    justify-content: center;
-    align-items: center;
     padding: 0 20px;
+    overflow: hidden;
     .n-locale {
         position: absolute;
         right: -50px;
@@ -67,47 +76,44 @@ export default defineComponent({
         }
     }
     .app-compute {
+        position: relative;
         background-color: var(--body-color);
         border-radius: 8px;
         box-shadow: 0 0.9rem 1.7rem rgba(0, 0, 0, 0.25), 0 0.7rem 0.7rem rgba(0, 0, 0, 0.22);
         width: 100%;
-        max-width: 1080px;
+        max-width: 480px;
         display: flex;
+        flex-direction: column;
         border-radius: 8px;
         overflow: hidden;
+        padding: 24px;
+        box-sizing: border-box;
+        margin-left: auto;
+        margin-top: auto;
+        margin-right: 240px;
+        margin-bottom: 240px;
         @media (max-width: 1000px) {
-            max-width: 480px;
+            margin: auto;
         }
-        &__stomer {
-            flex: 1;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            background-color: #ebf4ff;
-            overflow: hidden;
-            padding: 4rem;
-            box-sizing: border-box;
-            @media (max-width: 1000px) {
-                display: none;
+        :deep(.n-input) {
+            .n-input-wrapper {
+                padding: 0;
             }
-            img {
-                width: 100%;
-                display: block;
+            .n-input__input-el {
+                max-width: calc(100% - 24px);
+                padding: 8px 12px;
+                box-sizing: content-box;
             }
-        }
-        &__form {
-            position: relative;
-            width: 100%;
-            max-width: 480px;
-            padding: 4rem;
-            box-sizing: border-box;
-            transition: padding 300ms;
-            @media (max-width: 460px) {
-                padding: 2rem 20px;
+            .n-input__placeholder {
+                padding: 0 12px;
             }
-        }
-        :deep(.n-form .n-input__input) {
-            margin: 8px 0;
+            .n-input__suffix {
+                position: absolute;
+                height: 100%;
+                margin-left: 0;
+                top: 0;
+                right: 12px;
+            }
         }
         :deep(.n-space > div) {
             display: flex;
@@ -116,9 +122,8 @@ export default defineComponent({
         :deep(h1) {
             font-size: 30px;
             color: var(--text-color-2);
-            text-align: center;
             line-height: 1.5;
-            margin: 0 0 1rem;
+            margin: 0 0 30px;
         }
         :deep(.antd-submit) {
             height: 50px;

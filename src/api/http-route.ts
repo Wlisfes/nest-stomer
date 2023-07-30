@@ -22,7 +22,7 @@ export interface IRoute extends Scheme {
 /**动态路由菜单**/
 export function httpDynamicRoute() {
     return request<Result<IRoute>>({
-        url: `/api/route/dynamic`,
+        url: `/api-stomer/route/dynamic`,
         method: 'GET'
     })
 }
@@ -30,7 +30,7 @@ export function httpDynamicRoute() {
 /**路由菜单列表**/
 export function httpColumnRoute() {
     return request<Result<IRoute>>({
-        url: `/api/route/column`,
+        url: `/api-stomer/route/column`,
         method: 'GET'
     })
 }
@@ -38,7 +38,7 @@ export function httpColumnRoute() {
 /**路由信息**/
 export function httpBasicRoute(params: Pick<IRoute, 'id'>) {
     return request<IRoute>({
-        url: `/api/route/basic`,
+        url: `/api-stomer/route/basic`,
         method: 'GET',
         params
     })
@@ -49,7 +49,7 @@ export function httpCreateRoute(
     data: Pick<IRoute, 'status' | 'source' | 'title' | 'order' | 'path'> & Partial<Pick<IRoute, 'redirect' | 'icon' | 'parent'>>
 ) {
     return request<Notice>({
-        url: `/api/route/create`,
+        url: `/api-stomer/route/create`,
         method: 'POST',
         data
     })
@@ -60,7 +60,7 @@ export function httpUpdateRoute(
     data: Pick<IRoute, 'id' | 'status' | 'source' | 'title' | 'order' | 'path'> & Partial<Pick<IRoute, 'redirect' | 'icon' | 'parent'>>
 ) {
     return request<Notice>({
-        url: `/api/route/update`,
+        url: `/api-stomer/route/update`,
         method: 'PUT',
         data
     })
@@ -69,7 +69,7 @@ export function httpUpdateRoute(
 /**编辑路由状态**/
 export function httpRouteTransfer(data: Pick<IRoute, 'id' | 'status'>) {
     return request<Notice>({
-        url: `/api/route/transfer`,
+        url: `/api-stomer/route/transfer`,
         method: 'PUT',
         data
     })
@@ -78,7 +78,7 @@ export function httpRouteTransfer(data: Pick<IRoute, 'id' | 'status'>) {
 /**新增接口规则**/
 export function httpCreateRule(data: Pick<IRoute, 'path' | 'title' | 'method' | 'status' | 'parent'>) {
     return request<Notice>({
-        url: `/api/route/create/rule`,
+        url: `/api-stomer/route/create/rule`,
         method: 'POST',
         data
     })
@@ -87,7 +87,7 @@ export function httpCreateRule(data: Pick<IRoute, 'path' | 'title' | 'method' | 
 /**编辑接口规则**/
 export function httpUpdateRule(data: Pick<IRoute, 'id' | 'path' | 'title' | 'method' | 'status' | 'parent'>) {
     return request<Notice>({
-        url: `/api/route/update/rule`,
+        url: `/api-stomer/route/update/rule`,
         method: 'PUT',
         data
     })
@@ -96,7 +96,7 @@ export function httpUpdateRule(data: Pick<IRoute, 'id' | 'path' | 'title' | 'met
 /**接口规则信息**/
 export function httpBasicRule(params: Pick<IRoute, 'id'>) {
     return request<IRoute>({
-        url: `/api/route/basic/rule`,
+        url: `/api-stomer/route/basic/rule`,
         method: 'GET',
         params
     })
@@ -105,7 +105,7 @@ export function httpBasicRule(params: Pick<IRoute, 'id'>) {
 /**编辑规则状态**/
 export function httpRuleTransfer(data: Pick<IRoute, 'id' | 'status'>) {
     return request<Notice>({
-        url: `/api/route/transfer/rule`,
+        url: `/api-stomer/route/transfer/rule`,
         method: 'PUT',
         data
     })

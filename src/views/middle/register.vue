@@ -114,7 +114,9 @@ export default defineComponent({
                     </n-form-item>
                     <n-form-item show-feedback={false}>
                         <n-space justify="space-between" style={{ width: '100%' }}>
-                            <n-text></n-text>
+                            <RouterLink replace to="/middle/register">
+                                <n-a href="#">{t('middle.password.alias')}</n-a>
+                            </RouterLink>
                             <RouterLink replace to="/middle/login">
                                 {{
                                     default: ({ navigate, href }: { navigate: Function; href: string }) => (
