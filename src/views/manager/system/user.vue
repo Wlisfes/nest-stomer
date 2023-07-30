@@ -1,28 +1,38 @@
 <script lang="tsx">
-import { defineComponent, Fragment } from 'vue'
+import { defineComponent, computed } from 'vue'
 import { httpColumnUser, type IUser } from '@/api/http-user'
 import { useCurrent } from '@/locale/instance'
 import { useSource } from '@/hooks/hook-source'
+import { useResize } from '@/hooks/hook-resize'
 
 export default defineComponent({
     name: 'User',
     setup() {
+        const { width } = useResize()
         const { t } = useCurrent()
         const { state, fetchUpdate } = useSource<IUser, Record<string, unknown>>({
             request: e => httpColumnUser({ page: e.page, size: e.size }),
-            immediate: true,
-            dataColumn: []
+            size: 15,
+            immediate: true
+        })
+        const cols = computed(() => {
+            if (width.value < 1480) {
+                return 1
+            } else if (width.value < 2160) {
+                return 2
+            }
+            return 3
         })
 
         return () => (
             <common-container>
                 <common-source
-                    width={375}
                     loading={state.loading}
+                    page={state.page}
+                    size={state.size}
                     total={state.total}
-                    data-column={state.dataColumn}
                     data-source={state.dataSource}
-                    data-style={{ flexDirection: 'row' }}
+                    cols={cols.value}
                     data-render={(data: IUser) => <compose-user node={data}></compose-user>}
                 ></common-source>
             </common-container>

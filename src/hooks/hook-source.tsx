@@ -9,24 +9,30 @@ export interface IState<T> extends IColumn<T> {
     dataColumn: Array<DataTableBaseColumn>
 }
 export interface IOption<T, R> {
-    dataColumn: Array<DataTableBaseColumn>
-    props?: R
+    page?: number
+    size?: number
+    total?: number
+    loading?: boolean
+    form?: R
     immediate?: boolean
+    dataSource?: Array<T>
+    dataColumn?: Array<DataTableBaseColumn>
     request: (e: UnwrapNestedRefs<IState<T> & R>) => Promise<Response<Result<T>>>
 }
 
 export function useSource<T, R extends Object>(option: IOption<T, R>) {
-    const { props, request } = option
-    //prettier-ignore
-    const { state, setState } = useState<IState<T> & R>(Object.assign({
-        ...props,
-        page: 1,
-        size: 10,
-        total: 0,
-        loading: true,
-        dataSource: [],
-        dataColumn: option.dataColumn
-    }))
+    const { form = {}, request } = option
+    const { state, setState } = useState<IState<T> & R>(
+        Object.assign({
+            form: form,
+            page: option.page ?? 1,
+            size: option.size ?? 10,
+            total: option.total ?? 0,
+            loading: option.loading ?? true,
+            dataSource: option.dataSource ?? [],
+            dataColumn: option.dataColumn ?? []
+        })
+    )
 
     onMounted(() => {
         if (option.immediate) {

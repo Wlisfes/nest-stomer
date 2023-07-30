@@ -1,7 +1,5 @@
 <script lang="tsx">
-import { defineComponent, Fragment, type PropType } from 'vue'
-import { useState } from '@/hooks/hook-state'
-import { useResize } from '@/hooks/hook-resize'
+import { defineComponent, type PropType } from 'vue'
 import { sompute } from '@/utils/utils-remix'
 import { type IUser } from '@/api/http-user'
 
@@ -18,19 +16,13 @@ export default defineComponent({
         }
     },
     setup(props, { emit }) {
-        const { width } = useResize()
-        const { state, setState } = useState({
-            visible: false,
-            collapse: false
-        })
-
         return () => (
             <n-el tag="div" class={{ 'compose-user': true, 'is-bordered': props.bordered }}>
-                <div class="compose-user__reserve">
-                    <n-avatar size={90} src={props.node.avatar} style={{ margin: '14px 20px 14px 14px' }}></n-avatar>
-                    <div class="n-basic n-column n-auto" style={{ padding: '0' }}>
-                        <div class={{ 'user-header not-selecter': true, 'n-pointer': state.collapse }}>
-                            <div class="user-header__content n-basic">
+                <div class="n-basic" style={{ overflow: 'hidden' }}>
+                    <n-avatar size={56} src={props.node.avatar} style={{ margin: '14px' }}></n-avatar>
+                    <div class="n-basic n-column n-auto">
+                        <div class="n-basic not-selecter" style={{ padding: '14px 0', color: 'var(--text-color-1)' }}>
+                            <div class="n-basic n-auto" style={{ overflow: 'hidden', lineHeight: 'var(--height-small)' }}>
                                 <n-h3 style={{ flex: 1, margin: 0 }}>
                                     <n-ellipsis tooltip={false}>{props.node.nickname}</n-ellipsis>
                                 </n-h3>
@@ -46,60 +38,34 @@ export default defineComponent({
                                 >
                                     <common-remix stop size={18} icon={sompute('RadixMore')}></common-remix>
                                 </common-dropdown>
-                                <common-remix
-                                    hover={false}
-                                    size={18}
-                                    icon={sompute('ArrowRightBold', {
-                                        style: {
-                                            transition: 'transform 0.3s var(--cubic-bezier-ease-in-out)',
-                                            color: 'var(--text-color-2)',
-                                            transform: state.visible ? 'rotateZ(90deg)' : 'rotateZ(0deg)'
-                                        }
-                                    })}
-                                ></common-remix>
                             </n-space>
                         </div>
-                        {width.value > 820 && (
-                            <n-grid cols={4} x-gap={14} y-gap={14} item-responsive style={{ padding: '0' }}>
-                                <n-grid-item span="1">
-                                    <common-reactive y-gap={3} label="重定向地址" content={props.node.mobile}></common-reactive>
-                                </n-grid-item>
-                                <n-grid-item span="1">
-                                    <common-reactive y-gap={3} label="页面路径" content={props.node.mobile}></common-reactive>
-                                </n-grid-item>
-                                <n-grid-item span="1">
-                                    <common-reactive y-gap={3} label="重定向地址" content={props.node.createTime}></common-reactive>
-                                </n-grid-item>
-                                <n-grid-item span="1">
-                                    <common-reactive y-gap={3} label="状态">
-                                        <common-mode value={props.node.status}></common-mode>
-                                    </common-reactive>
-                                </n-grid-item>
-                            </n-grid>
-                        )}
                     </div>
                 </div>
-
-                {width.value < 821 && (
-                    <div style={{ padding: '0 14px 14px' }}>
-                        <n-grid cols={4} x-gap={14} y-gap={14} item-responsive style={{ padding: '0' }}>
-                            <n-grid-item span="1:4 352:2 641:1">
-                                <common-reactive y-gap={3} label="重定向地址" content={props.node.mobile}></common-reactive>
-                            </n-grid-item>
-                            <n-grid-item span="1:4 352:2 641:1">
-                                <common-reactive y-gap={3} label="页面路径" content={props.node.mobile}></common-reactive>
-                            </n-grid-item>
-                            <n-grid-item span="1:4 352:2 641:1">
-                                <common-reactive y-gap={3} label="重定向地址" content={props.node.createTime}></common-reactive>
-                            </n-grid-item>
-                            <n-grid-item span="1:4 352:2 641:1">
-                                <common-reactive y-gap={3} label="状态">
-                                    <common-mode value={props.node.status}></common-mode>
-                                </common-reactive>
-                            </n-grid-item>
-                        </n-grid>
-                    </div>
-                )}
+                <div style={{ padding: '0 14px 14px' }}>
+                    <n-grid cols={2} x-gap={14} y-gap={14}>
+                        <n-grid-item span={1}>
+                            <common-reactive y-gap={3} label="UID" content={props.node.uid}></common-reactive>
+                        </n-grid-item>
+                        <n-grid-item span={1}>
+                            <common-reactive y-gap={3} label="手机号" content={props.node.mobile}></common-reactive>
+                        </n-grid-item>
+                        <n-grid-item span={1}>
+                            <common-reactive y-gap={3} label="电子邮件" content={props.node.email}></common-reactive>
+                        </n-grid-item>
+                        <n-grid-item span={1}>
+                            <common-reactive y-gap={3} label="OpenID" content={props.node.openid}></common-reactive>
+                        </n-grid-item>
+                        <n-grid-item span={1}>
+                            <common-reactive y-gap={3} label="注册时间" content={props.node.createTime}></common-reactive>
+                        </n-grid-item>
+                        <n-grid-item span={1}>
+                            <common-reactive y-gap={3} label="状态">
+                                <common-mode value={props.node.status}></common-mode>
+                            </common-reactive>
+                        </n-grid-item>
+                    </n-grid>
+                </div>
             </n-el>
         )
     }
@@ -114,23 +80,6 @@ export default defineComponent({
     background-color: var(--card-color);
     word-break: break-word;
     transition: color 0.3s var(--n-bezier), background-color 0.3s var(--n-bezier), border-color 0.3s var(--n-bezier);
-    &.is-bordered {
-        border: 1px solid var(--divider-color);
-    }
-    &__reserve {
-        display: flex;
-        overflow: hidden;
-    }
-
-    .user-header {
-        display: flex;
-        padding: 14px 0;
-        color: var(--text-color-1);
-        &__content {
-            flex: 1;
-            overflow: hidden;
-            line-height: var(--height-small);
-        }
-    }
+    border: 1px solid var(--divider-color);
 }
 </style>

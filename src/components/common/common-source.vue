@@ -1,24 +1,24 @@
 <script lang="tsx">
 import { defineComponent, computed, Fragment, type PropType, type CSSProperties, type VNodeChild } from 'vue'
-import { type DataTableBaseColumn } from 'naive-ui'
 
 export default defineComponent({
     name: 'CommonSource',
     props: {
-        dataColumn: { type: Array as PropType<Array<DataTableBaseColumn>>, default: () => [] },
-        dataSource: { type: Array as PropType<Array<Record<string, unknown>>>, default: () => [] },
+        loading: { type: Boolean, default: true },
         size: { type: Number, default: 10 },
         page: { type: Number, default: 1 },
         total: { type: Number, default: 0 },
-        loading: { type: Boolean, default: true },
-        width: { type: Number, default: 640 },
+        dataSource: { type: Array as PropType<Array<Record<string, unknown>>>, default: () => [] },
         dataRender: { type: Function as PropType<(e: Record<string, unknown>) => VNodeChild> },
-        dataStyle: { type: Object as PropType<CSSProperties>, default: () => ({}) }
+        cols: { type: Number, default: 3 },
+        xGap: { type: Number, default: 16 },
+        yGap: { type: Number, default: 16 }
     },
     setup(props, { slots }) {
         const cameStyle = computed<CSSProperties>(() => ({
-            minWidth: props.width + 'px',
-            ...props.dataStyle
+            rowGap: props.xGap + 'px',
+            columnGap: props.yGap + 'px',
+            gridTemplateColumns: `repeat(${props.cols}, minmax(0px, 1fr))`
         }))
         return () => (
             <section class={{ 'common-source': true }}>
@@ -71,13 +71,8 @@ export default defineComponent({
     flex-direction: column;
     overflow: hidden;
     &__container {
-        box-sizing: border-box;
         position: relative;
-        display: flex;
-        flex-direction: column;
-        flex-wrap: wrap;
-        row-gap: 12px;
-        box-sizing: border-box;
+        display: grid;
         padding: 16px 16px 32px;
     }
     &__pagination {

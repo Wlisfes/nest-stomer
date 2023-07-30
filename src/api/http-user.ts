@@ -5,6 +5,7 @@ export interface IUser extends Scheme {
     nickname: string
     password: string
     mobile: string
+    email: string
     avatar: string
     openid: string
 }
