@@ -4,14 +4,21 @@ import { useWindowSize } from '@vueuse/core'
 
 export type IDevice = 'PC' | 'IPAD' | 'MOBILE'
 export type IOption = {
+    cols?: Record<number, number>
+    defaultCols?: number
     onResize?: (e: { width: number; height: number; collapse: boolean; device: IDevice }) => void
     onDevice?: (device: IDevice) => void
     onCollapse?: (collapse: boolean) => void
 }
 
-export function useResize(option?: IOption) {
-    const store = useManager()
+export function useResize(option: IOption = {}) {
     const { width, height } = useWindowSize()
+    const store = useManager()
+    const cols = computed(() => {
+        //prettier-ignore
+        const screen = Object.keys(option.cols ?? {}).map(Number).sort((a, b) => a - b).find(value => width.value < value)
+        return screen && option.cols ? option.cols[screen] : option.defaultCols ?? 3
+    })
 
     function setDevice(device: IDevice) {
         store.setDevice(device)
@@ -49,9 +56,10 @@ export function useResize(option?: IOption) {
     )
 
     return {
-        width: computed(() => width.value),
-        height: computed(() => height.value),
         collapse: computed(() => store.collapse),
-        device: computed(() => store.device as IDevice)
+        device: computed(() => store.device as IDevice),
+        width,
+        height,
+        cols
     }
 }

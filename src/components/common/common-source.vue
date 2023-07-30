@@ -5,17 +5,20 @@ export default defineComponent({
     name: 'CommonSource',
     props: {
         loading: { type: Boolean, default: true },
-        size: { type: Number, default: 10 },
         page: { type: Number, default: 1 },
+        size: { type: Number, default: 10 },
         total: { type: Number, default: 0 },
         dataSource: { type: Array as PropType<Array<Record<string, unknown>>>, default: () => [] },
         dataRender: { type: Function as PropType<(e: Record<string, unknown>) => VNodeChild> },
+        cameStyle: { type: Object as PropType<CSSProperties>, default: () => ({}) },
         cols: { type: Number, default: 3 },
         xGap: { type: Number, default: 16 },
         yGap: { type: Number, default: 16 }
     },
-    setup(props, { slots }) {
+    emits: ['update'],
+    setup(props, { emit }) {
         const cameStyle = computed<CSSProperties>(() => ({
+            ...props.cameStyle,
             rowGap: props.xGap + 'px',
             columnGap: props.yGap + 'px',
             gridTemplateColumns: `repeat(${props.cols}, minmax(0px, 1fr))`
@@ -39,19 +42,20 @@ export default defineComponent({
                         <Fragment>
                             <div class="common-source__container" style={cameStyle.value}>
                                 {props.dataSource.map(item => {
-                                    return slots.default ? slots.default(item) : props.dataRender ? props.dataRender(item) : null
+                                    return props.dataRender ? props.dataRender(item) : null
                                 })}
                             </div>
                             <div class="common-source__pagination">
                                 <n-pagination
+                                    size="large"
                                     page={props.page}
                                     page-size={props.size}
-                                    page-count={props.total}
-                                    page-sizes={[10, 20, 30, 40, 50]}
+                                    item-count={props.total}
+                                    page-sizes={[10, 15, 20, 30, 40, 50]}
                                     show-size-picker
                                     display-order={['pages', 'size-picker']}
-                                    on-update:page={(e: number) => console.log(e)}
-                                    on-update:page-size={(e: number) => console.log(e)}
+                                    on-update:page={(page: number) => emit('update', { page })}
+                                    on-update:page-size={(size: number) => emit('update', { size })}
                                 />
                             </div>
                         </Fragment>
@@ -73,12 +77,13 @@ export default defineComponent({
     &__container {
         position: relative;
         display: grid;
-        padding: 16px 16px 32px;
+        padding: 16px 16px 48px;
+        background-color: var(--back-color);
     }
     &__pagination {
         display: flex;
         justify-content: center;
-        padding: 0 16px 48px;
+        padding: 0 16px 64px;
     }
 }
 </style>
