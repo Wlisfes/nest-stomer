@@ -12,11 +12,13 @@ export default defineComponent({
         total: { type: Number, default: 0 },
         loading: { type: Boolean, default: true },
         width: { type: Number, default: 640 },
-        dataRender: { type: Function as PropType<(e: Record<string, unknown>) => VNodeChild> }
+        dataRender: { type: Function as PropType<(e: Record<string, unknown>) => VNodeChild> },
+        dataStyle: { type: Object as PropType<CSSProperties>, default: () => ({}) }
     },
     setup(props, { slots }) {
         const cameStyle = computed<CSSProperties>(() => ({
-            minWidth: props.width + 'px'
+            minWidth: props.width + 'px',
+            ...props.dataStyle
         }))
         return () => (
             <section class={{ 'common-source': true }}>
@@ -73,6 +75,7 @@ export default defineComponent({
         position: relative;
         display: flex;
         flex-direction: column;
+        flex-wrap: wrap;
         row-gap: 12px;
         box-sizing: border-box;
         padding: 16px 16px 32px;

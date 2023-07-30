@@ -249,14 +249,14 @@ export default defineComponent({
                             <n-grid cols={2} x-gap={14} y-gap={14} item-responsive style={{ padding: '0', marginTop: '20px' }}>
                                 {(props.node.children ?? []).map(item => (
                                     <n-grid-item span="1:2 520:2 960:1">
-                                        <common-rule
+                                        <provider-rule
                                             key={item.id}
                                             node={item}
                                             onUpdate={onUpdateRule}
                                             onDisable={onRuleTransfer}
                                             onEnable={onRuleTransfer}
                                             onDelete={onDeleteRule}
-                                        ></common-rule>
+                                        ></provider-rule>
                                     </n-grid-item>
                                 ))}
                             </n-grid>
