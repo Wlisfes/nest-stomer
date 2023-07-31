@@ -1,5 +1,7 @@
 <script lang="tsx">
-import { defineComponent, computed, Fragment, type PropType, type CSSProperties, type VNodeChild } from 'vue'
+import type { PropType, CSSProperties, VNodeChild } from 'vue'
+import type { ScrollbarInst } from 'naive-ui'
+import { defineComponent, computed, Fragment, ref } from 'vue'
 
 export default defineComponent({
     name: 'CommonSource',
@@ -13,19 +15,27 @@ export default defineComponent({
         cameStyle: { type: Object as PropType<CSSProperties>, default: () => ({}) },
         cols: { type: Number, default: 3 },
         xGap: { type: Number, default: 16 },
-        yGap: { type: Number, default: 16 }
+        yGap: { type: Number, default: 16 },
+        pagination: { type: Boolean, default: true }
     },
     emits: ['update'],
     setup(props, { emit }) {
+        const scrollbar = ref<ScrollbarInst>()
         const cameStyle = computed<CSSProperties>(() => ({
             ...props.cameStyle,
             rowGap: props.xGap + 'px',
             columnGap: props.yGap + 'px',
             gridTemplateColumns: `repeat(${props.cols}, minmax(0px, 1fr))`
         }))
+
+        function onUpdate(option: { page?: number; size?: number }) {
+            scrollbar.value?.scrollTo({ top: 0, left: 0, behavior: 'smooth' })
+            emit('update', option)
+        }
+
         return () => (
             <section class={{ 'common-source': true }}>
-                <n-scrollbar x-scrollable>
+                <n-scrollbar ref={scrollbar} x-scrollable>
                     {props.loading && props.total === 0 ? (
                         <n-spin stroke-width={12} size={60} style={{ minHeight: '240px' }}></n-spin>
                     ) : !props.loading && props.total === 0 ? (
@@ -40,24 +50,28 @@ export default defineComponent({
                         </n-empty>
                     ) : (
                         <Fragment>
-                            <div class="common-source__container" style={cameStyle.value}>
-                                {props.dataSource.map(item => {
-                                    return props.dataRender ? props.dataRender(item) : null
-                                })}
-                            </div>
-                            <div class="common-source__pagination">
-                                <n-pagination
-                                    size="large"
-                                    page={props.page}
-                                    page-size={props.size}
-                                    item-count={props.total}
-                                    page-sizes={[10, 15, 20, 30, 40, 50]}
-                                    show-size-picker
-                                    display-order={['pages', 'size-picker']}
-                                    on-update:page={(page: number) => emit('update', { page })}
-                                    on-update:page-size={(size: number) => emit('update', { size })}
-                                />
-                            </div>
+                            <n-spin show={props.loading}>
+                                <div class="common-source__container" style={cameStyle.value}>
+                                    {props.dataSource.map(item => {
+                                        return props.dataRender ? props.dataRender(item) : null
+                                    })}
+                                </div>
+                            </n-spin>
+                            {props.pagination && (
+                                <div class="common-source__pagination">
+                                    <n-pagination
+                                        size="large"
+                                        page={props.page}
+                                        page-size={props.size}
+                                        item-count={props.total}
+                                        page-sizes={[10, 15, 20, 30, 40, 50]}
+                                        show-size-picker
+                                        display-order={['pages', 'size-picker']}
+                                        on-update:page={(page: number) => onUpdate({ page })}
+                                        on-update:page-size={(size: number) => onUpdate({ size })}
+                                    />
+                                </div>
+                            )}
                         </Fragment>
                     )}
                 </n-scrollbar>

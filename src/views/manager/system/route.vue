@@ -1,35 +1,43 @@
 <script lang="tsx">
 import { defineComponent } from 'vue'
 import { httpColumnRoute, type IRoute } from '@/api/http-route'
-import { useCurrent } from '@/locale/instance'
 import { useSource } from '@/hooks/hook-source'
 
 export default defineComponent({
     name: 'Route',
     setup() {
-        const { t } = useCurrent()
         const { state, fetchUpdate } = useSource<IRoute, Record<string, unknown>>({
             request: httpColumnRoute,
-            immediate: true,
-            dataColumn: [
-                { key: 'title', title: '节点名称', minWidth: 150 },
-                { key: 'icon', title: '节点图标', minWidth: 120 },
-                { key: 'type', title: '节点类型', minWidth: 150 },
-                { key: 'path', title: '页面路径', minWidth: 255 },
-                { key: 'redirect', title: '重定向地址', minWidth: 255 },
-                { key: 'status', title: '状态', minWidth: 150 }
-            ]
+            immediate: true
         })
 
         return () => (
             <common-container>
+                <n-form show-label={false} show-feedback={false} size="large" style={{ padding: '16px' }}>
+                    <n-space>
+                        <n-form-item>
+                            <n-input />
+                        </n-form-item>
+                        <n-form-item>
+                            <n-input />
+                        </n-form-item>
+                        <n-form-item>
+                            <n-input />
+                        </n-form-item>
+                        <n-button size="large">Create</n-button>
+                    </n-space>
+                </n-form>
                 <common-source
-                    width={375}
+                    came-style={{ padding: '0 16px 64px' }}
+                    cols={1}
+                    pagination={false}
                     loading={state.loading}
+                    page={state.page}
+                    size={state.size}
                     total={state.total}
-                    data-column={state.dataColumn}
                     data-source={state.dataSource}
-                    data-render={(data: IRoute) => <compose-route node={data} onUpdate={fetchUpdate}></compose-route>}
+                    data-render={(data: IRoute) => <compose-route key={data.id} node={data} onUpdate={fetchUpdate}></compose-route>}
+                    onUpdate={fetchUpdate}
                 ></common-source>
             </common-container>
         )
