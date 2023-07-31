@@ -58,7 +58,7 @@ export default defineComponent({
                         duration: 2500,
                         onAfterEnter: () => {
                             setState({ loading: false }).finally(() => {
-                                const path = window.$cookie.getStore(window.$cookie.APP_AUTH_RELACE, { value: '/' })
+                                const path = window.$cookie.getStore(window.$cookie.APP_AUTH_RELACE, '/')
                                 window.$cookie.delStore(window.$cookie.APP_AUTH_RELACE).finally(() => {
                                     router.replace(path as string)
                                 })

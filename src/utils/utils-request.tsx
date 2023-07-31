@@ -39,8 +39,11 @@ const interNotice = (response: AxiosResponse) => {
 
 request.interceptors.request.use(
     (config: InternalAxiosRequestConfig) => {
-        config.headers['x-token'] = cookie.getStore(cookie.APP_AUTH_TOKEN)
-        config.headers['x-locale'] = cookie.getStore(cookie.APP_AUTH_LOCALE, { value: 'cn' })
+        const token = cookie.getStore<string>(cookie.APP_AUTH_TOKEN)
+        config.headers['x-locale'] = cookie.getStore(cookie.APP_AUTH_LOCALE, 'cn')
+        if (token) {
+            config.headers.Authorization = token
+        }
         return config
     },
     error => Promise.reject(error)

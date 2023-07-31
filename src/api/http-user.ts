@@ -31,7 +31,7 @@ export function httpAuthorize(data: { mobile: string; password: string; token: s
 /**用户信息**/
 export function httpBasicUser() {
     return request<IUser>({
-        url: `/api-stomer/user/basic`,
+        url: `/api-stomer/user/basic-authorize`,
         method: 'GET'
     })
 }

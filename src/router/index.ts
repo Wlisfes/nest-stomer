@@ -41,7 +41,7 @@ export function setupGuardRouter(router: Router) {
     const user = useUser()
     router.beforeEach(async (to, form, next) => {
         window.$loading.start()
-        const token = await window.$cookie.getStore(window.$cookie.APP_AUTH_TOKEN, { sync: true })
+        const token = window.$cookie.getStore(window.$cookie.APP_AUTH_TOKEN)
         if (token) {
             if (store.router.length === 0) {
                 try {

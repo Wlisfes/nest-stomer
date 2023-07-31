@@ -6,7 +6,7 @@ import { type Path } from './i18n-interface'
 
 export const i18n = createI18n({
     legacy: false,
-    locale: cookie.getStore(cookie.APP_AUTH_LOCALE, { value: 'cn' }) as keyof typeof messages,
+    locale: cookie.getStore(cookie.APP_AUTH_LOCALE, 'cn'),
     messages
 })
 
