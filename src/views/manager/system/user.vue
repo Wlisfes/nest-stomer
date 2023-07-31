@@ -37,6 +37,7 @@ export default defineComponent({
                     loading={state.loading}
                     page={state.page}
                     size={state.size}
+                    page-sizes={[15, 30, 45, 60]}
                     total={state.total}
                     data-source={state.dataSource}
                     cols={cols.value}
