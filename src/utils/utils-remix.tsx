@@ -23,7 +23,8 @@ export const RemixUI = {
     SlackBold: h(<Icon-SlackBold />),
     WarningRound: h(<Icon-WarningRound />),
     HomeOutlined: h(<Icon-HomeOutlined />),
-    Debugger: h(<Icon-Debugger />)
+    Debugger: h(<Icon-Debugger />),
+    SearchBlod: h(<Icon-SearchBlod />)
 }
 
 /**图标类型拆解**/

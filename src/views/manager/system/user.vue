@@ -4,6 +4,7 @@ import { httpColumnUser, type IUser } from '@/api/http-user'
 import { useCurrent } from '@/locale/instance'
 import { useSource } from '@/hooks/hook-source'
 import { useResize } from '@/hooks/hook-resize'
+import { compute } from '@/utils/utils-remix'
 
 export default defineComponent({
     name: 'User',
@@ -29,7 +30,32 @@ export default defineComponent({
                         <n-form-item>
                             <n-input />
                         </n-form-item>
-                        <n-button size="large">Create</n-button>
+                        <n-form-item>
+                            <n-button
+                                type="primary"
+                                v-slots={{ icon: () => <n-icon component={compute('SearchBlod')} />, default: () => <span>查找</span> }}
+                            >
+                                Primary
+                            </n-button>
+                        </n-form-item>
+                        <n-form-item>
+                            <n-button
+                                secondary
+                                type="success"
+                                disabled
+                                v-slots={{ icon: () => <n-icon component={compute('RadixSpinWith')} /> }}
+                            ></n-button>
+                        </n-form-item>
+                        <n-form-item>
+                            <n-button
+                                secondary
+                                type="info"
+                                v-slots={{
+                                    icon: () => <n-icon component={compute('SearchBlod')} />,
+                                    default: () => <span>查找</span>
+                                }}
+                            ></n-button>
+                        </n-form-item>
                     </n-space>
                 </n-form>
                 <common-source
