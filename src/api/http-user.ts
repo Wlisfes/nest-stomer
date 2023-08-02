@@ -36,6 +36,15 @@ export function httpBasicUser() {
     })
 }
 
+/**用户信息**/
+export function httpBearerAuthorize(params: { uid: number }) {
+    return request<IUser>({
+        url: `/api-stomer/user/bearer-authorize`,
+        method: 'GET',
+        params
+    })
+}
+
 /**用户列表**/
 export function httpColumnUser(params: Pick<IColumn, 'page' | 'size'>) {
     return request<Result<IUser>>({

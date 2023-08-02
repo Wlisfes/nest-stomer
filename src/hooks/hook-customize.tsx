@@ -2,16 +2,17 @@ import type { FormInst, FormRules, FormItemRule } from 'naive-ui'
 import { ref, toRefs, onMounted } from 'vue'
 import { useState } from '@/hooks/hook-state'
 import { divineHandler } from '@/utils/utils-common'
-export interface OptionCustomize<T extends Record<string, any>> {
+export interface OptionCustomize<T extends Record<string, any>, R extends Record<string, any>> {
     immediate?: boolean
     disabled?: boolean
     visible?: boolean
     rules?: FormRules
+    app: R
     form: T
     loading: boolean
 }
 
-export function useCustomize<T extends Object>(option: OptionCustomize<T>, handler?: Function) {
+export function useCustomize<T extends Object, R extends Object>(option: OptionCustomize<T, R>, handler?: Function) {
     const formRef = ref<FormInst>()
     const { state, setState } = useState<typeof option>(option)
 

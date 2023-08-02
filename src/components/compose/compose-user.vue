@@ -2,6 +2,7 @@
 import { defineComponent, type PropType } from 'vue'
 import { sompute } from '@/utils/utils-remix'
 import { type IUser } from '@/api/http-user'
+import { fetchAuthorize } from '@/views/manager/hooks/fetch-instance'
 
 export default defineComponent({
     name: 'ComposeUser',
@@ -16,6 +17,15 @@ export default defineComponent({
         }
     },
     setup(props, { emit }) {
+        function onUpdateAuthorize() {
+            console.log(111)
+            return fetchAuthorize({ uid: props.node.uid }).then(({ observer }) => {
+                observer.on('submit', ({ done }) => {
+                    done({ visible: false }).finally(() => emit('update'))
+                })
+            })
+        }
+
         return () => (
             <n-el tag="div" class={{ 'compose-user': true, 'is-bordered': props.bordered }}>
                 <div class="n-basic" style={{ overflow: 'hidden' }}>
@@ -28,7 +38,13 @@ export default defineComponent({
                                 </n-h3>
                             </div>
                             <n-space align="center" justify="center" wrap-item={false} size={5} style={{ margin: '0 10px 0' }}>
-                                <common-remix stop size={18} type="success" icon={sompute('SlackBold')}></common-remix>
+                                <common-remix
+                                    stop
+                                    size={18}
+                                    type="success"
+                                    icon={sompute('SlackBold')}
+                                    onTrigger={onUpdateAuthorize}
+                                ></common-remix>
                                 <common-dropdown
                                     command={[
                                         { key: 'update', visible: true },
