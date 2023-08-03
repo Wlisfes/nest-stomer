@@ -53,3 +53,12 @@ export function httpColumnUser(params: Pick<IColumn, 'page' | 'size'>) {
         params
     })
 }
+
+/**编辑用户权限**/
+export function httpUpdateAuthorize(data: { uid: number; route: Array<number> }) {
+    return request<{ message: string }>({
+        url: `/api-stomer/user/update/authorize`,
+        method: 'POST',
+        data
+    })
+}

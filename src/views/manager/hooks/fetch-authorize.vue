@@ -8,7 +8,7 @@ import { divineParameter } from '@/utils/utils-common'
 import { createNotice } from '@/utils/utils-naive'
 import { compute, RemixUI, type INameUI } from '@/utils/utils-remix'
 import { useCustomize } from '@/hooks/hook-customize'
-import { httpBearerAuthorize } from '@/api/http-user'
+import { httpBearerAuthorize, httpUpdateAuthorize } from '@/api/http-user'
 import { httpColumnRoute, type IRoute } from '@/api/http-route'
 
 export default defineComponent({
@@ -19,17 +19,21 @@ export default defineComponent({
     emits: ['close', 'submit'],
     setup(props, { emit }) {
         const { t, tm } = useCurrent()
-        const { formRef, state, setState, divineFormValidater } = useCustomize<Record<string, any>, { route: Array<IRoute> }>(
+        const { formRef, state, setState, divineFormValidater } = useCustomize(
             {
                 immediate: true,
                 visible: false,
                 loading: false,
                 form: {
-                    nickname: undefined
+                    nickname: undefined,
+                    checked: [] as Array<number>,
+                    indeterminate: [] as Array<number>
                 },
-                rules: {},
-                app: {
-                    route: []
+                rules: {
+                    nickname: { required: true, message: t('rule.method.placeholder'), trigger: 'change' }
+                },
+                option: {
+                    route: [] as Array<IRoute>
                 }
             },
             /**初始化数据**/
@@ -39,7 +43,8 @@ export default defineComponent({
                     execute: async () => {
                         await fetchColumnRoute()
                         const { data } = await httpBearerAuthorize({ uid: props.uid })
-                    }
+                    },
+                    finally: e => setState({ loading: false })
                 })
             }
         )
@@ -47,13 +52,37 @@ export default defineComponent({
         /**菜单、权限树**/ //prettier-ignore
         function fetchColumnRoute() {
             return httpColumnRoute().then(async ({ data }) => {
-                return await setState(e => ({
-                    app: { ...e.app, route: data.list }
-                }))
+                return await setState({
+                    option: { ...state.option, route: data.list }
+                })
             }).catch(e => {})
         }
 
-        function onSubmit() {}
+        /**表单验证**/
+        async function onSubmit() {
+            await divineFormValidater()
+            return await createRequest({
+                execute: async () => {
+                    return await httpUpdateAuthorize({
+                        uid: props.uid,
+                        route: [...new Set([...state.form.checked, ...state.form.indeterminate])]
+                    }).then(async ({ message }) => {
+                        return await createNotice({
+                            type: 'success',
+                            title: message,
+                            onAfterEnter: () => emit('submit', { done: setState })
+                        })
+                    })
+                },
+                catch: async e => {
+                    return await createNotice({
+                        type: 'error',
+                        title: e.message,
+                        onAfterEnter: () => setState({ loading: false })
+                    })
+                }
+            })
+        }
 
         return () => (
             <n-modal
@@ -82,7 +111,7 @@ export default defineComponent({
                     label-placement="top"
                     require-mark-placement="left"
                 >
-                    <n-form-item label={t('middle.nickname.value')}>
+                    <n-form-item label={t('middle.nickname.value')} path="nickname">
                         <n-input v-model:value={state.form.nickname} placeholder={t('middle.nickname.placeholder')} />
                     </n-form-item>
                     <n-form-item label={t('middle.nickname.value')}>
@@ -93,14 +122,10 @@ export default defineComponent({
                             cascade
                             checkable
                             style={{ width: '100%' }}
-                            data={state.app.route}
+                            data={state.option.route}
                             render-label={(e: any) => <span>{`${e.option.title} - ${e.option.id}`}</span>}
-                            on-update:checked-keys={(a: any, b: any, c: any) => {
-                                console.log(a, b, c)
-                            }}
-                            on-update:indeterminate-keys={(a: any, b: any, c: any) => {
-                                console.log(a, b, c)
-                            }}
+                            on-update:checked-keys={(keys: Array<number>) => (state.form.checked = keys)}
+                            on-update:indeterminate-keys={(keys: Array<number>) => (state.form.indeterminate = keys)}
                         />
                     </n-form-item>
                 </n-form>

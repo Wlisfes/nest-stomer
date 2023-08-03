@@ -25,7 +25,7 @@ export default defineComponent({
                 immediate: true,
                 loading: false,
                 visible: false,
-                app: {},
+                option: {},
                 form: {
                     method: undefined,
                     title: undefined,

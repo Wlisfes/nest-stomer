@@ -2,12 +2,12 @@ import type { FormInst, FormRules, FormItemRule } from 'naive-ui'
 import { ref, toRefs, onMounted } from 'vue'
 import { useState } from '@/hooks/hook-state'
 import { divineHandler } from '@/utils/utils-common'
-export interface OptionCustomize<T extends Record<string, any>, R extends Record<string, any>> {
+export type OptionCustomize<T extends Record<string, any>, R extends Record<string, any>> = {
     immediate?: boolean
     disabled?: boolean
     visible?: boolean
     rules?: FormRules
-    app: R
+    option: R
     form: T
     loading: boolean
 }
@@ -25,7 +25,7 @@ export function useCustomize<T extends Object, R extends Object>(option: OptionC
 
     /**验证表单**/
     function divineFormValidater(
-        callback: Function,
+        callback: Function = Function,
         app: { reject?: boolean; catch?: Function; formatter?: (e: FormItemRule) => boolean } = {}
     ) {
         return new Promise((resolve, reject) => {
