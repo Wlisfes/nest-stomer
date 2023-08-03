@@ -53,3 +53,8 @@ export async function divineHandler(value: boolean | Function, handler: Function
 export async function divineParameter<T>(data: T) {
     return Object.assign(data as Object)
 }
+
+/**批量执行异步函数**/
+export function divineAsyncBatch(dataColumn: Array<Function> = []) {
+    return Promise.all(dataColumn.map(handler => handler()))
+}

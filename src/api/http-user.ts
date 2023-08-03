@@ -1,5 +1,6 @@
 import { request } from '@/utils/utils-request'
 import type { Scheme, Result, IColumn } from '@/interface/http-interface'
+import type { IRoute } from '@/api/http-route'
 export interface IUser extends Scheme {
     uid: number
     nickname: string
@@ -8,6 +9,7 @@ export interface IUser extends Scheme {
     email: string
     avatar: string
     openid: string
+    routes: Array<IRoute>
 }
 
 /**注册**/
@@ -36,7 +38,7 @@ export function httpBasicUser() {
     })
 }
 
-/**用户信息**/
+/**用户权限信息**/
 export function httpBearerAuthorize(params: { uid: number }) {
     return request<IUser>({
         url: `/api-stomer/user/bearer-authorize`,
@@ -58,7 +60,7 @@ export function httpColumnUser(params: Pick<IColumn, 'page' | 'size'>) {
 export function httpUpdateAuthorize(data: { uid: number; route: Array<number> }) {
     return request<{ message: string }>({
         url: `/api-stomer/user/update/authorize`,
-        method: 'POST',
+        method: 'PUT',
         data
     })
 }

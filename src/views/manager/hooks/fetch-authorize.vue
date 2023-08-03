@@ -4,12 +4,12 @@ import { type SelectOption } from 'naive-ui'
 import { useCurrent } from '@/locale/instance'
 import { Observer } from '@/utils/utils-observer'
 import { createRequest } from '@/utils/utils-request'
-import { divineParameter } from '@/utils/utils-common'
+import { divineParameter, divineAsyncBatch } from '@/utils/utils-common'
 import { createNotice } from '@/utils/utils-naive'
 import { compute, RemixUI, type INameUI } from '@/utils/utils-remix'
 import { useCustomize } from '@/hooks/hook-customize'
 import { httpBearerAuthorize, httpUpdateAuthorize } from '@/api/http-user'
-import { httpColumnRoute, type IRoute } from '@/api/http-route'
+import { httpOptionsRoute, type IRoute } from '@/api/http-route'
 
 export default defineComponent({
     name: 'FetchAuthorize',
@@ -25,7 +25,7 @@ export default defineComponent({
                 visible: false,
                 loading: false,
                 form: {
-                    nickname: undefined,
+                    pattern: '',
                     checked: [] as Array<number>,
                     indeterminate: [] as Array<number>
                 },
@@ -40,18 +40,26 @@ export default defineComponent({
             async function mounte() {
                 await setState({ visible: true, loading: true })
                 return await createRequest({
-                    execute: async () => {
-                        await fetchColumnRoute()
-                        const { data } = await httpBearerAuthorize({ uid: props.uid })
-                    },
+                    execute: () => divineAsyncBatch([fetchBearerAuthorize, fetchOptionsRoute]),
                     finally: e => setState({ loading: false })
                 })
             }
         )
 
+        /**用户权限信息**/
+        function fetchBearerAuthorize() {
+            return httpBearerAuthorize({ uid: props.uid }).then(async ({ data }) => {
+                const checked = data.routes.filter(x => x.isLeaf).map(x => x.id)
+                const indeterminate = data.routes.filter(x => !x.isLeaf).map(x => x.id)
+                return await setState({
+                    form: { pattern: state.form.pattern, checked, indeterminate }
+                })
+            })
+        }
+
         /**菜单、权限树**/ //prettier-ignore
-        function fetchColumnRoute() {
-            return httpColumnRoute().then(async ({ data }) => {
+        function fetchOptionsRoute() {
+            return httpOptionsRoute().then(async ({ data }) => {
                 return await setState({
                     option: { ...state.option, route: data.list }
                 })
@@ -61,6 +69,7 @@ export default defineComponent({
         /**表单验证**/
         async function onSubmit() {
             await divineFormValidater()
+            await setState({ loading: true })
             return await createRequest({
                 execute: async () => {
                     return await httpUpdateAuthorize({
@@ -93,42 +102,47 @@ export default defineComponent({
                 title="编辑用户权限"
                 preset="dialog"
                 class="el-customize"
-                style={{ width: '750px' }}
+                style={{ width: '640px' }}
                 onAfterLeave={() => emit('close')}
                 action={() => (
                     <common-inspector
-                        loading={state.loading}
+                        disabled={state.loading}
                         onCancel={() => setState({ visible: false })}
                         onSubmit={onSubmit}
                     ></common-inspector>
                 )}
             >
-                <n-form
-                    ref={formRef}
-                    model={state.form}
-                    rules={state.rules}
-                    disabled={state.loading}
-                    label-placement="top"
-                    require-mark-placement="left"
-                >
-                    <n-form-item label={t('middle.nickname.value')} path="nickname">
-                        <n-input v-model:value={state.form.nickname} placeholder={t('middle.nickname.placeholder')} />
-                    </n-form-item>
-                    <n-form-item label={t('middle.nickname.value')}>
-                        <n-tree
-                            label-field="title"
-                            key-field="id"
-                            block-line
-                            cascade
-                            checkable
-                            style={{ width: '100%' }}
-                            data={state.option.route}
-                            render-label={(e: any) => <span>{`${e.option.title} - ${e.option.id}`}</span>}
-                            on-update:checked-keys={(keys: Array<number>) => (state.form.checked = keys)}
-                            on-update:indeterminate-keys={(keys: Array<number>) => (state.form.indeterminate = keys)}
-                        />
-                    </n-form-item>
-                </n-form>
+                <n-spin show={state.loading}>
+                    <n-form
+                        ref={formRef}
+                        model={state.form}
+                        rules={state.rules}
+                        disabled={state.loading}
+                        label-placement="top"
+                        require-mark-placement="left"
+                        style={{ minHeight: '200px' }}
+                    >
+                        <n-form-item show-feedback={false}>
+                            <n-input v-model:value={state.form.pattern} clearable placeholder={t('common.search.value')}></n-input>
+                        </n-form-item>
+                        <n-form-item>
+                            <n-tree
+                                label-field="title"
+                                key-field="id"
+                                block-line
+                                cascade
+                                checkable
+                                show-irrelevant-nodes={false}
+                                style={{ width: '100%' }}
+                                pattern={state.form.pattern}
+                                data={state.option.route}
+                                checked-keys={state.form.checked}
+                                on-update:checked-keys={(keys: Array<number>) => (state.form.checked = keys)}
+                                on-update:indeterminate-keys={(keys: Array<number>) => (state.form.indeterminate = keys)}
+                            />
+                        </n-form-item>
+                    </n-form>
+                </n-spin>
             </n-modal>
         )
     }

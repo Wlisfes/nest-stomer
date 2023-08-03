@@ -6,6 +6,7 @@ export default defineComponent({
     name: 'CommonInspector',
     props: {
         loading: { type: Boolean, default: false },
+        disabled: { type: Boolean, default: false },
         cancel: { type: [String, Boolean] as PropType<string | boolean>, default: true },
         submit: { type: [String, Boolean] as PropType<string | boolean>, default: true }
     },
@@ -24,7 +25,7 @@ export default defineComponent({
                     <n-button
                         class="el-customize el-medium"
                         type="primary"
-                        disabled={props.loading}
+                        disabled={props.disabled}
                         loading={props.loading}
                         onClick={(e: Event) => emit('submit', e)}
                     >

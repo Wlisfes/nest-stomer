@@ -39,6 +39,9 @@ export default {
         cancel: {
             value: '取消'
         },
+        search: {
+            value: '搜索'
+        },
         createTime: {
             value: '创建时间'
         },
@@ -110,6 +113,9 @@ export default {
         },
         cancel: {
             value: 'Cancel'
+        },
+        search: {
+            value: 'Search'
         },
         createTime: {
             value: 'Create time'

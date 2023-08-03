@@ -15,6 +15,7 @@ export interface IRoute extends Scheme {
     icon: string
     order: number
     parent: string
+    isLeaf: boolean
     method: keyof typeof IMethod
     children: Array<IRoute>
 }
@@ -31,6 +32,14 @@ export function httpDynamicRoute() {
 export function httpColumnRoute() {
     return request<Result<IRoute>>({
         url: `/api-stomer/route/column`,
+        method: 'GET'
+    })
+}
+
+/**路由权限列表**/
+export function httpOptionsRoute() {
+    return request<Result<IRoute>>({
+        url: `/api-stomer/route/options`,
         method: 'GET'
     })
 }

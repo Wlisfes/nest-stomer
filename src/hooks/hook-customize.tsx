@@ -1,7 +1,7 @@
 import type { FormInst, FormRules, FormItemRule } from 'naive-ui'
 import { ref, toRefs, onMounted } from 'vue'
 import { useState } from '@/hooks/hook-state'
-import { divineHandler } from '@/utils/utils-common'
+import { divineHandler, divineDelay } from '@/utils/utils-common'
 export type OptionCustomize<T extends Record<string, any>, R extends Record<string, any>> = {
     immediate?: boolean
     disabled?: boolean
@@ -54,5 +54,15 @@ export function useCustomize<T extends Object, R extends Object>(option: OptionC
         })
     }
 
-    return { ...toRefs(state), state, formRef, setState, divineFormValidater, divineFormRestore }
+    /**滚动到第一个报错表单选项**/
+    async function divineFormScrollbar() {
+        await divineDelay(0)
+        // const element = formRef.$el.querySelector('.el-form-item__error')
+        // return element?.scrollIntoView({
+        //     behavior: 'smooth',
+        //     block: 'center'
+        // })
+    }
+
+    return { ...toRefs(state), state, formRef, setState, divineFormValidater, divineFormRestore, divineFormScrollbar }
 }
