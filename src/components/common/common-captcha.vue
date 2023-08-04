@@ -91,7 +91,7 @@ export default defineComponent({
         function fetchReducer(body: { width: number; height: number; offset: number; appKey: string }) {
             return new Promise(async (resolve, reject) => {
                 try {
-                    const { code, data } = await fetch(`https://api.lisfes.cn/api-captcha/supervisor/reducer`, {
+                    const { code, data } = await fetch(`https://api.lisfes.cn/api-basic/captcha/supervisor/reducer`, {
                         method: 'POST',
                         headers: { 'Content-Type': 'application/json;charset=utf-8' },
                         body: JSON.stringify(body)
@@ -114,7 +114,7 @@ export default defineComponent({
         function fetchAuthorize(body: { session: string; appKey: string }) {
             return new Promise(async (resolve, reject) => {
                 try {
-                    const { code, data } = await fetch(`https://api.lisfes.cn/api-captcha/supervisor/authorize`, {
+                    const { code, data } = await fetch(`https://api.lisfes.cn/api-basic/captcha/supervisor/authorize`, {
                         method: 'POST',
                         headers: { 'Content-Type': 'application/json;charset=utf-8' },
                         body: JSON.stringify(body)
