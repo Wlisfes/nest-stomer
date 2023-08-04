@@ -3,7 +3,7 @@ import { defineComponent, computed, type PropType } from 'vue'
 import { useClipboard } from '@vueuse/core'
 import { type IRoute, IMethod } from '@/api/http-route'
 import { useCurrent } from '@/locale/instance'
-import { divineChained } from '@/utils/utils-common'
+import { divineHandler } from '@/utils/utils-common'
 import { sompute } from '@/utils/utils-remix'
 
 export default defineComponent({
@@ -33,16 +33,18 @@ export default defineComponent({
 
         /**复制规则接口**/
         async function onClipboar() {
-            try {
-                await divineChained(
-                    () => isSupported.value || new Error(t('common.copy.supported')),
-                    () => copy(props.node.path).then(() => text.value === props.node.path)
-                ).then(() => {
-                    window.$notification.success({ title: t('common.copy.notice'), duration: 2000 })
+            await divineHandler(isSupported.value, async () => {
+                try {
+                    await copy(props.node.path)
+                    return await window.$notification.success({ title: t('common.copy.notice'), duration: 2000 })
+                } catch (e) {
+                    window.$notification.error({ title: t('common.copy.fail'), duration: 2500 })
+                }
+            }).then(result => {
+                return divineHandler(!result, () => {
+                    window.$notification.error({ title: t('common.copy.supported'), duration: 2500 })
                 })
-            } catch (e) {
-                window.$notification.error({ title: e.message || t('common.copy.fail'), duration: 2500 })
-            }
+            })
         }
 
         return () => (
