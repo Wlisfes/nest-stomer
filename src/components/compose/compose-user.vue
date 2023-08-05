@@ -17,8 +17,8 @@ export default defineComponent({
         }
     },
     setup(props, { emit }) {
+        /**编辑用户权限**/
         function onUpdateAuthorize() {
-            console.log(111)
             return fetchAuthorize({ uid: props.node.uid }).then(({ observer }) => {
                 observer.on('submit', ({ done }) => {
                     done({ visible: false }).finally(() => emit('update'))

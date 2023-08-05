@@ -2,8 +2,7 @@
 import { defineComponent, type PropType } from 'vue'
 import { useCurrent } from '@/locale/instance'
 import { Observer } from '@/utils/utils-observer'
-import { createRequest } from '@/utils/utils-request'
-import { divineParameter } from '@/utils/utils-common'
+import { divineParameter, divineHandler } from '@/utils/utils-common'
 import { createNotice } from '@/utils/utils-naive'
 import { useCustomize } from '@/hooks/hook-customize'
 import { httpCreateRule, httpUpdateRule, httpBasicRule } from '@/api/http-route'
@@ -43,77 +42,66 @@ export default defineComponent({
             /**初始化数据**/
             async function mounte() {
                 await setState({ visible: true, loading: props.command === 'UPDATE' })
-                return await createRequest({
-                    execute: async function () {
-                        if (state.loading) {
-                            const { data } = await httpBasicRule({ id: props.id as number })
-                            return await setState({
-                                loading: false,
-                                form: await divineParameter({
-                                    method: data.method,
-                                    title: data.title,
-                                    path: data.path,
-                                    status: data.status,
-                                    parent: data.parent
-                                })
+                await divineHandler(state.loading, async () => {
+                    try {
+                        const { data } = await httpBasicRule({ id: props.id as number })
+                        return await setState({
+                            loading: false,
+                            form: await divineParameter({
+                                method: data.method,
+                                title: data.title,
+                                path: data.path,
+                                status: data.status,
+                                parent: data.parent
                             })
-                        }
-                    },
-                    finally: e => setState({ loading: false })
+                        })
+                    } catch (e) {}
                 })
+                await setState({ loading: false })
             }
         )
 
         /**表单验证**/
-        function onSubmit() {
-            divineFormValidater(async () => {
-                if (props.command === 'CREATE') {
-                    await setState({ loading: true })
-                    return await createRequest({
-                        execute: async () => {
-                            const { status, title, path, method, parent } = state.form
-                            return await httpCreateRule(await divineParameter({ status, title, path, method, parent })).then(
-                                async ({ message }) => {
-                                    return await createNotice({
-                                        type: 'success',
-                                        title: message,
-                                        onAfterEnter: () => emit('submit', { done: setState })
-                                    })
-                                }
-                            )
-                        },
-                        catch: async e => {
+        async function onSubmit() {
+            await divineFormValidater()
+            await divineHandler(props.command === 'CREATE', async () => {
+                try {
+                    const { status, title, path, method, parent } = state.form
+                    return await httpCreateRule(await divineParameter({ status, title, path, method, parent })).then(
+                        async ({ message }) => {
                             return await createNotice({
-                                type: 'error',
-                                title: e.message,
-                                onAfterEnter: () => setState({ loading: false })
+                                type: 'success',
+                                title: message,
+                                onAfterEnter: () => emit('submit', { done: setState })
                             })
                         }
+                    )
+                } catch (e) {
+                    return await createNotice({
+                        type: 'error',
+                        title: e.message,
+                        onAfterEnter: () => setState({ loading: false })
                     })
                 }
+            })
 
-                if (props.command === 'UPDATE') {
-                    await setState({ loading: true })
-                    return await createRequest({
-                        execute: async () => {
-                            const { status, title, path, method, parent } = state.form
-                            return await httpUpdateRule(await divineParameter({ id: props.id, status, title, path, method, parent })).then(
-                                async ({ message }) => {
-                                    return await createNotice({
-                                        type: 'success',
-                                        title: message,
-                                        onAfterEnter: () => emit('submit', { done: setState })
-                                    })
-                                }
-                            )
-                        },
-                        catch: async e => {
+            await divineHandler(props.command === 'UPDATE', async () => {
+                try {
+                    const { status, title, path, method, parent } = state.form
+                    return await httpUpdateRule(await divineParameter({ id: props.id, status, title, path, method, parent })).then(
+                        async ({ message }) => {
                             return await createNotice({
-                                type: 'error',
-                                title: e.message,
-                                onAfterEnter: () => setState({ loading: false })
+                                type: 'success',
+                                title: message,
+                                onAfterEnter: () => emit('submit', { done: setState })
                             })
                         }
+                    )
+                } catch (e) {
+                    return await createNotice({
+                        type: 'error',
+                        title: e.message,
+                        onAfterEnter: () => setState({ loading: false })
                     })
                 }
             })

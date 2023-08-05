@@ -15,13 +15,6 @@ interface Request extends AxiosInstance {
     <T = any, R = AxiosResponse<T>, D = any>(url: string, config?: AxiosRequestConfig<D>): Promise<R & Response<T>>
 }
 
-interface CreateRequestOption {
-    execute: (x: Function) => Promise<any> | void | undefined
-    reject?: boolean
-    finally?: (x: Function) => Promise<any> | void | undefined
-    catch?: (e: any, x: Function) => Promise<any> | void | undefined
-}
-
 export const baseURL = import.meta.env.VITE_API_BASE
 export const request: Request = axios.create({
     baseURL,
@@ -53,22 +46,3 @@ request.interceptors.response.use(
     (response: AxiosResponse) => interNotice(response),
     error => Promise.reject(error)
 )
-
-/**请求错误捕获**/
-export function createRequest<T>(option: CreateRequestOption): Promise<T> {
-    return new Promise(async (resolve: Function, reject: Function) => {
-        try {
-            if (option.execute) {
-                const result = await option.execute(resolve)
-                resolve(result)
-            }
-        } catch (e) {
-            option.catch && option.catch(e, resolve)
-            option.reject && reject(e)
-        } finally {
-            if (option.finally) {
-                option.finally(resolve)
-            }
-        }
-    })
-}

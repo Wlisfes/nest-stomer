@@ -3,7 +3,6 @@ import { defineComponent, Fragment, type PropType } from 'vue'
 import { useState } from '@/hooks/hook-state'
 import { useCurrent } from '@/locale/instance'
 import { divineDelay } from '@/utils/utils-common'
-import { createRequest } from '@/utils/utils-request'
 import { sompute } from '@/utils/utils-remix'
 import { createDiscover, createNotice } from '@/utils/utils-naive'
 import { createElement } from '@/utils/utils-instance'
@@ -63,19 +62,21 @@ export default defineComponent({
 
         /**启用、禁用规则**/
         async function onRuleTransfer(key: string, data: IRoute, app: { done: Function }) {
-            return await createRequest({
-                execute: async e => {
-                    await app.done(true)
-                    await httpRuleTransfer({ id: data.id, status: key as IRoute['status'] })
-                    await divineDelay(300)
-                    return await createNotice({
-                        title: t(`common.${key}.enter` as Parameters<typeof t>['0']),
-                        onAfterEnter: () => emit('update')
-                    })
-                },
-                catch: async e => await createNotice({ type: 'error', title: e.message }),
-                finally: e => app.done(false)
-            })
+            try {
+                await app.done(true)
+                await httpRuleTransfer({ id: data.id, status: key as IRoute['status'] })
+                await divineDelay(300)
+                return await createNotice({
+                    title: t(`common.${key}.enter` as Parameters<typeof t>['0']),
+                    onAfterEnter: () => emit('update')
+                })
+            } catch (e) {
+                return await createNotice({
+                    type: 'error',
+                    title: e.message,
+                    onAfterEnter: () => app.done(false)
+                })
+            }
         }
 
         /**删除规则**/
@@ -90,19 +91,21 @@ export default defineComponent({
                 negativeText: t('common.cancel.value'),
                 positiveText: t('common.confirm.value'),
                 onPositiveClick: async (evt, vm, done: Function) => {
-                    return await createRequest<boolean>({
-                        execute: async e => {
-                            await done(true)
-                            await httpRuleTransfer({ id: data.id, status: 'delete' })
-                            await divineDelay(300)
-                            return await createNotice({
-                                title: t('common.delete.notice'),
-                                onAfterEnter: () => emit('update')
-                            })
-                        },
-                        catch: async e => await createNotice({ type: 'error', title: e.message }),
-                        finally: async e => await done(false)
-                    })
+                    try {
+                        await done(true)
+                        await httpRuleTransfer({ id: data.id, status: 'delete' })
+                        await divineDelay(300)
+                        return await createNotice({
+                            title: t('common.delete.notice'),
+                            onAfterEnter: () => emit('update')
+                        }).then(() => true)
+                    } catch (e) {
+                        return await createNotice({
+                            type: 'error',
+                            title: e.message,
+                            onAfterEnter: () => done(false)
+                        }).then(() => false)
+                    }
                 }
             })
         }
@@ -135,19 +138,21 @@ export default defineComponent({
 
         /**启用、禁用路由**/
         async function onRouteTransfer(key: string, app: { done: Function }) {
-            return await createRequest({
-                execute: async e => {
-                    await app.done(true)
-                    await httpRouteTransfer({ id: props.node.id, status: key as IRoute['status'] })
-                    await divineDelay(300)
-                    return await createNotice({
-                        title: t(`common.${key}.enter` as Parameters<typeof t>['0']),
-                        onAfterEnter: () => emit('update')
-                    })
-                },
-                catch: async e => await createNotice({ type: 'error', title: e.message }),
-                finally: e => app.done(false)
-            })
+            try {
+                await app.done(true)
+                await httpRouteTransfer({ id: props.node.id, status: key as IRoute['status'] })
+                await divineDelay(300)
+                return await createNotice({
+                    title: t(`common.${key}.enter` as Parameters<typeof t>['0']),
+                    onAfterEnter: () => emit('update')
+                })
+            } catch (e) {
+                return await createNotice({
+                    type: 'error',
+                    title: e.message,
+                    onAfterEnter: () => app.done(false)
+                })
+            }
         }
 
         /**删除路由**/
@@ -161,17 +166,22 @@ export default defineComponent({
                 content: () => <n-h3 v-html={t('common.delete.hint', { name: element })}></n-h3>,
                 negativeText: t('common.cancel.value'),
                 positiveText: t('common.confirm.value'),
-                onPositiveClick: (evt, vm, done: Function) => {
-                    return createRequest<boolean>({
-                        execute: async () => {
-                            await done(true)
-                            await httpRouteTransfer({ id: props.node.id, status: 'disable' })
-                            await divineDelay(300)
-                            return await createNotice({ title: t('common.delete.notice'), onAfterEnter: () => emit('update') })
-                        },
-                        catch: async e => await createNotice({ type: 'error', title: e.message }),
-                        finally: e => done(false)
-                    })
+                onPositiveClick: async (evt, vm, done: Function) => {
+                    try {
+                        await done(true)
+                        await httpRouteTransfer({ id: props.node.id, status: 'disable' })
+                        await divineDelay(300)
+                        return await createNotice({
+                            title: t('common.delete.notice'),
+                            onAfterEnter: () => emit('update')
+                        }).then(() => true)
+                    } catch (e) {
+                        return await createNotice({
+                            type: 'error',
+                            title: e.message,
+                            onAfterEnter: () => done(false)
+                        }).then(() => false)
+                    }
                 }
             })
         }

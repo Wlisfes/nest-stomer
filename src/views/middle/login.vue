@@ -4,7 +4,7 @@ import { useRouter, RouterLink } from 'vue-router'
 import { OnClickOutside } from '@vueuse/components'
 import { useCurrent } from '@/locale/instance'
 import { useCustomize } from '@/hooks/hook-customize'
-import { createRequest } from '@/utils/utils-request'
+import { createNotice } from '@/utils/utils-naive'
 import { stop, loadFile } from '@/utils/utils-common'
 import { httpAuthorize } from '@/api/http-user'
 
@@ -18,6 +18,7 @@ export default defineComponent({
             loading: false,
             disabled: false,
             visible: false,
+            option: {},
             form: {
                 mobile: undefined,
                 password: undefined
@@ -41,38 +42,34 @@ export default defineComponent({
 
         /**滑动验证成功**/
         async function fetchAuthorize(e: { token: string; session: string }) {
-            await setState({ visible: false, disabled: true, loading: true })
-            return createRequest({
-                execute: async () => {
-                    const { data } = await httpAuthorize({
-                        mobile: state.form.mobile as never,
-                        password: window.btoa(state.form.password as never),
-                        session: e.session,
-                        token: e.token
-                    })
-                    await window.$cookie.setStore(window.$cookie.APP_AUTH_TOKEN, data.token, data.expire * 1000)
-                    await window.$cookie.setStore(window.$cookie.APP_AUTH_REFRESH, data.refresh, data.expire * 1000 * 10)
-                    await window.$cookie.setStore(window.$cookie.APP_AUTH_EXPIRE, Date.now() + data.expire * 0.9 * 1000, data.expire * 1000)
-                    return window.$notification.success({
-                        title: data.message,
-                        duration: 2500,
-                        onAfterEnter: () => {
-                            setState({ loading: false }).finally(() => {
-                                const path = window.$cookie.getStore(window.$cookie.APP_AUTH_RELACE, '/')
-                                window.$cookie.delStore(window.$cookie.APP_AUTH_RELACE).finally(() => {
-                                    router.replace(path as string)
-                                })
-                            })
-                        }
-                    })
-                },
-                catch: err => {
-                    return setState({ loading: false, disabled: false }).finally(() => {
-                        window.$notification.error({ title: err.message, duration: 2500 })
-                    })
-                },
-                finally: () => setState({ loading: false, disabled: false })
-            })
+            try {
+                await setState({ visible: false, disabled: true, loading: true })
+                const { data } = await httpAuthorize({
+                    mobile: state.form.mobile as never,
+                    password: window.btoa(state.form.password as never),
+                    session: e.session,
+                    token: e.token
+                })
+                await window.$cookie.setStore(window.$cookie.APP_AUTH_TOKEN, data.token, data.expire * 1000)
+                await window.$cookie.setStore(window.$cookie.APP_AUTH_REFRESH, data.refresh, data.expire * 1000 * 10)
+                await window.$cookie.setStore(window.$cookie.APP_AUTH_EXPIRE, Date.now() + data.expire * 0.9 * 1000, data.expire * 1000)
+                return await createNotice({
+                    type: 'success',
+                    title: data.message,
+                    onAfterEnter: () => {
+                        setState({ loading: false }).finally(() => {
+                            const path = window.$cookie.getStore(window.$cookie.APP_AUTH_RELACE, '/')
+                            router.replace(path as string)
+                        })
+                    }
+                })
+            } catch (e) {
+                return await createNotice({
+                    type: 'error',
+                    title: e.message,
+                    onAfterEnter: () => setState({ loading: false, disabled: false })
+                })
+            }
         }
 
         return () => (

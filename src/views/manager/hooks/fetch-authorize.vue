@@ -3,7 +3,6 @@ import { defineComponent, h, type PropType } from 'vue'
 import { type SelectOption } from 'naive-ui'
 import { useCurrent } from '@/locale/instance'
 import { Observer } from '@/utils/utils-observer'
-import { createRequest } from '@/utils/utils-request'
 import { divineParameter, divineAsyncBatch } from '@/utils/utils-common'
 import { createNotice } from '@/utils/utils-naive'
 import { compute, RemixUI, type INameUI } from '@/utils/utils-remix'
@@ -38,11 +37,11 @@ export default defineComponent({
             },
             /**初始化数据**/
             async function mounte() {
-                await setState({ visible: true, loading: true })
-                return await createRequest({
-                    execute: () => divineAsyncBatch([fetchBearerAuthorize, fetchOptionsRoute]),
-                    finally: e => setState({ loading: false })
-                })
+                try {
+                    await setState({ visible: true, loading: true })
+                    await divineAsyncBatch([fetchBearerAuthorize, fetchOptionsRoute])
+                    await setState({ loading: false })
+                } catch (e) {}
             }
         )
 
@@ -69,28 +68,25 @@ export default defineComponent({
         /**表单验证**/
         async function onSubmit() {
             await divineFormValidater()
-            await setState({ loading: true })
-            return await createRequest({
-                execute: async () => {
-                    return await httpUpdateAuthorize({
-                        uid: props.uid,
-                        route: [...new Set([...state.form.checked, ...state.form.indeterminate])]
-                    }).then(async ({ message }) => {
-                        return await createNotice({
-                            type: 'success',
-                            title: message,
-                            onAfterEnter: () => emit('submit', { done: setState })
-                        })
-                    })
-                },
-                catch: async e => {
+            try {
+                await setState({ loading: true })
+                return await httpUpdateAuthorize({
+                    uid: props.uid,
+                    route: [...new Set([...state.form.checked, ...state.form.indeterminate])]
+                }).then(async ({ message }) => {
                     return await createNotice({
-                        type: 'error',
-                        title: e.message,
-                        onAfterEnter: () => setState({ loading: false })
+                        type: 'success',
+                        title: message,
+                        onAfterEnter: () => emit('submit', { done: setState })
                     })
-                }
-            })
+                })
+            } catch (e) {
+                return await createNotice({
+                    type: 'error',
+                    title: e.message,
+                    onAfterEnter: () => setState({ loading: false })
+                })
+            }
         }
 
         return () => (
@@ -102,7 +98,7 @@ export default defineComponent({
                 title="编辑用户权限"
                 preset="dialog"
                 class="el-customize"
-                style={{ width: '640px' }}
+                style={{ width: '750px' }}
                 onAfterLeave={() => emit('close')}
                 action={() => (
                     <common-inspector

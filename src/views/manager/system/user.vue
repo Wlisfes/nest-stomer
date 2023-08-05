@@ -35,14 +35,13 @@ export default defineComponent({
                                 type="primary"
                                 v-slots={{ icon: () => <n-icon component={compute('SearchBlod')} />, default: () => <span>查找</span> }}
                             >
-                                Primary
+                                新增用户
                             </n-button>
                         </n-form-item>
                         <n-form-item>
                             <n-button
                                 secondary
                                 type="success"
-                                disabled
                                 v-slots={{ icon: () => <n-icon component={compute('RadixSpinWith')} /> }}
                             ></n-button>
                         </n-form-item>
