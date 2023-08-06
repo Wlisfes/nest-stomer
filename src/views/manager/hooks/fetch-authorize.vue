@@ -1,11 +1,8 @@
 <script lang="tsx">
-import { defineComponent, h, type PropType } from 'vue'
-import { type SelectOption } from 'naive-ui'
+import { defineComponent } from 'vue'
 import { useCurrent } from '@/locale/instance'
-import { Observer } from '@/utils/utils-observer'
-import { divineParameter, divineAsyncBatch } from '@/utils/utils-common'
+import { divineAsyncBatch } from '@/utils/utils-common'
 import { createNotice } from '@/utils/utils-naive'
-import { compute, RemixUI, type INameUI } from '@/utils/utils-remix'
 import { useCustomize } from '@/hooks/hook-customize'
 import { httpBearerAuthorize, httpUpdateAuthorize } from '@/api/http-user'
 import { httpOptionsRoute, type IRoute } from '@/api/http-route'

@@ -69,7 +69,7 @@ export default defineComponent({
                 return await createNotice({
                     title: t(`common.${key}.enter` as Parameters<typeof t>['0']),
                     onAfterEnter: () => emit('update')
-                })
+                }).then(() => app.done(false))
             } catch (e) {
                 return await createNotice({
                     type: 'error',

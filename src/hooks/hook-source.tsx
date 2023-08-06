@@ -1,59 +1,52 @@
-import { toRefs, onMounted, nextTick, type UnwrapNestedRefs } from 'vue'
-import { type DataTableBaseColumn } from 'naive-ui'
-import { type IColumn, type Result } from '@/interface/http-interface'
+import { toRefs, onMounted, nextTick } from 'vue'
+import { type Result } from '@/interface/http-interface'
 import { type Response } from '@/utils/utils-request'
+import { divineHandler } from '@/utils/utils-common'
 import { useState } from '@/hooks/hook-state'
-
-export interface IState<T> extends IColumn<T> {
-    status: string | null | undefined
-    dataColumn: Array<DataTableBaseColumn>
-}
-export interface IOption<T, R> {
+type Option<T extends Record<string, any>, R extends Record<string, any>> = {
     page?: number
     size?: number
     total?: number
     loading?: boolean
-    form?: R
+    form: R
     immediate?: boolean
     dataSource?: Array<T>
-    dataColumn?: Array<DataTableBaseColumn>
-    request: (e: UnwrapNestedRefs<IState<T> & R>) => Promise<Response<Result<T>>>
 }
 
-export function useSource<T, R extends Object>(option: IOption<T, R>) {
-    const { form = {}, request } = option
-    const { state, setState } = useState<IState<T> & R>(
-        Object.assign({
-            form: form,
-            page: option.page ?? 1,
-            size: option.size ?? 10,
-            total: option.total ?? 0,
-            loading: option.loading ?? true,
-            dataSource: option.dataSource ?? [],
-            dataColumn: option.dataColumn ?? []
-        })
-    )
+export function useSource<T extends Object, R extends Object>(
+    option: Option<T, R>,
+    request: (e: Required<Option<T, R>>) => Promise<Response<Result<T>>>
+) {
+    const { state, setState } = useState<typeof option>({
+        immediate: option.immediate ?? false,
+        form: option.form,
+        page: option.page ?? 1,
+        size: option.size ?? 10,
+        total: option.total ?? 0,
+        loading: option.loading ?? true,
+        dataSource: option.dataSource ?? []
+    })
 
-    onMounted(() => {
-        if (option.immediate) {
+    onMounted(async () => {
+        await divineHandler(Boolean(state.immediate), () => {
             fetchColumn()
-        }
+        })
     })
 
     /**初始化列表接口**/
     function fetchColumn(handler?: Function): Promise<typeof state> {
         return new Promise(resolve => {
-            return setState({ loading: true } as Partial<IState<T> & R>).then(async () => {
+            return setState({ loading: true } as Partial<typeof option>).then(async () => {
                 try {
-                    const { data } = await request(state)
+                    const { data } = await request(state as Required<typeof option>)
                     await setState({
                         dataSource: data.list,
                         total: data.total
-                    } as Partial<IState<T> & R>)
+                    } as typeof option)
                 } catch (e) {
                 } finally {
                     nextTick(async () => {
-                        await setState({ loading: false } as Partial<IState<T> & R>)
+                        await setState({ loading: false } as typeof option)
                         handler?.(state)
                         resolve(state)
                     })
@@ -63,15 +56,15 @@ export function useSource<T, R extends Object>(option: IOption<T, R>) {
     }
 
     /**列表更新**/
-    function fetchUpdate(parameter: Partial<IState<T> & R> = {}, handler?: Function): Promise<typeof state> {
+    function fetchUpdate(parameter: Partial<typeof option> = {}, handler?: Function): Promise<typeof state> {
         return setState(parameter).then(async () => {
             return await fetchColumn(handler)
         })
     }
 
     return {
-        ...toRefs(state),
         state,
+        ...toRefs(state),
         setState,
         fetchColumn,
         fetchUpdate

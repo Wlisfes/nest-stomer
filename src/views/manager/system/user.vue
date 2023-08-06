@@ -11,14 +11,26 @@ export default defineComponent({
     setup() {
         const { cols } = useResize({ cols: { 1480: 1, 2160: 2, 4320: 3 } })
         const { t } = useCurrent()
-        const { state, fetchUpdate } = useSource<IUser, Record<string, unknown>>({
-            request: e => httpColumnUser({ page: e.page, size: e.size }),
-            size: 15,
-            immediate: true
-        })
+        const { state, fetchUpdate } = useSource<IUser, Object>(
+            {
+                immediate: true,
+                form: {
+                    nickname: undefined
+                },
+                size: 15
+            },
+            e => httpColumnUser({ page: e.page, size: e.size })
+        )
 
         return () => (
             <common-container>
+                <common-request>
+                    <n-grid cols={5}>
+                        <n-form-item-gi label="数量">
+                            <n-input-number v-model:value={state} />
+                        </n-form-item-gi>
+                    </n-grid>
+                </common-request>
                 <n-form show-label={false} show-feedback={false} size="large" style={{ padding: '16px' }}>
                     <n-space>
                         <n-form-item>

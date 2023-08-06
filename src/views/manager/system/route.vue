@@ -7,8 +7,9 @@ export default defineComponent({
     name: 'Route',
     setup() {
         const { state, fetchUpdate } = useSource<IRoute, Record<string, unknown>>({
-            request: httpColumnRoute,
-            immediate: true
+            immediate: true,
+            form: {},
+            request: httpColumnRoute
         })
 
         return () => (

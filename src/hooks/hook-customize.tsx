@@ -2,7 +2,7 @@ import type { FormInst, FormRules, FormItemRule } from 'naive-ui'
 import { ref, toRefs, onMounted } from 'vue'
 import { useState } from '@/hooks/hook-state'
 import { divineHandler, divineDelay } from '@/utils/utils-common'
-export type OptionCustomize<T extends Record<string, any>, R extends Record<string, any>> = {
+type Option<T extends Record<string, any>, R extends Record<string, any>> = {
     immediate?: boolean
     disabled?: boolean
     visible?: boolean
@@ -12,7 +12,7 @@ export type OptionCustomize<T extends Record<string, any>, R extends Record<stri
     loading: boolean
 }
 
-export function useCustomize<T extends Object, R extends Object>(option: OptionCustomize<T, R>, handler?: Function) {
+export function useCustomize<T extends Object, R extends Object>(option: Option<T, R>, handler?: Function) {
     const formRef = ref<FormInst>()
     const { state, setState } = useState<typeof option>(option)
 
