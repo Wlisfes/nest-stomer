@@ -43,3 +43,8 @@ export async function divineParameter<T>(data: T) {
 export function divineAsyncBatch(dataColumn: Array<Function> = []) {
     return Promise.all(dataColumn.map(handler => handler()))
 }
+
+/**指令筛选**/
+export function divineAndSelecter(dataCommand: Array<{ key: string; visible: boolean }> = []) {
+    return dataCommand.filter(x => x.visible).map(x => x.key)
+}

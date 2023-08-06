@@ -17,7 +17,7 @@ export function useSource<T extends Object, R extends Object>(
     option: Option<T, R>,
     request: (e: Required<Option<T, R>>) => Promise<Response<Result<T>>>
 ) {
-    const { state, setState } = useState<typeof option>({
+    const { state, setState } = useState<Required<typeof option>>({
         immediate: option.immediate ?? false,
         form: option.form,
         page: option.page ?? 1,
@@ -28,7 +28,7 @@ export function useSource<T extends Object, R extends Object>(
     })
 
     onMounted(async () => {
-        await divineHandler(Boolean(state.immediate), () => {
+        await divineHandler(state.immediate, () => {
             fetchColumn()
         })
     })

@@ -1,6 +1,6 @@
 import { request } from '@/utils/utils-request'
 import type { Scheme, Result, Notice } from '@/interface/http-interface'
-export enum IMethod {
+export enum IRouteHot {
     Default = 'default',
     GET = 'info',
     POST = 'success',
@@ -16,7 +16,7 @@ export interface IRoute extends Scheme {
     order: number
     parent: string
     isLeaf: boolean
-    method: keyof typeof IMethod
+    method: keyof typeof IRouteHot
     children: Array<IRoute>
 }
 

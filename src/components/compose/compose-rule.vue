@@ -1,55 +1,107 @@
 <script lang="tsx">
-import { defineComponent, computed, type PropType } from 'vue'
+import { defineComponent, type PropType } from 'vue'
 import { useClipboard } from '@vueuse/core'
-import { type IRoute, IMethod } from '@/api/http-route'
+import { httpRuleTransfer, type IRoute, IRouteHot } from '@/api/http-route'
 import { useCurrent } from '@/locale/instance'
-import { divineHandler } from '@/utils/utils-common'
 import { sompute } from '@/utils/utils-remix'
+import { createElement } from '@/utils/utils-instance'
+import { createDiscover, createNotice } from '@/utils/utils-naive'
+import { divineHandler, divineAndSelecter, divineDelay } from '@/utils/utils-common'
+import { fetchRule } from '@/views/manager/hooks/fetch-instance'
 
 export default defineComponent({
     name: 'ComposeRule',
     props: {
         node: { type: Object as PropType<IRoute>, required: true }
     },
-    emits: ['selecter', 'create', 'update', 'delete', 'disable', 'enable'],
+    emits: ['update'],
     setup(props, { emit }) {
         const { t } = useCurrent()
-        const { text, copy, isSupported } = useClipboard()
-        const methodType = computed(() => IMethod[props.node.method] ?? IMethod.Default)
-        const dataCommand = computed(() => {
-            return [
-                { key: 'update', visible: true },
-                { key: 'delete', visible: true },
-                { key: 'disable', visible: props.node.status === 'enable' },
-                { key: 'enable', visible: props.node.status === 'disable' }
-            ].reduce((and: string[], next) => (next.visible ? and.concat(next.key) : and), [])
-        })
+        const { copy, isSupported } = useClipboard()
 
-        /**规则指令**/
-        function onSelecter(key: Parameters<typeof emit>['0'], app: unknown) {
-            emit(key, key, props.node, app)
-            emit('selecter', key, props.node, app)
-        }
+        async function onSelecter(key: string, app: { done: Function }) {
+            /**复制规则接口**/
+            await divineHandler(key === 'clipboard', async () => {
+                return await divineHandler(isSupported.value, async () => {
+                    try {
+                        await copy(props.node.path)
+                        return await createNotice({ title: t('common.copy.notice') })
+                    } catch (e) {
+                        return await createNotice({ type: 'error', title: t('common.copy.fail') })
+                    }
+                }).then(result => {
+                    return divineHandler(!result, () => {
+                        return createNotice({ type: 'error', title: t('common.copy.supported') })
+                    })
+                })
+            })
 
-        /**复制规则接口**/
-        async function onClipboar() {
-            await divineHandler(isSupported.value, async () => {
+            /**编辑规则**/
+            await divineHandler(key === 'update', () => {
+                return fetchRule({
+                    title: t('common.update.enter', { name: t('rule.common.name') }),
+                    command: 'UPDATE',
+                    id: props.node.id
+                }).then(({ observer }) => {
+                    observer.on('submit', ({ done }) => {
+                        done({ visible: false }).finally(() => emit('update'))
+                    })
+                })
+            })
+
+            /**启用、禁用规则**/
+            await divineHandler(['disable', 'enable'].includes(key), async () => {
                 try {
-                    await copy(props.node.path)
-                    return await window.$notification.success({ title: t('common.copy.notice'), duration: 2000 })
+                    await app.done(true)
+                    await httpRuleTransfer({ id: props.node.id, status: key as IRoute['status'] })
+                    await divineDelay(300)
+                    return await createNotice({
+                        title: t(`common.${key}.enter` as Parameters<typeof t>['0']),
+                        onAfterEnter: () => emit('update')
+                    }).then(() => app.done(false))
                 } catch (e) {
-                    window.$notification.error({ title: t('common.copy.fail'), duration: 2500 })
+                    return await createNotice({
+                        type: 'error',
+                        title: e.message
+                    }).then(() => app.done(false))
                 }
-            }).then(result => {
-                return divineHandler(!result, () => {
-                    window.$notification.error({ title: t('common.copy.supported'), duration: 2500 })
+            })
+
+            /**删除规则**/
+            await divineHandler(key === 'delete', async () => {
+                const { element } = await createElement(<n-text type="error" v-slots={{ default: () => t('rule.common.name') }} />, {
+                    style: { padding: '0 5px', fontWeight: 600 }
+                })
+                return await createDiscover({
+                    type: 'error',
+                    title: t('common.hint.value'),
+                    content: () => <n-h3 v-html={t('common.delete.hint', { name: element })}></n-h3>,
+                    negativeText: t('common.cancel.value'),
+                    positiveText: t('common.confirm.value'),
+                    onPositiveClick: async (evt, vm, done: Function) => {
+                        try {
+                            await done(true)
+                            await httpRuleTransfer({ id: props.node.id, status: 'delete' })
+                            await divineDelay(300)
+                            return await createNotice({
+                                title: t('common.delete.notice'),
+                                onAfterEnter: () => emit('update')
+                            }).then(() => true)
+                        } catch (e) {
+                            return await createNotice({
+                                type: 'error',
+                                title: e.message,
+                                onAfterEnter: () => done(false)
+                            }).then(() => false)
+                        }
+                    }
                 })
             })
         }
 
         return () => (
-            <n-alert class="compose-rule" show-icon={false} type={methodType.value}>
-                <n-button type={methodType.value} size="small" strong style={{ minWidth: '80px' }}>
+            <n-alert class="compose-rule" show-icon={false} type={IRouteHot[props.node.method] ?? IRouteHot.Default}>
+                <n-button type={IRouteHot[props.node.method] ?? IRouteHot.Default} size="small" strong style={{ minWidth: '80px' }}>
                     {props.node.method}
                 </n-button>
                 <n-text class="compose-rule__content">
@@ -66,9 +118,17 @@ export default defineComponent({
                         size={18}
                         title={t('common.copy.value')}
                         icon={sompute('CopyRound')}
-                        onTrigger={onClipboar}
+                        onTrigger={(app: never) => onSelecter('clipboard', app)}
                     ></common-remix>
-                    <common-dropdown command={dataCommand.value} onSelecter={onSelecter}>
+                    <common-dropdown
+                        command={divineAndSelecter([
+                            { key: 'update', visible: true },
+                            { key: 'delete', visible: true },
+                            { key: 'disable', visible: props.node.status === 'enable' },
+                            { key: 'enable', visible: props.node.status === 'disable' }
+                        ])}
+                        onSelecter={onSelecter}
+                    >
                         <common-remix size={18} icon={sompute('RadixMore')}></common-remix>
                     </common-dropdown>
                 </n-space>

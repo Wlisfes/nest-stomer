@@ -2,12 +2,12 @@
 import { defineComponent, Fragment, type PropType } from 'vue'
 import { useState } from '@/hooks/hook-state'
 import { useCurrent } from '@/locale/instance'
-import { divineDelay } from '@/utils/utils-common'
+import { divineDelay, divineHandler, divineAndSelecter } from '@/utils/utils-common'
 import { sompute } from '@/utils/utils-remix'
 import { createDiscover, createNotice } from '@/utils/utils-naive'
 import { createElement } from '@/utils/utils-instance'
 import { fetchRule, fetchRoute } from '@/views/manager/hooks/fetch-instance'
-import { httpRouteTransfer, httpRuleTransfer, type IRoute } from '@/api/http-route'
+import { httpRouteTransfer, type IRoute } from '@/api/http-route'
 
 export default defineComponent({
     name: 'ComposeRoute',
@@ -35,7 +35,7 @@ export default defineComponent({
         }
 
         /**新增规则**/
-        async function onCreateRule(app: { done: Function }) {
+        async function fetchCreateRule(app: { done: Function }) {
             return fetchRule({
                 title: t('common.create.enter', { name: t('rule.common.name') }),
                 command: 'CREATE',
@@ -47,142 +47,80 @@ export default defineComponent({
             })
         }
 
-        /**编辑规则**/
-        async function onUpdateRule(key: string, data: IRoute, app: { done: Function }) {
-            return fetchRule({
-                title: t('common.update.enter', { name: t('rule.common.name') }),
-                command: 'UPDATE',
-                id: data.id
-            }).then(({ observer }) => {
-                observer.on('submit', ({ done }) => {
-                    done({ visible: false }).finally(() => emit('update'))
+        async function onSelecter(key: string, app: { done: Function }) {
+            /**新增路由**/
+            await divineHandler(key === 'create', () => {
+                return fetchRoute({
+                    command: 'CREATE',
+                    parent: props.node.id,
+                    title: t('common.create.enter', { name: t('route.common.name') })
+                }).then(({ observer }) => {
+                    observer.on('submit', ({ done }) => {
+                        done({ visible: false }).finally(() => emit('update'))
+                    })
                 })
             })
-        }
 
-        /**启用、禁用规则**/
-        async function onRuleTransfer(key: string, data: IRoute, app: { done: Function }) {
-            try {
-                await app.done(true)
-                await httpRuleTransfer({ id: data.id, status: key as IRoute['status'] })
-                await divineDelay(300)
-                return await createNotice({
-                    title: t(`common.${key}.enter` as Parameters<typeof t>['0']),
-                    onAfterEnter: () => emit('update')
-                }).then(() => app.done(false))
-            } catch (e) {
-                return await createNotice({
-                    type: 'error',
-                    title: e.message,
-                    onAfterEnter: () => app.done(false)
+            /**编辑路由**/
+            await divineHandler(key === 'update', () => {
+                return fetchRoute({
+                    command: 'UPDATE',
+                    id: props.node.id,
+                    title: t('common.create.enter', { name: t('route.common.name') })
+                }).then(({ observer }) => {
+                    observer.on('submit', ({ done }) => {
+                        done({ visible: false }).finally(() => emit('update'))
+                    })
                 })
-            }
-        }
-
-        /**删除规则**/
-        async function onDeleteRule(key: string, data: IRoute, app: { done: Function }) {
-            const { element } = await createElement(<n-text type="error" v-slots={{ default: () => t('rule.common.name') }} />, {
-                style: { padding: '0 5px', fontWeight: 600 }
             })
-            return await createDiscover({
-                type: 'error',
-                title: t('common.hint.value'),
-                content: () => <n-h3 v-html={t('common.delete.hint', { name: element })}></n-h3>,
-                negativeText: t('common.cancel.value'),
-                positiveText: t('common.confirm.value'),
-                onPositiveClick: async (evt, vm, done: Function) => {
-                    try {
-                        await done(true)
-                        await httpRuleTransfer({ id: data.id, status: 'delete' })
-                        await divineDelay(300)
-                        return await createNotice({
-                            title: t('common.delete.notice'),
-                            onAfterEnter: () => emit('update')
-                        }).then(() => true)
-                    } catch (e) {
-                        return await createNotice({
-                            type: 'error',
-                            title: e.message,
-                            onAfterEnter: () => done(false)
-                        }).then(() => false)
-                    }
+
+            /**启用、禁用路由**/
+            await divineHandler(['disable', 'enable'].includes(key), async () => {
+                try {
+                    await app.done(true)
+                    await httpRouteTransfer({ id: props.node.id, status: key as IRoute['status'] })
+                    await divineDelay(300)
+                    return await createNotice({
+                        title: t(`common.${key}.enter` as Parameters<typeof t>['0']),
+                        onAfterEnter: () => emit('update')
+                    }).then(() => app.done(false))
+                } catch (e) {
+                    return await createNotice({
+                        type: 'error',
+                        title: e.message
+                    }).then(() => app.done(false))
                 }
             })
-        }
 
-        /**新增路由**/
-        async function onCreateRoute() {
-            return fetchRoute({
-                command: 'CREATE',
-                parent: props.node.id,
-                title: t('common.create.enter', { name: t('route.common.name') })
-            }).then(({ observer }) => {
-                observer.on('submit', ({ done }) => {
-                    done({ visible: false }).finally(() => emit('update'))
+            /**删除路由**/
+            await divineHandler(key === 'delete', async () => {
+                const { element } = await createElement(<n-text type="error" v-slots={{ default: () => props.node.title }} />, {
+                    style: { padding: '0 5px', fontWeight: 600 }
                 })
-            })
-        }
-
-        /**编辑路由**/
-        async function onUpdateRoute() {
-            return fetchRoute({
-                command: 'UPDATE',
-                id: props.node.id,
-                title: t('common.create.enter', { name: t('route.common.name') })
-            }).then(({ observer }) => {
-                observer.on('submit', ({ done }) => {
-                    done({ visible: false }).finally(() => emit('update'))
-                })
-            })
-        }
-
-        /**启用、禁用路由**/
-        async function onRouteTransfer(key: string, app: { done: Function }) {
-            try {
-                await app.done(true)
-                await httpRouteTransfer({ id: props.node.id, status: key as IRoute['status'] })
-                await divineDelay(300)
-                return await createNotice({
-                    title: t(`common.${key}.enter` as Parameters<typeof t>['0']),
-                    onAfterEnter: () => emit('update')
-                })
-            } catch (e) {
-                return await createNotice({
+                return await createDiscover({
                     type: 'error',
-                    title: e.message,
-                    onAfterEnter: () => app.done(false)
-                })
-            }
-        }
-
-        /**删除路由**/
-        async function onDeleteRoute(key: string, app: { done: Function }) {
-            const { element } = await createElement(<n-text type="error" v-slots={{ default: () => props.node.title }} />, {
-                style: { padding: '0 5px', fontWeight: 600 }
-            })
-            return await createDiscover({
-                type: 'error',
-                title: t('common.hint.value'),
-                content: () => <n-h3 v-html={t('common.delete.hint', { name: element })}></n-h3>,
-                negativeText: t('common.cancel.value'),
-                positiveText: t('common.confirm.value'),
-                onPositiveClick: async (evt, vm, done: Function) => {
-                    try {
-                        await done(true)
-                        await httpRouteTransfer({ id: props.node.id, status: 'disable' })
-                        await divineDelay(300)
-                        return await createNotice({
-                            title: t('common.delete.notice'),
-                            onAfterEnter: () => emit('update')
-                        }).then(() => true)
-                    } catch (e) {
-                        return await createNotice({
-                            type: 'error',
-                            title: e.message,
-                            onAfterEnter: () => done(false)
-                        }).then(() => false)
+                    title: t('common.hint.value'),
+                    content: () => <n-h3 v-html={t('common.delete.hint', { name: element })}></n-h3>,
+                    negativeText: t('common.cancel.value'),
+                    positiveText: t('common.confirm.value'),
+                    onPositiveClick: async (evt, vm, done: Function) => {
+                        try {
+                            await done(true)
+                            await httpRouteTransfer({ id: props.node.id, status: 'disable' })
+                            await divineDelay(300)
+                            return await createNotice({
+                                title: t('common.delete.notice'),
+                                onAfterEnter: () => emit('update')
+                            }).then(() => true)
+                        } catch (e) {
+                            return await createNotice({
+                                type: 'error',
+                                title: e.message,
+                                onAfterEnter: () => done(false)
+                            }).then(() => false)
+                        }
                     }
-                }
+                })
             })
         }
 
@@ -200,21 +138,24 @@ export default defineComponent({
                     </div>
                     <n-space align="center" justify="center" wrap-item={false} size={5} style={{ margin: '0 10px 0' }}>
                         {props.node.source === 'folder' ? (
-                            <common-remix stop size={18} type="primary" icon={sompute('AddBold')} onTrigger={onCreateRoute} />
+                            <common-remix
+                                stop
+                                size={18}
+                                type="primary"
+                                icon={sompute('AddBold')}
+                                onTrigger={(app: never) => onSelecter('create', app)}
+                            />
                         ) : (
-                            <common-remix stop size={18} type="success" icon={sompute('SlackBold')} onTrigger={onCreateRule} />
+                            <common-remix stop size={18} type="success" icon={sompute('SlackBold')} onTrigger={fetchCreateRule} />
                         )}
                         <common-dropdown
-                            command={[
+                            command={divineAndSelecter([
                                 { key: 'update', visible: true },
                                 { key: 'delete', visible: true },
                                 { key: 'disable', visible: props.node.status === 'enable' },
                                 { key: 'enable', visible: props.node.status === 'disable' }
-                            ].reduce((and: string[], next) => (next.visible ? and.concat(next.key) : and), [])}
-                            onUpdate={onUpdateRoute}
-                            onDisable={onRouteTransfer}
-                            onEnable={onRouteTransfer}
-                            onDelete={onDeleteRoute}
+                            ])}
+                            onSelecter={onSelecter}
                         >
                             <common-remix stop size={18} icon={sompute('RadixMore')}></common-remix>
                         </common-dropdown>
@@ -259,14 +200,7 @@ export default defineComponent({
                             <n-grid cols={2} x-gap={14} y-gap={14} item-responsive style={{ padding: '0', marginTop: '20px' }}>
                                 {(props.node.children ?? []).map(item => (
                                     <n-grid-item span="1:2 520:2 960:1">
-                                        <compose-rule
-                                            key={item.id}
-                                            node={item}
-                                            onUpdate={onUpdateRule}
-                                            onDisable={onRuleTransfer}
-                                            onEnable={onRuleTransfer}
-                                            onDelete={onDeleteRule}
-                                        ></compose-rule>
+                                        <compose-rule key={item.id} node={item} onUpdate={() => emit('update')}></compose-rule>
                                     </n-grid-item>
                                 ))}
                             </n-grid>

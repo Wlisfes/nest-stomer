@@ -6,11 +6,7 @@ import { useSource } from '@/hooks/hook-source'
 export default defineComponent({
     name: 'Route',
     setup() {
-        const { state, fetchUpdate } = useSource<IRoute, Record<string, unknown>>({
-            immediate: true,
-            form: {},
-            request: httpColumnRoute
-        })
+        const { state, fetchUpdate } = useSource<IRoute, Record<string, unknown>>({ immediate: true, form: {} }, httpColumnRoute)
 
         return () => (
             <common-container>
