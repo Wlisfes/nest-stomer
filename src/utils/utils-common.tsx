@@ -48,3 +48,14 @@ export function divineAsyncBatch(dataColumn: Array<Function> = []) {
 export function divineAndSelecter(dataCommand: Array<{ key: string; visible: boolean }> = []) {
     return dataCommand.filter(x => x.visible).map(x => x.key)
 }
+
+/**响应式断点计算**/ //prettier-ignore
+export function divineCols(data: Record<number, number> = {}, width: number, defaultCols: number) {
+    const cols = Object.keys(data).map(Number).sort((a, b) => a - b).find(value => width < value)
+    return cols && data ? data[cols] : defaultCols
+}
+
+/**响应式节点计算**/
+export function divineColsNode(data: Record<number, number> = {}, cols: number, defaultCols: number) {
+    return data[cols] ?? defaultCols
+}

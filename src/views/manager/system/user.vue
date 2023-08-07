@@ -22,24 +22,27 @@ export default defineComponent({
 
         return () => (
             <common-container>
-                <common-request cols={{ 1200: 28, 1201: 30 }} default-cols={30}>
-                    <n-form-item-gi span="1:30 540:15 840:10 1100:7 1200:5 1600:5 1900:4">
+                <common-request cols={{ 544: 1, 640: 2, 960: 3, 1440: 4, 1592: 6, 2160: 7, 3440: 8 }} default-cols={12}>
+                    <n-form-item-gi span={1}>
                         <n-input v-model:value={state.form.nickname} placeholder="昵称" />
                     </n-form-item-gi>
-                    <n-form-item-gi span="1:30 540:15 840:10 1100:7 1200:5 1600:5 1900:4">
+                    <n-form-item-gi span={1}>
                         <n-input v-model:value={state.form.nickname} placeholder="UID" />
                     </n-form-item-gi>
-                    <n-form-item-gi span="1:30 540:15 840:10 1100:7 1200:5 1600:5 1900:4">
+                    <n-form-item-gi span={1}>
                         <n-input v-model:value={state.form.nickname} placeholder="手机号" />
                     </n-form-item-gi>
-                    <n-form-item-gi span="1:30 540:15 840:10 1100:7 1200:5 1600:5 1900:4">
+                    <n-form-item-gi span={1}>
                         <n-input v-model:value={state.form.nickname} placeholder="电子邮件" />
                     </n-form-item-gi>
-                    <n-form-item-gi span="1:30 540:15 840:10 1100:28 1200:10 1600:10 1900:14" style="background-color: #e6dbdb;">
+                    <n-form-item-gi span={2}>
                         <n-space size={14}>
                             <n-button
                                 type="primary"
-                                v-slots={{ icon: () => <n-icon component={compute('SearchBlod')} />, default: () => <span>查找</span> }}
+                                v-slots={{
+                                    icon: () => <n-icon component={compute('SearchBlod')} />,
+                                    default: () => <span>查找</span>
+                                }}
                             >
                                 新增用户
                             </n-button>

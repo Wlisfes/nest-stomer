@@ -3,6 +3,7 @@ import type { PropType, CSSProperties, VNodeChild } from 'vue'
 import type { ScrollbarInst } from 'naive-ui'
 import { defineComponent, computed, Fragment, ref, watch } from 'vue'
 import { useElementSize } from '@vueuse/core'
+import { divineCols } from '@/utils/utils-common'
 
 export default defineComponent({
     name: 'CommonSource',
@@ -13,7 +14,7 @@ export default defineComponent({
         pageSizes: { type: Array, default: () => [10, 20, 30, 40, 50] },
         total: { type: Number, default: 0 },
         dataSource: { type: Array as PropType<Array<Record<string, unknown>>>, default: () => [] },
-        dataRender: { type: Function as PropType<(e: Record<string, unknown>) => VNodeChild> },
+        dataRender: { type: Function as PropType<(e: Record<string, unknown>, c: unknown) => VNodeChild> },
         cameStyle: { type: Object as PropType<CSSProperties>, default: () => ({}) },
         cols: { type: Object as PropType<Record<number, number>>, default: () => ({}) },
         defaultCols: { type: Number, default: 24 },
@@ -26,12 +27,9 @@ export default defineComponent({
         const scrollbar = ref<ScrollbarInst>()
         const element = ref<HTMLElement>()
         const { width, height } = useElementSize(element)
+
         const cols = computed(() => {
-            //prettier-ignore
-            const screen = Object.keys(props.cols ?? {}).map(Number).sort((a, b) => a - b).find((value: number) => {
-                return width.value < value
-            })
-            return screen && props.cols ? props.cols[screen] : props.defaultCols
+            return divineCols(props.cols, width.value, props.defaultCols)
         })
         const cameStyle = computed<CSSProperties>(() => ({
             ...props.cameStyle,
@@ -39,11 +37,12 @@ export default defineComponent({
             columnGap: props.yGap + 'px',
             gridTemplateColumns: `repeat(${cols.value}, minmax(0px, 1fr))`
         }))
+        console.log(cols.value)
 
         watch(
             () => [width.value, height.value],
             () => {
-                console.log([width.value, cols.value])
+                emit('resize', { width: width.value, height: height.value, cols: cols.value })
             },
             { immediate: true }
         )
@@ -73,7 +72,9 @@ export default defineComponent({
                             <Fragment>
                                 <div class="common-source__container" style={cameStyle.value}>
                                     {props.dataSource.map(item => {
-                                        return props.dataRender ? props.dataRender(item) : null
+                                        return (
+                                            props.dataRender?.(item, { width: width.value, height: height.value, cols: cols.value }) ?? null
+                                        )
                                     })}
                                 </div>
                                 {props.pagination && (

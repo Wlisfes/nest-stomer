@@ -26,13 +26,13 @@ export default defineComponent({
                 </n-form>
                 <common-source
                     came-style={{ padding: '0 16px 64px' }}
-                    cols={1}
                     pagination={false}
                     loading={state.loading}
                     page={state.page}
                     size={state.size}
                     total={state.total}
                     data-source={state.dataSource}
+                    default-cols={1}
                     data-render={(data: IRoute) => <compose-route key={data.id} node={data} onUpdate={fetchUpdate}></compose-route>}
                     onUpdate={fetchUpdate}
                 ></common-source>
