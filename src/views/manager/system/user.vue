@@ -15,7 +15,7 @@ export default defineComponent({
                 form: {
                     nickname: undefined
                 },
-                size: 15
+                size: 20
             },
             e => httpColumnUser({ page: e.page, size: e.size })
         )
@@ -64,10 +64,10 @@ export default defineComponent({
                     loading={state.loading}
                     page={state.page}
                     size={state.size}
-                    page-sizes={[15, 30, 45, 60]}
+                    page-sizes={[20, 30, 40, 50, 60]}
                     total={state.total}
                     data-source={state.dataSource}
-                    cols={{ 768: 1, 1280: 2, 4320: 3 }}
+                    cols={{ 768: 1, 1144: 2, 1520: 3, 1896: 4, 4320: 5 }}
                     default-cols={3}
                     data-render={(data: IUser) => <compose-user key={data.id} node={data}></compose-user>}
                     onUpdate={fetchUpdate}

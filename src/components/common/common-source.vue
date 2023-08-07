@@ -16,7 +16,7 @@ export default defineComponent({
         dataRender: { type: Function as PropType<(e: Record<string, unknown>) => VNodeChild> },
         cameStyle: { type: Object as PropType<CSSProperties>, default: () => ({}) },
         cols: { type: Object as PropType<Record<number, number>>, default: () => ({}) },
-        defaultCols: { type: Number, default: 3 },
+        defaultCols: { type: Number, default: 24 },
         xGap: { type: Number, default: 16 },
         yGap: { type: Number, default: 16 },
         pagination: { type: Boolean, default: true }
@@ -43,7 +43,7 @@ export default defineComponent({
         watch(
             () => [width.value, height.value],
             () => {
-                console.log([width.value, height.value, cols.value])
+                console.log([width.value, cols.value])
             },
             { immediate: true }
         )
