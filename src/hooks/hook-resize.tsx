@@ -1,6 +1,6 @@
-import { watch, computed } from 'vue'
+import { ref, watch, computed } from 'vue'
 import { useManager } from '@/store/manager'
-import { useWindowSize } from '@vueuse/core'
+import { useWindowSize, useElementSize } from '@vueuse/core'
 
 export type IDevice = 'PC' | 'IPAD' | 'MOBILE'
 export type IOption = {
@@ -61,5 +61,17 @@ export function useResize(option: IOption = {}) {
         width,
         height,
         cols
+    }
+}
+
+export function useElementResize(option: any) {
+    const element = ref<HTMLElement>()
+    useElementSize
+
+    setTimeout(() => {
+        console.log(element.value)
+    }, 500)
+    return {
+        element
     }
 }

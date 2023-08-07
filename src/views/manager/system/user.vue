@@ -3,15 +3,16 @@ import { defineComponent } from 'vue'
 import { httpColumnUser, type IUser } from '@/api/http-user'
 import { useCurrent } from '@/locale/instance'
 import { useSource } from '@/hooks/hook-source'
-import { useResize } from '@/hooks/hook-resize'
+import { useResize, useElementResize } from '@/hooks/hook-resize'
 import { compute } from '@/utils/utils-remix'
 
 export default defineComponent({
     name: 'User',
     setup() {
-        const { cols } = useResize({ cols: { 1480: 1, 2160: 2, 4320: 3 } })
+        const { cols: colsCource } = useResize({ cols: { 1480: 1, 2160: 2, 4320: 3 } })
+        const { cols: colsRequest } = useResize({ cols: { 1200: 28, 1201: 30 }, defaultCols: 30 })
         const { t } = useCurrent()
-        const { state, fetchUpdate } = useSource<IUser, Object>(
+        const { state, fetchUpdate } = useSource(
             {
                 immediate: true,
                 form: {
@@ -24,40 +25,32 @@ export default defineComponent({
 
         return () => (
             <common-container>
-                <common-request>
-                    <n-grid cols={5}>
-                        <n-form-item-gi label="数量">
-                            <n-input-number v-model:value={state} />
-                        </n-form-item-gi>
-                    </n-grid>
-                </common-request>
-                <n-form show-label={false} show-feedback={false} size="large" style={{ padding: '16px' }}>
-                    <n-space>
-                        <n-form-item>
-                            <n-input />
-                        </n-form-item>
-                        <n-form-item>
-                            <n-input />
-                        </n-form-item>
-                        <n-form-item>
-                            <n-input />
-                        </n-form-item>
-                        <n-form-item>
+                <common-request cols={colsRequest.value}>
+                    <n-form-item-gi span="1:30 540:15 840:10 1100:7 1200:5 1600:5 1900:4">
+                        <n-input v-model:value={state.form.nickname} placeholder="昵称" />
+                    </n-form-item-gi>
+                    <n-form-item-gi span="1:30 540:15 840:10 1100:7 1200:5 1600:5 1900:4">
+                        <n-input v-model:value={state.form.nickname} placeholder="UID" />
+                    </n-form-item-gi>
+                    <n-form-item-gi span="1:30 540:15 840:10 1100:7 1200:5 1600:5 1900:4">
+                        <n-input v-model:value={state.form.nickname} placeholder="手机号" />
+                    </n-form-item-gi>
+                    <n-form-item-gi span="1:30 540:15 840:10 1100:7 1200:5 1600:5 1900:4">
+                        <n-input v-model:value={state.form.nickname} placeholder="电子邮件" />
+                    </n-form-item-gi>
+                    <n-form-item-gi span="1:30 540:15 840:10 1100:28 1200:10 1600:10 1900:14" style="background-color: #e6dbdb;">
+                        <n-space size={14}>
                             <n-button
                                 type="primary"
                                 v-slots={{ icon: () => <n-icon component={compute('SearchBlod')} />, default: () => <span>查找</span> }}
                             >
                                 新增用户
                             </n-button>
-                        </n-form-item>
-                        <n-form-item>
                             <n-button
                                 secondary
                                 type="success"
                                 v-slots={{ icon: () => <n-icon component={compute('RadixSpinWith')} /> }}
                             ></n-button>
-                        </n-form-item>
-                        <n-form-item>
                             <n-button
                                 secondary
                                 type="info"
@@ -66,9 +59,9 @@ export default defineComponent({
                                     default: () => <span>查找</span>
                                 }}
                             ></n-button>
-                        </n-form-item>
-                    </n-space>
-                </n-form>
+                        </n-space>
+                    </n-form-item-gi>
+                </common-request>
                 <common-source
                     came-style={{ padding: '0 16px 48px' }}
                     loading={state.loading}
@@ -77,7 +70,7 @@ export default defineComponent({
                     page-sizes={[15, 30, 45, 60]}
                     total={state.total}
                     data-source={state.dataSource}
-                    cols={cols.value}
+                    cols={colsCource.value}
                     data-render={(data: IUser) => <compose-user key={data.id} node={data}></compose-user>}
                     onUpdate={fetchUpdate}
                 ></common-source>
