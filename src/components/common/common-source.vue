@@ -1,7 +1,8 @@
 <script lang="tsx">
 import type { PropType, CSSProperties, VNodeChild } from 'vue'
 import type { ScrollbarInst } from 'naive-ui'
-import { defineComponent, computed, Fragment, ref } from 'vue'
+import { defineComponent, computed, Fragment, ref, watch } from 'vue'
+import { useElementSize } from '@vueuse/core'
 
 export default defineComponent({
     name: 'CommonSource',
@@ -14,20 +15,38 @@ export default defineComponent({
         dataSource: { type: Array as PropType<Array<Record<string, unknown>>>, default: () => [] },
         dataRender: { type: Function as PropType<(e: Record<string, unknown>) => VNodeChild> },
         cameStyle: { type: Object as PropType<CSSProperties>, default: () => ({}) },
-        cols: { type: Number, default: 3 },
+        cols: { type: Object as PropType<Record<number, number>>, default: () => ({}) },
+        defaultCols: { type: Number, default: 3 },
         xGap: { type: Number, default: 16 },
         yGap: { type: Number, default: 16 },
         pagination: { type: Boolean, default: true }
     },
-    emits: ['update'],
+    emits: ['update', 'resize'],
     setup(props, { emit }) {
         const scrollbar = ref<ScrollbarInst>()
+        const element = ref<HTMLElement>()
+        const { width, height } = useElementSize(element)
+        const cols = computed(() => {
+            //prettier-ignore
+            const screen = Object.keys(props.cols ?? {}).map(Number).sort((a, b) => a - b).find((value: number) => {
+                return width.value < value
+            })
+            return screen && props.cols ? props.cols[screen] : props.defaultCols
+        })
         const cameStyle = computed<CSSProperties>(() => ({
             ...props.cameStyle,
             rowGap: props.xGap + 'px',
             columnGap: props.yGap + 'px',
-            gridTemplateColumns: `repeat(${props.cols}, minmax(0px, 1fr))`
+            gridTemplateColumns: `repeat(${cols.value}, minmax(0px, 1fr))`
         }))
+
+        watch(
+            () => [width.value, height.value],
+            () => {
+                console.log([width.value, height.value, cols.value])
+            },
+            { immediate: true }
+        )
 
         function onUpdate(option: { page?: number; size?: number }) {
             scrollbar.value?.scrollTo({ top: 0, left: 0, behavior: 'smooth' })
@@ -35,7 +54,7 @@ export default defineComponent({
         }
 
         return () => (
-            <section class={{ 'common-source': true }}>
+            <section ref={element} class={{ 'common-source': true }}>
                 {props.loading && props.total === 0 ? (
                     <n-spin stroke-width={12} size={60} style={{ minHeight: '240px' }}></n-spin>
                 ) : !props.loading && props.total === 0 ? (

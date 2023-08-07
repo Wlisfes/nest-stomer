@@ -1,11 +1,9 @@
-import { ref, watch, computed } from 'vue'
+import { watch, computed } from 'vue'
 import { useManager } from '@/store/manager'
-import { useWindowSize, useElementSize } from '@vueuse/core'
+import { useWindowSize } from '@vueuse/core'
 
 export type IDevice = 'PC' | 'IPAD' | 'MOBILE'
 export type IOption = {
-    cols?: Record<number, number>
-    defaultCols?: number
     onResize?: (e: { width: number; height: number; collapse: boolean; device: IDevice }) => void
     onDevice?: (device: IDevice) => void
     onCollapse?: (collapse: boolean) => void
@@ -14,11 +12,6 @@ export type IOption = {
 export function useResize(option: IOption = {}) {
     const { width, height } = useWindowSize()
     const store = useManager()
-    const cols = computed(() => {
-        //prettier-ignore
-        const screen = Object.keys(option.cols ?? {}).map(Number).sort((a, b) => a - b).find(value => width.value < value)
-        return screen && option.cols ? option.cols[screen] : option.defaultCols ?? 3
-    })
 
     function setDevice(device: IDevice) {
         store.setDevice(device)
@@ -59,19 +52,6 @@ export function useResize(option: IOption = {}) {
         collapse: computed(() => store.collapse),
         device: computed(() => store.device as IDevice),
         width,
-        height,
-        cols
-    }
-}
-
-export function useElementResize(option: any) {
-    const element = ref<HTMLElement>()
-    useElementSize
-
-    setTimeout(() => {
-        console.log(element.value)
-    }, 500)
-    return {
-        element
+        height
     }
 }

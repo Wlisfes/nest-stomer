@@ -1,10 +1,11 @@
 <script lang="tsx">
-import { defineComponent } from 'vue'
+import { defineComponent, type PropType } from 'vue'
 
 export default defineComponent({
     name: 'CommonRequest',
     props: {
-        cols: { type: Number, default: 24 },
+        cols: { type: Object as PropType<Record<number, number>>, default: () => ({}) },
+        defaultCols: { type: Number, default: 3 },
         xGap: { type: Number, default: 12 },
         xYap: { type: Number, default: 12 }
     },
@@ -13,7 +14,7 @@ export default defineComponent({
         return () => (
             <section class="common-request">
                 <n-form show-label={false} show-feedback={false} size="large" style={{ padding: '16px' }}>
-                    <n-grid cols={props.cols} item-responsive x-gap={props.xGap} y-gap={props.xYap}>
+                    <n-grid cols={props.defaultCols} item-responsive x-gap={props.xGap} y-gap={props.xYap}>
                         {slots.default?.()}
                     </n-grid>
                 </n-form>

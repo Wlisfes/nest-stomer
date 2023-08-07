@@ -3,14 +3,11 @@ import { defineComponent } from 'vue'
 import { httpColumnUser, type IUser } from '@/api/http-user'
 import { useCurrent } from '@/locale/instance'
 import { useSource } from '@/hooks/hook-source'
-import { useResize, useElementResize } from '@/hooks/hook-resize'
 import { compute } from '@/utils/utils-remix'
 
 export default defineComponent({
     name: 'User',
     setup() {
-        const { cols: colsCource } = useResize({ cols: { 1480: 1, 2160: 2, 4320: 3 } })
-        const { cols: colsRequest } = useResize({ cols: { 1200: 28, 1201: 30 }, defaultCols: 30 })
         const { t } = useCurrent()
         const { state, fetchUpdate } = useSource(
             {
@@ -25,7 +22,7 @@ export default defineComponent({
 
         return () => (
             <common-container>
-                <common-request cols={colsRequest.value}>
+                <common-request cols={{ 1200: 28, 1201: 30 }} default-cols={30}>
                     <n-form-item-gi span="1:30 540:15 840:10 1100:7 1200:5 1600:5 1900:4">
                         <n-input v-model:value={state.form.nickname} placeholder="昵称" />
                     </n-form-item-gi>
@@ -70,7 +67,8 @@ export default defineComponent({
                     page-sizes={[15, 30, 45, 60]}
                     total={state.total}
                     data-source={state.dataSource}
-                    cols={colsCource.value}
+                    cols={{ 768: 1, 1280: 2, 4320: 3 }}
+                    default-cols={3}
                     data-render={(data: IUser) => <compose-user key={data.id} node={data}></compose-user>}
                     onUpdate={fetchUpdate}
                 ></common-source>
