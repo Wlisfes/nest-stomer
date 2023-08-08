@@ -29,7 +29,7 @@ export default defineComponent({
 
         return () => (
             <section ref={element} class="common-request">
-                <n-form show-label={false} show-feedback={false} size="large" style={{ padding: '16px' }}>
+                <n-form show-label={false} show-feedback={false} size="large" style={{ padding: '16px 16px' }}>
                     <n-grid cols={cols.value} item-responsive x-gap={props.xGap} y-gap={props.xYap}>
                         {slots.default?.({ width: width.value, height: height.value, cols: cols.value })}
                     </n-grid>

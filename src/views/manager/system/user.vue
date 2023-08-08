@@ -22,7 +22,7 @@ export default defineComponent({
 
         return () => (
             <common-container>
-                <common-request cols={{ 544: 1, 640: 2, 960: 3, 1440: 4, 1592: 6, 2160: 7, 3440: 8 }} default-cols={12}>
+                <common-request cols={{ 544: 1, 640: 2, 960: 3, 1400: 4, 1592: 6, 2160: 7, 3440: 8 }} default-cols={12}>
                     <n-form-item-gi span={1}>
                         <n-input v-model:value={state.form.nickname} placeholder="昵称" />
                     </n-form-item-gi>
