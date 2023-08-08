@@ -3,7 +3,7 @@ import { defineComponent } from 'vue'
 import { httpColumnUser, type IUser } from '@/api/http-user'
 import { useCurrent } from '@/locale/instance'
 import { useSource } from '@/hooks/hook-source'
-import { compute } from '@/utils/utils-remix'
+import { compute, sompute } from '@/utils/utils-remix'
 
 export default defineComponent({
     name: 'User',
@@ -36,29 +36,18 @@ export default defineComponent({
                         <n-input v-model:value={state.form.nickname} placeholder="电子邮件" />
                     </n-form-item-gi>
                     <n-form-item-gi span={2}>
-                        <n-space size={14}>
-                            <n-button
+                        <n-space size={14} wrap-item={false}>
+                            <common-touch
                                 type="primary"
-                                v-slots={{
-                                    icon: () => <n-icon component={compute('SearchBlod')} />,
-                                    default: () => <span>查找</span>
-                                }}
-                            >
-                                新增用户
-                            </n-button>
-                            <n-button
-                                secondary
-                                type="success"
-                                v-slots={{ icon: () => <n-icon component={compute('RadixSpinWith')} /> }}
-                            ></n-button>
-                            <n-button
-                                secondary
-                                type="info"
-                                v-slots={{
-                                    icon: () => <n-icon component={compute('SearchBlod')} />,
-                                    default: () => <span>查找</span>
-                                }}
-                            ></n-button>
+                                icon-render={sompute('SearchBlod', { size: 22 })}
+                                onClick={(e: any, done: Function) => done({ loading: true })}
+                            ></common-touch>
+                            <common-touch type="primary" icon-render={sompute('AddRound')}></common-touch>
+                            <common-touch
+                                type="primary"
+                                icon-render={sompute('RadixSpin')}
+                                onClick={(e: any, done: Function) => done({ loading: true })}
+                            ></common-touch>
                         </n-space>
                     </n-form-item-gi>
                 </common-request>

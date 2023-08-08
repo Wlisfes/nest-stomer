@@ -37,7 +37,6 @@ export default defineComponent({
             columnGap: props.yGap + 'px',
             gridTemplateColumns: `repeat(${cols.value}, minmax(0px, 1fr))`
         }))
-        console.log(cols.value)
 
         watch(
             () => [width.value, height.value],

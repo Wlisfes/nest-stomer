@@ -18,6 +18,7 @@ export const RemixUI = {
     IssueRound: h(<Icon-IssueRound />),
     RadixEdit: h(<Icon-RadixEdit />),
     RadixMore: h(<Icon-RadixMore />),
+    RadixSpin: h(<Icon-RadixSpin />),
     RadixSpinWith: h(<Icon-RadixSpinWith />),
     SemiBold: h(<Icon-SemiBold />),
     SlackBold: h(<Icon-SlackBold />),
